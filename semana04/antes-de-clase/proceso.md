@@ -113,7 +113,7 @@ Utilicé un `INNER JOIN` para relacionar clientes con sus alquileres, apliqué `
 
 **Evidencia:**
 
-![Query 1 - Combinaciones, agregaciones y subconsultas](../../../Reguistro%20visual/image%20copy%2064.png)
+![Query 1 - Combinaciones, agregaciones y subconsultas](../../Reguistro%20visual/image%20copy%2064.png)
 
 ---
 
@@ -166,7 +166,7 @@ Utilicé una expresión común (`WITH`) para organizar el cálculo de alquileres
 
 **Evidencia:**
 
-![Query 2 - Expresiones comunes y vistas](../../../Reguistro%20visual/image%20copy%2065.png)
+![Query 2 - Expresiones comunes y vistas](../../Reguistro%20visual/image%20copy%2065.png)
 
 ---
 
@@ -221,7 +221,7 @@ Creé un procedimiento que recibe el ID de un cliente como parámetro y retorna 
 
 **Evidencia:**
 
-![Query 3 - Funciones, procedimientos o disparadores](../../../Reguistro%20visual/image%20copy%2066.png)
+![Query 3 - Funciones, procedimientos o disparadores](../../Reguistro%20visual/image%20copy%2066.png)
 
 ---
 
@@ -264,7 +264,7 @@ Creé un índice compuesto sobre `cliente_id` y `estado`, que son las columnas q
 
 **Evidencia:**
 
-![Query 4 - Índices y planes de ejecución](../../../Reguistro%20visual/image%20copy%2067.png)
+![Query 4 - Índices y planes de ejecución](../../Reguistro%20visual/image%20copy%2067.png)
 
 ---
 
