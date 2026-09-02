@@ -68,6 +68,6 @@ ls -R semana04
 
 Resultado: quedó creada la carpeta `semana04` con las tres fases del trabajo académico (`antes-de-clase`, `durante-clase` y `despues-de-clase`) y la carpeta `docs`, todos los archivos `proceso.md`, `kanban.md` y `bitacora-tecnica.md` en blanco y listos para completar.
 
-![Evidencia Parte 1](<../Reguistro visual/image copy 62.png>)
+![Evidencia Parte 1](<../../Reguistro visual/image copy 62.png>)
 
 ## Parte 2: Antes de la clase
