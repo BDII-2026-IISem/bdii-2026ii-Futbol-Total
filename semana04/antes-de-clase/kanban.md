@@ -1,9 +1,9 @@
 # Kanban - Lo esencial
 
-- [ ] Revisar la temática de la semana
-- [ ] Entender el objetivo del proyecto
-- [ ] Hacer consultas avanzadas necesarias
-- [ ] Validar resultados
-- [ ] Guardar evidencia en el repositorio
-- [ ] Registrar decisiones y uso de IA
-- [ ] Revisar si está listo para entregar
+- [X] Revisar la temática de la semana
+- [X] Entender el objetivo del proyecto
+- [X] Hacer consultas avanzadas necesarias
+- [X] Validar resultados
+- [X] Guardar evidencia en el repositorio
+- [X] Registrar decisiones y uso de IA
+- [X] Revisar si está listo para entregar
