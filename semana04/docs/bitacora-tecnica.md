@@ -340,3 +340,273 @@ AND estado = 'FINALIZADO';
 - Query 4 (Índices): Índice optimizado y verificado con EXPLAIN
 
 ---
+
+## Parte 3: Durante la clase
+
+### Objetivo
+
+En esta parte trabajé sobre la misma base de datos Pedalibre, pero realicé
+pruebas diferentes a las de antes de clase. Utilicé las tablas `estacion`,
+`bicicleta` y `anclaje`, ejecuté los comandos desde WSL Ubuntu y registré los
+resultados obtenidos.
+
+### Preparación y datos para las nuevas pruebas
+
+Primero comprobé que MySQL estuviera activo con `docker ps` y entré a la base
+de datos con:
+
+```bash
+mysql -h 127.0.0.1 -u root -p1704 Pedalibre
+```
+
+Después revisé las tablas de estaciones, bicicletas y anclajes para confirmar
+los datos que utilizaría en las pruebas.
+
+![Prueba de las tablas utilizadas](<../../Reguistro%20visual/image%20copy%2069.png>)
+
+Agregué 2 estaciones, 3 bicicletas y 3 anclajes de prueba. MySQL confirmó cada
+inserción con `Query OK`.
+
+```sql
+INSERT INTO estacion (nombre, descripcion) VALUES
+('Estación Norte - Clase', 'Estación para pruebas de durante clase'),
+('Estación Sur - Clase', 'Estación para pruebas de durante clase');
+```
+
+```sql
+INSERT INTO bicicleta (nombre, descripcion) VALUES
+('Bici Clase 004', 'Bicicleta urbana para pruebas'),
+('Bici Clase 005', 'Bicicleta eléctrica para pruebas'),
+('Bici Clase 006', 'Bicicleta de montaña para pruebas');
+```
+
+```sql
+INSERT INTO anclaje (estacion_id, bicicleta_id, nombre, descripcion)
+SELECT e.id, b.id, 'Anclaje Norte 01', 'Anclaje ocupado'
+FROM estacion e
+INNER JOIN bicicleta b ON b.nombre = 'Bici Clase 004'
+WHERE e.nombre = 'Estación Norte - Clase';
+```
+
+```sql
+INSERT INTO anclaje (estacion_id, bicicleta_id, nombre, descripcion)
+SELECT e.id, b.id, 'Anclaje Norte 02', 'Anclaje ocupado'
+FROM estacion e
+INNER JOIN bicicleta b ON b.nombre = 'Bici Clase 005'
+WHERE e.nombre = 'Estación Norte - Clase';
+```
+
+```sql
+INSERT INTO anclaje (estacion_id, bicicleta_id, nombre, descripcion)
+SELECT e.id, NULL, 'Anclaje Sur 01', 'Anclaje disponible'
+FROM estacion e
+WHERE e.nombre = 'Estación Sur - Clase';
+```
+
+### Evidencia de la inserción de datos
+
+**Evidencia de la inserción:**
+
+![Evidencia de inserción de datos](../../Reguistro%20visual/image%20copy%2068.png)
+
+**Resultado:** Inserté correctamente 2 estaciones, 3 bicicletas y 3 anclajes
+para realizar las pruebas de durante la clase desde WSL Ubuntu.
+
+### AC-S04-01: Combinaciones, agregaciones y subconsultas
+
+Consulté qué estaciones tenían una cantidad de bicicletas ancladas igual o
+superior al promedio:
+
+```sql
+SELECT
+    e.nombre AS estacion,
+    COUNT(DISTINCT a.bicicleta_id) AS bicicletas_ancladas,
+    COUNT(a.id) AS total_anclajes
+FROM estacion e
+LEFT JOIN anclaje a
+    ON e.id = a.estacion_id
+    AND a.is_active = TRUE
+GROUP BY e.id, e.nombre
+HAVING COUNT(DISTINCT a.bicicleta_id) >= (
+    SELECT AVG(cantidad_bicicletas)
+    FROM (
+        SELECT COUNT(DISTINCT bicicleta_id) AS cantidad_bicicletas
+        FROM anclaje
+        WHERE bicicleta_id IS NOT NULL
+          AND is_active = TRUE
+        GROUP BY estacion_id
+    ) AS promedios
+);
+```
+
+Este código combinó estaciones y anclajes, contó las bicicletas asignadas y
+usó una subconsulta para compararlas con el promedio.
+
+**Resultado:** La consulta mostró la `Estación Norte - Clase` con 2 bicicletas
+ancladas y 2 anclajes.
+
+![Evidencia AC-S04-01](<../../Reguistro%20visual/image%20copy%2070.png>)
+
+### AC-S04-02: Expresiones comunes, vistas y analítica
+
+Creé una vista que mostró la disponibilidad de cada estación:
+
+```sql
+DROP VIEW IF EXISTS vista_disponibilidad_estaciones;
+```
+
+```sql
+CREATE VIEW vista_disponibilidad_estaciones AS
+WITH conteo AS (
+    SELECT
+        estacion_id,
+        COUNT(*) AS total_anclajes,
+        SUM(CASE WHEN bicicleta_id IS NULL THEN 1 ELSE 0 END)
+            AS anclajes_libres
+    FROM anclaje
+    WHERE is_active = TRUE
+    GROUP BY estacion_id
+)
+SELECT
+    e.nombre AS estacion,
+    c.total_anclajes,
+    c.anclajes_libres,
+    ROUND(c.anclajes_libres * 100.0 / c.total_anclajes, 2)
+        AS porcentaje_disponible
+FROM estacion e
+INNER JOIN conteo c
+    ON e.id = c.estacion_id;
+```
+
+Luego consulté la vista:
+
+```sql
+SELECT *
+FROM vista_disponibilidad_estaciones
+ORDER BY porcentaje_disponible DESC;
+```
+
+La expresión `WITH` calculó los anclajes libres y la vista presentó el
+porcentaje de disponibilidad.
+
+**Resultado:** La `Estación Sur - Clase` tuvo 1 anclaje libre y 100.00% de
+disponibilidad. La `Estación Norte - Clase` tuvo 0 anclajes libres y 0.00% de
+disponibilidad.
+
+![Evidencia AC-S04-02](<../../Reguistro%20visual/image%20copy%2071.png>)
+
+### AC-S04-03: Funciones, procedimientos o disparadores
+
+Creé un procedimiento para buscar anclajes libres:
+
+```sql
+DROP PROCEDURE IF EXISTS consultar_bicicletas_disponibles;
+```
+
+```sql
+DELIMITER //
+
+CREATE PROCEDURE consultar_bicicletas_disponibles(IN p_estacion_id INT)
+BEGIN
+    SELECT
+        e.nombre AS estacion,
+        a.nombre AS anclaje,
+        b.nombre AS bicicleta
+    FROM anclaje a
+    INNER JOIN estacion e
+        ON e.id = a.estacion_id
+    LEFT JOIN bicicleta b
+        ON b.id = a.bicicleta_id
+    WHERE a.estacion_id = p_estacion_id
+      AND a.bicicleta_id IS NULL
+      AND a.is_active = TRUE;
+END //
+
+DELIMITER ;
+```
+
+Obtuve el ID de la estación Sur y ejecuté el procedimiento:
+
+```sql
+SET @estacion_prueba = (
+    SELECT id
+    FROM estacion
+    WHERE nombre = 'Estación Sur - Clase'
+);
+```
+
+```sql
+CALL consultar_bicicletas_disponibles(@estacion_prueba);
+```
+
+Este procedimiento recibió el ID de una estación y devolvió sus anclajes sin
+bicicleta.
+
+**Resultado:** Encontré 1 anclaje libre en la `Estación Sur - Clase`:
+`Anclaje Sur 01`, sin bicicleta asignada.
+
+![Evidencia AC-S04-03](<../../Reguistro%20visual/image%20copy%2072.png>)
+
+### AC-S04-04: Índices y planes de ejecución
+
+Creé un índice para acelerar la búsqueda de anclajes:
+
+```sql
+CREATE INDEX idx_anclaje_estacion_activo
+ON anclaje(estacion_id, is_active, bicicleta_id);
+```
+
+Después analicé el plan de ejecución:
+
+```sql
+EXPLAIN
+SELECT id, nombre, bicicleta_id
+FROM anclaje
+WHERE estacion_id = (
+    SELECT id
+    FROM estacion
+    WHERE nombre = 'Estación Norte - Clase'
+)
+AND is_active = TRUE
+AND bicicleta_id IS NULL;
+```
+
+El índice `idx_anclaje_estacion_activo` se creó correctamente. Al ejecutar
+`EXPLAIN`, MySQL lo consideró entre las claves posibles para buscar anclajes
+activos y libres.
+
+![Evidencia AC-S04-04](<../../Reguistro%20visual/image%20copy%2073.png>)
+
+### Cierre de las pruebas
+
+Después de cada actividad salí de MySQL:
+
+```sql
+EXIT;
+```
+
+Guardé una captura de cada resultado y la incorporé en este documento.
+
+### Decisiones y uso de IA
+
+- Utilicé la misma base de datos, pero realicé consultas diferentes a las de
+  antes de clase.
+- Agregué datos nuevos únicamente para probar estaciones, bicicletas y
+  anclajes.
+- Trabajé desde WSL Ubuntu usando la conexión por `127.0.0.1`.
+- Utilicé la IA como apoyo para revisar la sintaxis y organizar los pasos, pero
+  ejecuté, verifiqué y documenté los resultados.
+
+### Registro de resultados
+
+| Código | Actividad | Resultado | Evidencia |
+|---|---|---|---|
+| AC-S04-01 | Estaciones con bicicletas sobre el promedio | Norte: 2 bicicletas ancladas y 2 anclajes | `image copy 70.png` |
+| AC-S04-02 | Vista de disponibilidad | Sur: 1 libre, 100%; Norte: 0 libres, 0% | `image copy 71.png` |
+| AC-S04-03 | Procedimiento de anclajes libres | Encontró `Anclaje Sur 01` sin bicicleta | `image copy 72.png` |
+| AC-S04-04 | Índice y plan `EXPLAIN` | Índice creado y considerado por MySQL | `image copy 73.png` |
+
+### Estado
+
+Completé las cuatro actividades durante la clase, registré los resultados
+reales, coloqué las evidencias y dejé documentadas las decisiones tomadas.
