@@ -193,20 +193,9 @@ Creé un índice compuesto sobre `cliente_id` y `estado`, que son las columnas u
 ### Parte 1: Prompt enviado a la IA
 
 **Pregunta:**
+
 ```
-(Aquí va tu pregunta durante la clase)
+no se envio ninguna pregunta ya que se utilizo la base dada por la primera consulta 
 ```
 
 ---
-
-### Parte 2: Respuesta de la IA
-
-(Aquí va la respuesta de la IA)
-
----
-
-### Parte 3: Verificación humana y mejoras que apliqué
-
-**Estado:** ✅ Verificado y mejorado por mí
-
-(Aquí documentas lo que verificaste y mejoraste)
