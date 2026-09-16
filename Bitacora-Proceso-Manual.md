@@ -124,3 +124,15 @@ Esta revisión me permitió comprobar que las claves foráneas aparecen conectad
 ### Conclusión de la revisión
 
 Concluí la revisión visual del modelo MySQL y confirmé que las tablas creadas se encuentran organizadas en la base de datos `Pedalibre-Terminal-Dbeaver`. El diagrama facilita la comprensión de las relaciones y me servirá como referencia para continuar el trabajo con los demás motores de bases de datos.
+
+## 1.2 Creación de la base de datos MySQL en Workbench
+
+Después de terminar la estructura inicial en DBeaver, continué el proceso desde la terminal para preparar la base de datos que utilizaré en MySQL Workbench. Creé y seleccioné la base `Pedalibre-Visual-Workbench` y comprobé con `SELECT DATABASE()` que la conexión se encontraba trabajando sobre la base correcta.
+
+Al actualizar el panel **SCHEMAS** de MySQL Workbench, la base de datos apareció correctamente junto con las demás bases disponibles. La seleccioné para continuar posteriormente con la creación de las entidades de negocio en este gestor.
+
+![Base de datos MySQL en Workbench](Docs/Reguistro%20visual/15-base-mysql-workbench.png)
+
+### Conclusión
+
+Concluí correctamente la preparación de `Pedalibre-Visual-Workbench`. La base fue creada desde la terminal, verificada mediante SQL y reconocida por MySQL Workbench, por lo que ya puedo comenzar a crear sus tablas en este entorno.
