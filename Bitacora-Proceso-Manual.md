@@ -64,3 +64,15 @@ Relacioné `evento_alquiler` con `alquiler` mediante el campo `referencia_id` y 
 ### Conclusión de la tabla `evento_alquiler`
 
 Concluí correctamente la creación de `evento_alquiler` y su relación con `alquiler`. Esta entidad permite registrar los diferentes eventos que ocurren durante el ciclo de un alquiler.
+
+### Creación de la tabla `tarifa`
+
+Continué con la creación de la tabla `tarifa`, destinada a almacenar las reglas de cobro del sistema Pedalibre. Incluí el nombre de la tarifa, la regla de cálculo, el valor base, el periodo de vigencia y el estado activo.
+
+La tabla `tarifa` se creó correctamente desde DBeaver y quedó visible dentro de la base de datos `Pedalibre-Terminal-Dbeaver`.
+
+![Creación de la tabla tarifa en MySQL](Docs/Reguistro%20visual/10-tabla-tarifa-mysql.png)
+
+### Conclusión de la tabla `tarifa`
+
+Concluí correctamente la creación de `tarifa`. Esta tabla permitirá definir y mantener las condiciones económicas aplicables a los alquileres del proyecto Pedalibre.
