@@ -76,3 +76,15 @@ La tabla `tarifa` se creó correctamente desde DBeaver y quedó visible dentro d
 ### Conclusión de la tabla `tarifa`
 
 Concluí correctamente la creación de `tarifa`. Esta tabla permitirá definir y mantener las condiciones económicas aplicables a los alquileres del proyecto Pedalibre.
+
+### Creación de la tabla `penalidad`
+
+Continué con la creación de la tabla `penalidad`, destinada a registrar las penalidades generadas durante la operación de los alquileres. Incluí la referencia al alquiler, la fecha, el valor, el estado y las observaciones.
+
+Relacioné `penalidad` con `alquiler` mediante el campo `referencia_id` y la clave foránea `fk_penalidad_alquiler`. La tabla se creó correctamente desde DBeaver y quedó visible en la base de datos.
+
+![Creación de la tabla penalidad en MySQL](Docs/Reguistro%20visual/11-tabla-penalidad-mysql.png)
+
+### Conclusión de la tabla `penalidad`
+
+Concluí correctamente la creación de `penalidad` y su relación con `alquiler`. Esta entidad permitirá controlar los cobros adicionales generados por incumplimientos o situaciones especiales del servicio.
