@@ -52,3 +52,15 @@ La clave foránea `fk_alquiler_reserva` referencia el campo `id` de la tabla `re
 ### Conclusión de la tabla `alquiler`
 
 Concluí correctamente la creación de `alquiler` y establecí su relación con `reserva`. Con esta entidad ya puedo registrar el paso de una reserva a una operación de alquiler dentro del modelo de Pedalibre.
+
+### Creación de la tabla `evento_alquiler`
+
+Continué con la tabla `evento_alquiler`, que permite registrar los eventos asociados a cada alquiler. Incluí el tipo de evento, la fecha, la cantidad, las observaciones y el estado del registro.
+
+Relacioné `evento_alquiler` con `alquiler` mediante el campo `referencia_id` y la clave foránea `fk_evento_alquiler`. La sentencia se ejecutó correctamente en DBeaver y la tabla quedó visible en la base de datos.
+
+![Creación de la tabla evento_alquiler en MySQL](Docs/Reguistro%20visual/09-tabla-evento-alquiler-mysql.png)
+
+### Conclusión de la tabla `evento_alquiler`
+
+Concluí correctamente la creación de `evento_alquiler` y su relación con `alquiler`. Esta entidad permite registrar los diferentes eventos que ocurren durante el ciclo de un alquiler.
