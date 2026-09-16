@@ -88,3 +88,15 @@ Relacioné `penalidad` con `alquiler` mediante el campo `referencia_id` y la cla
 ### Conclusión de la tabla `penalidad`
 
 Concluí correctamente la creación de `penalidad` y su relación con `alquiler`. Esta entidad permitirá controlar los cobros adicionales generados por incumplimientos o situaciones especiales del servicio.
+
+### Creación de la tabla `mantenimiento`
+
+Continué con la creación de la tabla `mantenimiento`, destinada a registrar los mantenimientos programados para las bicicletas. Incluí el recurso relacionado, el tipo de mantenimiento, las fechas programada y de cierre, el costo y el estado.
+
+Durante la creación se presentó un error de incompatibilidad entre la clave foránea `recurso_id` y el campo `bicicleta.id`. Corregí el tipo de `recurso_id` a `BIGINT UNSIGNED` para que coincidiera exactamente con el tipo de la clave primaria de `bicicleta`. Después de realizar este ajuste, la tabla y su relación se crearon correctamente en DBeaver.
+
+![Creación de la tabla mantenimiento en MySQL](Docs/Reguistro%20visual/12-tabla-mantenimiento-mysql.png)
+
+### Conclusión de la tabla `mantenimiento`
+
+Concluí correctamente la creación de `mantenimiento` y establecí su relación con `bicicleta`. También comprobé la importancia de utilizar tipos de datos compatibles entre una clave primaria y su clave foránea para mantener la integridad referencial.
