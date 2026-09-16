@@ -112,3 +112,15 @@ Utilicé los campos `referencia_tipo` y `referencia_id` para permitir que un pag
 ### Conclusión de la tabla `pago`
 
 Concluí correctamente la creación de `pago` y completé las tablas de entidades de negocio definidas para MySQL. La base de datos `Pedalibre-Terminal-Dbeaver` ya cuenta con la estructura inicial necesaria para continuar con la revisión y las pruebas del modelo.
+
+### Revisión del diagrama de relaciones
+
+Después de crear las tablas, abrí el diagrama de la base de datos en DBeaver para revisar visualmente la estructura del modelo. En el diagrama pude observar las entidades creadas y las relaciones establecidas entre `anclaje` y `estacion`, `reserva` y `cliente`, `alquiler` y `reserva`, `evento_alquiler` y `alquiler`, `penalidad` y `alquiler`, `mantenimiento` y `bicicleta`.
+
+Esta revisión me permitió comprobar que las claves foráneas aparecen conectadas con sus respectivas tablas y que la estructura general corresponde con las entidades de negocio definidas para Pedalibre.
+
+![Diagrama de relaciones de MySQL](Docs/Reguistro%20visual/14-diagrama-relaciones-mysql.png)
+
+### Conclusión de la revisión
+
+Concluí la revisión visual del modelo MySQL y confirmé que las tablas creadas se encuentran organizadas en la base de datos `Pedalibre-Terminal-Dbeaver`. El diagrama facilita la comprensión de las relaciones y me servirá como referencia para continuar el trabajo con los demás motores de bases de datos.
