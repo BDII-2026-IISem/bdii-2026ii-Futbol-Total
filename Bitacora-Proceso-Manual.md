@@ -29,3 +29,26 @@ Antes de crear las tablas, verificaré lo siguiente:
 3. Que la base de datos de trabajo se cree correctamente.
 4. Que pueda seleccionar la base de datos y ejecutar consultas sobre ella.
 
+### Creación de la tabla `reserva`
+
+Continué con la creación de la tabla `reserva`, que permite registrar las reservas realizadas por los clientes. La tabla contiene el identificador de la reserva, el cliente relacionado, las fechas de inicio y finalización, el estado y las observaciones.
+
+Para relacionar la reserva con el cliente utilicé el campo `cliente_id` como clave foránea hacia `cliente(id)`. Antes de crear la tabla ajusté el identificador de `cliente` para trabajar con `BIGINT` sin `UNSIGNED`, manteniendo el mismo tipo de dato en la clave primaria y en la clave foránea. La tabla se creó correctamente desde DBeaver y quedó visible en el panel de tablas.
+
+![Creación de la tabla reserva en MySQL](Docs/Reguistro%20visual/07-tabla-reserva-mysql.png)
+
+### Conclusión de la tabla `reserva`
+
+Concluí correctamente la creación de `reserva` y su relación con `cliente`. Esta tabla permite comenzar a representar las operaciones del sistema Pedalibre y mantiene la integridad referencial entre los clientes y sus reservas.
+
+### Creación de la tabla `alquiler`
+
+Después creé la tabla `alquiler`, que registra el inicio y la finalización de los alquileres, el total cobrado, el estado y las observaciones. El campo `referencia_id` relaciona cada alquiler con una reserva existente.
+
+La clave foránea `fk_alquiler_reserva` referencia el campo `id` de la tabla `reserva`. Ejecuté la sentencia desde DBeaver y verifiqué que la tabla apareciera correctamente en el panel de la base de datos.
+
+![Creación de la tabla alquiler en MySQL](Docs/Reguistro%20visual/08-tabla-alquiler-mysql.png)
+
+### Conclusión de la tabla `alquiler`
+
+Concluí correctamente la creación de `alquiler` y establecí su relación con `reserva`. Con esta entidad ya puedo registrar el paso de una reserva a una operación de alquiler dentro del modelo de Pedalibre.
