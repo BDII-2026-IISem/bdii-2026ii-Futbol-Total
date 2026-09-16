@@ -100,3 +100,15 @@ Durante la creación se presentó un error de incompatibilidad entre la clave fo
 ### Conclusión de la tabla `mantenimiento`
 
 Concluí correctamente la creación de `mantenimiento` y establecí su relación con `bicicleta`. También comprobé la importancia de utilizar tipos de datos compatibles entre una clave primaria y su clave foránea para mantener la integridad referencial.
+
+### Creación de la tabla `pago`
+
+Finalicé la creación de las entidades de negocio con la tabla `pago`. Esta tabla registra los pagos realizados en el sistema mediante el tipo de referencia, el identificador de la referencia, el método de pago, el monto, la fecha y el estado.
+
+Utilicé los campos `referencia_tipo` y `referencia_id` para permitir que un pago pueda asociarse con diferentes tipos de operación. La tabla se creó correctamente desde DBeaver y quedó visible junto con las demás entidades de la base de datos.
+
+![Creación de la tabla pago en MySQL](Docs/Reguistro%20visual/13-tabla-pago-mysql.png)
+
+### Conclusión de la tabla `pago`
+
+Concluí correctamente la creación de `pago` y completé las tablas de entidades de negocio definidas para MySQL. La base de datos `Pedalibre-Terminal-Dbeaver` ya cuenta con la estructura inicial necesaria para continuar con la revisión y las pruebas del modelo.
