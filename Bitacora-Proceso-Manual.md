@@ -624,3 +624,15 @@ Configuré `estacion_id` como clave foránea hacia `estacion.id`, dejé `nombre`
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `anclaje` en SQL Server y establecí su relación con `estacion` para registrar los puntos físicos disponibles en cada ubicación.
+
+### Creación de la tabla `reserva` en SQL Server
+
+Continué con la creación de la tabla `reserva` dentro de la base `Pedalibre-Terminal-Dbeaver`. Definí las relaciones con `cliente`, `bicicleta` y las estaciones de origen y destino, junto con las fechas de inicio y fin y el estado de la reserva.
+
+Configuré `cliente_id`, `bicicleta_id` y `estacion_origen_id` como campos obligatorios, dejé `estacion_destino_id` como opcional y establecí `ACTIVA` como valor predeterminado para `estado`. Las claves foráneas quedaron asociadas a las entidades correspondientes.
+
+![Creación de la tabla reserva en SQL Server](Docs/Reguistro%20visual/59-tabla-reserva-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `reserva` en SQL Server y establecí sus relaciones con las entidades de clientes, bicicletas y estaciones.
