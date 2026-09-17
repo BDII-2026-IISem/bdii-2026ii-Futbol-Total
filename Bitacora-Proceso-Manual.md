@@ -136,3 +136,13 @@ Al actualizar el panel **SCHEMAS** de MySQL Workbench, la base de datos apareci�
 ### Conclusión
 
 Concluí correctamente la preparación de `Pedalibre-Visual-Workbench`. La base fue creada desde la terminal, verificada mediante SQL y reconocida por MySQL Workbench, por lo que ya puedo comenzar a crear sus tablas en este entorno.
+
+### Creación manual de la tabla `cliente` en Workbench
+
+En MySQL Workbench inicié la creación manual de la tabla `cliente` dentro del esquema `Pedalibre-Visual-Workbench`. Definí sus columnas, seleccioné la clave primaria y configuré el incremento automático del identificador. También establecí los campos obligatorios y el valor predeterminado del estado activo.
+
+![Creación manual de la tabla cliente en Workbench](Docs/Reguistro%20visual/16-tabla-cliente-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `cliente` en MySQL Workbench y dejé lista la estructura para aplicarla al esquema visual del proyecto Pedalibre.
