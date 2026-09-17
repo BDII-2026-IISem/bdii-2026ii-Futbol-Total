@@ -708,3 +708,15 @@ Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `monto` 
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `pago` en SQL Server y dejé preparada la entidad para registrar las transacciones asociadas a cada alquiler.
+
+### Diagrama de relaciones de SQL Server en DBeaver
+
+Después de crear las tablas de SQL Server, abrí el diagrama de la base `Pedalibre-Terminal-Dbeaver` en DBeaver para revisar visualmente la estructura del modelo. En el diagrama confirmé las relaciones entre `cliente`, `reserva`, `bicicleta`, `estacion`, `anclaje`, `alquiler`, `evento_alquiler`, `tarifa`, `penalidad`, `mantenimiento` y `pago`.
+
+La vista también permitió comprobar que las claves foráneas conectan correctamente las entidades operativas y que la tabla `tarifa` se mantiene como una entidad independiente dentro del modelo.
+
+![Diagrama de relaciones de SQL Server en DBeaver](Docs/Reguistro%20visual/66-diagrama-sqlserver-dbeaver.png)
+
+### Conclusión general de SQL Server en DBeaver
+
+Concluí la etapa de SQL Server en DBeaver con las tablas de entidades de negocio, sus claves primarias, sus relaciones y sus restricciones principales. La revisión del diagrama confirmó que la estructura del modelo mantiene coherencia para registrar clientes, bicicletas, estaciones, reservas, alquileres, eventos, mantenimientos, penalidades, pagos y tarifas.
