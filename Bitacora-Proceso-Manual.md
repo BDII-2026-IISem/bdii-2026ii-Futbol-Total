@@ -672,3 +672,15 @@ Configuré `valor_base` con tipo `decimal(10,2)` y valor predeterminado `0.00`, 
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `tarifa` en SQL Server y dejé preparada la entidad para definir los precios y periodos de vigencia del servicio.
+
+### Creación de la tabla `penalidad` en SQL Server
+
+Continué con la creación de la tabla `penalidad` dentro de la base `Pedalibre-Terminal-Dbeaver`. Definí la relación con `alquiler`, el motivo, el monto, el estado y la fecha de generación de la penalidad.
+
+Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `monto` con valor predeterminado `0.00` y establecí `PENDIENTE` como estado inicial.
+
+![Creación de la tabla penalidad en SQL Server](Docs/Reguistro%20visual/63-tabla-penalidad-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `penalidad` en SQL Server y dejé preparada la entidad para registrar los cargos derivados de incumplimientos durante el servicio.
