@@ -768,3 +768,15 @@ La tabla quedó creada dentro del esquema `dbo`, con `nombre` como campo obligat
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `estacion` en SQL Server Management Studio y dejé preparada la entidad para registrar las ubicaciones del sistema.
+
+### Creación de la tabla `anclaje` en SQL Server Management Studio
+
+Continué con la creación de la tabla `anclaje` dentro de la base `Pedalibre-Visual-Management`. Definí el identificador, la referencia a la estación, el nombre, la descripción, el estado activo y las fechas de creación y actualización.
+
+La tabla quedó creada dentro del esquema `dbo` y `estacion_id` quedó configurado como clave foránea hacia `estacion.id`. El nombre se estableció como obligatorio y la descripción como opcional.
+
+![Creación de la tabla anclaje en SQL Server Management Studio](Docs/Reguistro%20visual/71-tabla-anclaje-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `anclaje` en SQL Server Management Studio y establecí su relación con `estacion` para registrar los puntos disponibles en cada ubicación.
