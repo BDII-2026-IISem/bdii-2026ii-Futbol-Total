@@ -864,3 +864,15 @@ La tabla quedó creada dentro del esquema `dbo`, con `alquiler_id` como referenc
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `pago` en SQL Server Management Studio y dejé preparada la entidad para registrar los pagos relacionados con los alquileres.
+
+### Diagrama de relaciones de SQL Server Management Studio
+
+Después de crear las tablas, utilicé el diseñador de diagramas de SQL Server Management Studio para revisar visualmente la estructura de `Pedalibre-Visual-Management`. En el diagrama confirmé las relaciones entre clientes, reservas, bicicletas, estaciones, anclajes, alquileres, eventos, penalidades, mantenimientos y pagos.
+
+La tabla `tarifa` también quedó incluida en el modelo como una entidad independiente, ya que no tiene una clave foránea directa con otra tabla.
+
+![Diagrama de relaciones de SQL Server Management Studio](Docs/Reguistro%20visual/79-diagrama-sqlserver-management-studio.png)
+
+### Conclusión general de SQL Server Management Studio
+
+Concluí la etapa de SQL Server Management Studio con las entidades de negocio creadas y sus relaciones revisadas mediante el diagrama. La estructura permite mantener la integridad de la información y deja preparada la base para continuar posteriormente con el motor Oracle.
