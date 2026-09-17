@@ -914,3 +914,15 @@ La sentencia se ejecutó correctamente y la tabla quedó visible en el esquema d
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `bicicleta` en Oracle y dejé preparada la entidad para administrar los recursos disponibles del sistema.
+
+### Creación de la tabla `estacion` en Oracle
+
+Continué con la creación de la tabla `estacion` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí el identificador como una identidad autogenerada, el nombre, la descripción, el estado activo y las fechas de creación y actualización.
+
+La sentencia se ejecutó correctamente y la tabla quedó disponible en el esquema de Oracle para registrar las ubicaciones del sistema.
+
+![Creación de la tabla estacion en Oracle](Docs/Reguistro%20visual/83-tabla-estacion-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `estacion` en Oracle y dejé preparada la entidad para registrar las estaciones del sistema de bicicletas compartidas.
