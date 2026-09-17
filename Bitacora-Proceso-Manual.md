@@ -396,3 +396,15 @@ Configuré `id` como una identidad autogenerada. Dejé `fecha_pago` y `referenci
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `pago` en PostgreSQL y establecí su relación con `alquiler` para registrar y controlar los pagos asociados al servicio.
+
+### Diagrama de relaciones de PostgreSQL en DBeaver
+
+Después de crear las tablas de PostgreSQL, abrí el diagrama del esquema público en DBeaver para revisar visualmente la estructura del modelo. En el diagrama pude comprobar las relaciones entre `anclaje` y `estacion`, `mantenimiento` y `bicicleta`, `evento_alquiler` y `alquiler`, `pago` y `alquiler`, `penalidad` y `alquiler`, `reserva` y `cliente`, y `alquiler` y `reserva`.
+
+La tabla `tarifa` también aparece dentro del modelo y, en esta etapa, se mantiene como una entidad independiente porque no se definió una clave foránea directa con otra tabla.
+
+![Diagrama de relaciones de PostgreSQL en DBeaver](Docs/Reguistro%20visual/40-diagrama-postgresql-dbeaver.png)
+
+### Conclusión de PostgreSQL en DBeaver
+
+Concluí la creación de las tablas de entidades de negocio en PostgreSQL y verifiqué visualmente sus relaciones mediante el diagrama de DBeaver. La estructura cuenta con claves primarias, claves foráneas, campos obligatorios y valores predeterminados, por lo que queda preparada para continuar con la revisión en pgAdmin.
