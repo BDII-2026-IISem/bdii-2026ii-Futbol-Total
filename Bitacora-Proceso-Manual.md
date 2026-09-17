@@ -648,3 +648,15 @@ Configuré `reserva_id` como clave foránea hacia `reserva.id`, dejé `total` co
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `alquiler` en SQL Server y establecí su relación con `reserva` para registrar el uso efectivo de cada bicicleta.
+
+### Creación de la tabla `evento_alquiler` en SQL Server
+
+Continué con la creación de la tabla `evento_alquiler` dentro de la base `Pedalibre-Terminal-Dbeaver`. Definí la relación con `alquiler`, el tipo de evento, la fecha, la cantidad, las observaciones y el estado del registro.
+
+Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `cantidad` con valor predeterminado `0.00` y establecí `REGISTRADO` como estado inicial para cada evento.
+
+![Creación de la tabla evento_alquiler en SQL Server](Docs/Reguistro%20visual/61-tabla-evento-alquiler-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `evento_alquiler` en SQL Server y dejé preparada la entidad para registrar los eventos que ocurren durante cada alquiler.
