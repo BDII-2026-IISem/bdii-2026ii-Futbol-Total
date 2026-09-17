@@ -974,3 +974,15 @@ La sentencia se ejecutó correctamente y la clave foránea `fk_evento_alquiler_a
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `evento_alquiler` en Oracle y establecí su relación con `alquiler` para registrar los eventos asociados a cada alquiler.
+
+### Creación de la tabla `tarifa` en Oracle
+
+Continué con la creación de la tabla `tarifa` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí el nombre, la descripción, los precios por hora y por día, el estado y las fechas de creación y actualización.
+
+La sentencia se ejecutó correctamente y la tabla quedó preparada para centralizar los valores de las tarifas aplicables al servicio.
+
+![Creación de la tabla tarifa en Oracle](Docs/Reguistro%20visual/88-tabla-tarifa-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `tarifa` en Oracle y dejé definidos los datos necesarios para administrar los precios del servicio.
