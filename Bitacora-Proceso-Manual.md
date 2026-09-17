@@ -258,3 +258,25 @@ Finalmente revisé el diagrama del esquema `Pedalibre-Visual-Workbench` en MySQL
 Concluí la creación de las bases de datos de MySQL utilizando DBeaver, terminal y MySQL Workbench. Primero preparé la base `Pedalibre-Terminal-Dbeaver`, donde construí las entidades de negocio y verifiqué sus relaciones. Después preparé `Pedalibre-Visual-Workbench` y reproduje manualmente la estructura de las tablas en MySQL Workbench.
 
 Durante el proceso comprendí la importancia de respetar el orden de creación de las tablas, configurar correctamente las claves primarias y utilizar tipos de datos compatibles entre las claves foráneas y sus campos referenciados. El diagrama final me permitió comprobar visualmente la organización del modelo y dejar documentado el avance mediante evidencias de cada etapa.
+
+## 2. PostgreSQL
+
+### 2.1 Creación de la base de datos PostgreSQL en DBeaver
+
+Después de finalizar el trabajo con MySQL, continué con PostgreSQL desde DBeaver. Creé la base de datos `Pedalibre-Terminal-Dbeaver` y comprobé que la conexión la reconociera correctamente. En las propiedades verifiqué que la base utiliza la codificación `UTF8` y que cuenta con el esquema público `public`.
+
+![Creación de la base PostgreSQL en DBeaver](Docs/Reguistro%20visual/28-base-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de `Pedalibre-Terminal-Dbeaver` en PostgreSQL utilizando DBeaver. La base quedó disponible y preparada para continuar con la creación de las tablas de entidades de negocio.
+
+### Creación de la tabla `cliente` en PostgreSQL
+
+Continué con la creación de la tabla `cliente` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí el identificador autogenerado, los datos del documento, el nombre, el teléfono, el correo electrónico y el estado activo del cliente.
+
+![Creación de la tabla cliente en PostgreSQL](Docs/Reguistro%20visual/29-tabla-cliente-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `cliente` en PostgreSQL utilizando DBeaver.
