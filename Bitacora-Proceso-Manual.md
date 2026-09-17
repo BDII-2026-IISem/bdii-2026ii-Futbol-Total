@@ -636,3 +636,15 @@ Configuré `cliente_id`, `bicicleta_id` y `estacion_origen_id` como campos oblig
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `reserva` en SQL Server y establecí sus relaciones con las entidades de clientes, bicicletas y estaciones.
+
+### Creación de la tabla `alquiler` en SQL Server
+
+Continué con la creación de la tabla `alquiler` dentro de la base `Pedalibre-Terminal-Dbeaver`. Definí la relación con `reserva`, las fechas de inicio, fin y entrega, el total del servicio, el estado y las observaciones.
+
+Configuré `reserva_id` como clave foránea hacia `reserva.id`, dejé `total` con valor predeterminado `0.00` y establecí `ACTIVO` como estado inicial. También configuré las fechas de auditoría con `SYSDATETIME()`.
+
+![Creación de la tabla alquiler en SQL Server](Docs/Reguistro%20visual/60-tabla-alquiler-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `alquiler` en SQL Server y establecí su relación con `reserva` para registrar el uso efectivo de cada bicicleta.
