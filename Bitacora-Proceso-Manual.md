@@ -166,3 +166,23 @@ Continué con la definición manual de la tabla `estacion` en el esquema `Pedali
 ### Conclusión
 
 Concluí la definición manual de la tabla `estacion` en MySQL Workbench y dejé preparada su estructura para el esquema visual del proyecto Pedalibre.
+
+### Creación manual de la tabla `anclaje` en Workbench
+
+Continué con la definición manual de la tabla `anclaje` en el esquema `Pedalibre-Visual-Workbench`. Configuré sus columnas y establecí la clave foránea `fk_anclaje_estacion`, relacionando `estacion_id` con `estacion.id`.
+
+![Creación manual de la tabla anclaje en Workbench](Docs/Reguistro%20visual/19-tabla-anclaje-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `anclaje` en MySQL Workbench y establecí su relación con `estacion`.
+
+### Creación manual de la tabla `reserva` en Workbench
+
+Continué con la definición manual de la tabla `reserva` en el esquema `Pedalibre-Visual-Workbench`. Configuré sus campos de reserva y establecí la clave foránea `fk_reserva_cliente`, relacionando `cliente_id` con `cliente.id`.
+
+![Creación manual de la tabla reserva en Workbench](Docs/Reguistro%20visual/20-tabla-reserva-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `reserva` en MySQL Workbench y establecí su relación con `cliente`.
