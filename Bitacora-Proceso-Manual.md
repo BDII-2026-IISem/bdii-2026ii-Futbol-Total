@@ -840,3 +840,15 @@ La tabla quedó creada dentro del esquema `dbo`, con `alquiler_id` como referenc
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `penalidad` en SQL Server Management Studio y dejé preparada la entidad para registrar las sanciones aplicadas a los alquileres.
+
+### Creación de la tabla `mantenimiento` en SQL Server Management Studio
+
+Continué con la creación de la tabla `mantenimiento` dentro de la base `Pedalibre-Visual-Management`. Definí la relación con `bicicleta`, el tipo de mantenimiento, la descripción, las fechas de inicio y fin y el estado del proceso.
+
+La tabla quedó creada dentro del esquema `dbo`, con `recurso_id` como referencia a la bicicleta intervenida y `fecha_fin` como campo opcional para mantenimientos que todavía estén en curso.
+
+![Creación de la tabla mantenimiento en SQL Server Management Studio](Docs/Reguistro%20visual/77-tabla-mantenimiento-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `mantenimiento` en SQL Server Management Studio y dejé preparada la entidad para registrar las revisiones y reparaciones de las bicicletas.
