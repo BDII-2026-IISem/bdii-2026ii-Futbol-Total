@@ -950,3 +950,15 @@ La sentencia se ejecutó correctamente y las claves foráneas quedaron configura
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `reserva` en Oracle y establecí sus relaciones con clientes, bicicletas y estaciones.
+
+### Creación de la tabla `alquiler` en Oracle
+
+Continué con la creación de la tabla `alquiler` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí la relación con `reserva`, las fechas de inicio, fin y entrega, el total, el estado y las observaciones.
+
+La sentencia se ejecutó correctamente y la clave foránea `fk_alquiler_reserva` quedó configurada para relacionar `reserva_id` con `reserva.id`.
+
+![Creación de la tabla alquiler en Oracle](Docs/Reguistro%20visual/86-tabla-alquiler-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `alquiler` en Oracle y establecí su relación con `reserva` para registrar el uso efectivo de cada bicicleta.
