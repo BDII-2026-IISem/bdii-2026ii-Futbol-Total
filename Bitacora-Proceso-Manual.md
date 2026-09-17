@@ -986,3 +986,15 @@ La sentencia se ejecutó correctamente y la tabla quedó preparada para centrali
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `tarifa` en Oracle y dejé definidos los datos necesarios para administrar los precios del servicio.
+
+### Creación de la tabla `penalidad` en Oracle
+
+Continué con la creación de la tabla `penalidad` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí la relación con `alquiler`, el motivo, el monto, el estado, la fecha de registro y las observaciones.
+
+La sentencia se ejecutó correctamente y la clave foránea `fk_penalidad_alquiler` quedó configurada para relacionar `alquiler_id` con `alquiler.id`.
+
+![Creación de la tabla penalidad en Oracle](Docs/Reguistro%20visual/89-tabla-penalidad-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `penalidad` en Oracle y establecí su relación con `alquiler` para registrar los cargos asociados a incumplimientos del servicio.
