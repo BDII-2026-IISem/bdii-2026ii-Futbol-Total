@@ -408,3 +408,15 @@ La tabla `tarifa` también aparece dentro del modelo y, en esta etapa, se mantie
 ### Conclusión de PostgreSQL en DBeaver
 
 Concluí la creación de las tablas de entidades de negocio en PostgreSQL y verifiqué visualmente sus relaciones mediante el diagrama de DBeaver. La estructura cuenta con claves primarias, claves foráneas, campos obligatorios y valores predeterminados, por lo que queda preparada para continuar con la revisión en pgAdmin.
+
+## 3. PostgreSQL en pgAdmin
+
+### 3.1 Base de datos PostgreSQL en pgAdmin
+
+Después de terminar la revisión de PostgreSQL en DBeaver, abrí pgAdmin para continuar con la implementación visual del modelo. En el servidor `Pedalibre` comprobé que existe la base de datos `Pedalibre-Visual-PgAdmin`, que utilizaré para crear y revisar las tablas en este gestor.
+
+![Base de datos PostgreSQL en pgAdmin](Docs/Reguistro%20visual/41-base-postgresql-pgadmin.png)
+
+### Conclusión
+
+Comprobé correctamente la existencia de la base `Pedalibre-Visual-PgAdmin` en pgAdmin. A partir de este punto comenzaré a crear las tablas de entidades de negocio en este gestor, manteniendo la misma estructura definida para PostgreSQL.
