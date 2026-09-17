@@ -756,3 +756,15 @@ La tabla quedó creada dentro del esquema `dbo`, con `nombre` como campo obligat
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `bicicleta` en SQL Server Management Studio y dejé preparada la entidad para registrar los recursos disponibles del sistema.
+
+### Creación de la tabla `estacion` en SQL Server Management Studio
+
+Continué con la creación de la tabla `estacion` dentro de la base `Pedalibre-Visual-Management`. Definí el identificador, el nombre, la descripción, el estado activo y las fechas de creación y actualización.
+
+La tabla quedó creada dentro del esquema `dbo`, con `nombre` como campo obligatorio y `descripcion` como campo opcional. También incluí el estado y las fechas para controlar la información de cada estación.
+
+![Creación de la tabla estacion en SQL Server Management Studio](Docs/Reguistro%20visual/70-tabla-estacion-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `estacion` en SQL Server Management Studio y dejé preparada la entidad para registrar las ubicaciones del sistema.
