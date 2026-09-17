@@ -852,3 +852,15 @@ La tabla quedó creada dentro del esquema `dbo`, con `recurso_id` como referenci
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `mantenimiento` en SQL Server Management Studio y dejé preparada la entidad para registrar las revisiones y reparaciones de las bicicletas.
+
+### Creación de la tabla `pago` en SQL Server Management Studio
+
+Continué con la creación de la tabla `pago` dentro de la base `Pedalibre-Visual-Management`. Definí la relación con `alquiler`, el monto, el método de pago, el estado, la fecha de pago y la referencia.
+
+La tabla quedó creada dentro del esquema `dbo`, con `alquiler_id` como referencia al alquiler correspondiente y los campos financieros necesarios para registrar cada transacción.
+
+![Creación de la tabla pago en SQL Server Management Studio](Docs/Reguistro%20visual/78-tabla-pago-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `pago` en SQL Server Management Studio y dejé preparada la entidad para registrar los pagos relacionados con los alquileres.
