@@ -456,3 +456,15 @@ Configuré `nombre` como campo obligatorio, dejé `descripcion` como campo opcio
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `estacion` en pgAdmin y dejé preparada la entidad para registrar los puntos de ubicación del sistema de bicicletas compartidas.
+
+### Creación de la tabla `anclaje` en pgAdmin
+
+Continué con la creación de la tabla `anclaje` dentro de la base `Pedalibre-Visual-PgAdmin`. Definí el identificador autogenerado, la referencia a la estación, el nombre, la descripción, el estado activo y las marcas de tiempo de creación y actualización.
+
+Configuré `estacion_id` como clave foránea hacia `estacion.id`, dejé `nombre` como campo obligatorio y establecí `true` como valor predeterminado para `is_active`.
+
+![Creación de la tabla anclaje en pgAdmin](Docs/Reguistro%20visual/45-tabla-anclaje-postgresql-pgadmin.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `anclaje` en pgAdmin y dejé preparada la entidad para registrar los puntos físicos disponibles en cada estación.
