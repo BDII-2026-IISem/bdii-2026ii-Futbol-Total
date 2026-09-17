@@ -492,3 +492,15 @@ Configuré `reserva_id` como clave foránea hacia `reserva.id`, dejé `total` co
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `alquiler` en pgAdmin y dejé preparada la entidad principal para registrar el uso efectivo de las bicicletas durante cada reserva.
+
+### Creación de la tabla `evento_alquiler` en pgAdmin
+
+Continué con la creación de la tabla `evento_alquiler` dentro de la base `Pedalibre-Visual-PgAdmin`. Definí la relación con `alquiler`, el tipo de evento, la fecha del evento, la cantidad asociada, las observaciones y el estado del registro.
+
+Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `cantidad` con valor predeterminado `0.00` y establecí `REGISTRADO` como estado inicial para cada evento asociado al servicio.
+
+![Creación de la tabla evento_alquiler en pgAdmin](Docs/Reguistro%20visual/48-tabla-evento-alquiler-postgresql-pgadmin.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `evento_alquiler` en pgAdmin y dejé preparada la entidad para registrar los cambios y eventos relevantes que ocurren durante cada alquiler.
