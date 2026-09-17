@@ -156,3 +156,13 @@ Continué con la definición manual de la tabla `bicicleta` en el esquema `Pedal
 ### Conclusión
 
 Concluí la definición manual de la tabla `bicicleta` en MySQL Workbench y dejé preparada su estructura para el esquema visual del proyecto Pedalibre.
+
+### Creación manual de la tabla `estacion` en Workbench
+
+Continué con la definición manual de la tabla `estacion` en el esquema `Pedalibre-Visual-Workbench`. Configuré el identificador, el nombre, la descripción, el estado activo y las fechas de creación y actualización.
+
+![Creación manual de la tabla estacion en Workbench](Docs/Reguistro%20visual/18-tabla-estacion-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `estacion` en MySQL Workbench y dejé preparada su estructura para el esquema visual del proyecto Pedalibre.
