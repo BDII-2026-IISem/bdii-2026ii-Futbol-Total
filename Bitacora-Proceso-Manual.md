@@ -876,3 +876,17 @@ La tabla `tarifa` también quedó incluida en el modelo como una entidad indepen
 ### Conclusión general de SQL Server Management Studio
 
 Concluí la etapa de SQL Server Management Studio con las entidades de negocio creadas y sus relaciones revisadas mediante el diagrama. La estructura permite mantener la integridad de la información y deja preparada la base para continuar posteriormente con el motor Oracle.
+
+## 6. Oracle en DBeaver
+
+### 6.1 Creación del esquema Oracle en DBeaver
+
+Inicié la etapa de Oracle levantando el motor en el contenedor correspondiente y conectándome desde DBeaver mediante el servicio `Pedalibre`. Como Oracle administra la información mediante usuarios y esquemas, creé el usuario `PEDALIBRETERMINALDBEAVER` y le asigné los permisos necesarios para trabajar con las tablas del proyecto.
+
+Después de crear la conexión, comprobé que el esquema aparece en DBeaver con sus carpetas de tablas, vistas, índices y demás objetos disponibles.
+
+![Base de datos Oracle en DBeaver](Docs/Reguistro%20visual/80-base-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la configuración del esquema `PEDALIBRETERMINALDBEAVER` en Oracle y dejé preparada la conexión de DBeaver para comenzar a crear las tablas del modelo.
