@@ -828,3 +828,15 @@ La tabla quedó creada dentro del esquema `dbo`, con `valor_base` como valor dec
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `tarifa` en SQL Server Management Studio y dejé preparada la entidad para administrar los precios y periodos de vigencia del servicio.
+
+### Creación de la tabla `penalidad` en SQL Server Management Studio
+
+Continué con la creación de la tabla `penalidad` dentro de la base `Pedalibre-Visual-Management`. Definí la relación con `alquiler`, el motivo, el monto, el estado y la fecha de generación.
+
+La tabla quedó creada dentro del esquema `dbo`, con `alquiler_id` como referencia al alquiler correspondiente y los campos necesarios para registrar los cargos derivados del servicio.
+
+![Creación de la tabla penalidad en SQL Server Management Studio](Docs/Reguistro%20visual/76-tabla-penalidad-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `penalidad` en SQL Server Management Studio y dejé preparada la entidad para registrar las sanciones aplicadas a los alquileres.
