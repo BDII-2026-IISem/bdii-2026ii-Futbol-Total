@@ -816,3 +816,15 @@ La tabla quedó creada dentro del esquema `dbo`, con `alquiler_id` como referenc
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `evento_alquiler` en SQL Server Management Studio y dejé preparada la entidad para registrar los eventos asociados a cada alquiler.
+
+### Creación de la tabla `tarifa` en SQL Server Management Studio
+
+Continué con la creación de la tabla `tarifa` dentro de la base `Pedalibre-Visual-Management`. Definí el nombre, la regla de cálculo, el valor base, las fechas de vigencia y el estado activo.
+
+La tabla quedó creada dentro del esquema `dbo`, con `valor_base` como valor decimal y `vigencia_hasta` como campo opcional para permitir tarifas que continúen vigentes.
+
+![Creación de la tabla tarifa en SQL Server Management Studio](Docs/Reguistro%20visual/75-tabla-tarifa-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `tarifa` en SQL Server Management Studio y dejé preparada la entidad para administrar los precios y periodos de vigencia del servicio.
