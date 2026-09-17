@@ -216,3 +216,13 @@ Continué con la definición manual de la tabla `tarifa` en el esquema `Pedalibr
 ### Conclusión
 
 Concluí la definición manual de la tabla `tarifa` en MySQL Workbench y dejé preparada su estructura para registrar las condiciones de cobro del proyecto Pedalibre.
+
+### Creación manual de la tabla `penalidad` en Workbench
+
+Continué con la definición manual de la tabla `penalidad` en el esquema `Pedalibre-Visual-Workbench`. Configuré la referencia al alquiler, la fecha, el valor, el estado y las observaciones. También establecí la clave foránea `fk_penalidad_alquiler`, relacionando `referencia_id` con `alquiler.id`.
+
+![Creación manual de la tabla penalidad en Workbench](Docs/Reguistro%20visual/24-tabla-penalidad-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `penalidad` en MySQL Workbench y establecí su relación con `alquiler`.
