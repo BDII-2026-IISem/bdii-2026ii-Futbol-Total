@@ -360,3 +360,15 @@ Configuré `id` como una identidad autogenerada y establecí valores predetermin
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `tarifa` en PostgreSQL y dejé preparada la estructura para administrar los valores y periodos de vigencia de las tarifas del sistema.
+
+### Creación de la tabla `penalidad` en PostgreSQL
+
+Continué con la creación de la tabla `penalidad` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí la relación con `alquiler`, el motivo de la penalidad, el monto, el estado y la fecha de generación.
+
+Configuré `id` como una identidad autogenerada y establecí valores predeterminados para `monto`, `estado` y `fecha_generacion`. La clave foránea `fk_penalidad_alquiler` relaciona cada penalidad con el alquiler correspondiente.
+
+![Creación de la tabla penalidad en PostgreSQL](Docs/Reguistro%20visual/37-tabla-penalidad-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `penalidad` en PostgreSQL y establecí su relación con `alquiler` para registrar y controlar los cargos generados durante el servicio.
