@@ -420,3 +420,15 @@ Después de terminar la revisión de PostgreSQL en DBeaver, abrí pgAdmin para c
 ### Conclusión
 
 Comprobé correctamente la existencia de la base `Pedalibre-Visual-PgAdmin` en pgAdmin. A partir de este punto comenzaré a crear las tablas de entidades de negocio en este gestor, manteniendo la misma estructura definida para PostgreSQL.
+
+### Creación de la tabla `cliente` en pgAdmin
+
+Comencé la creación de las tablas en pgAdmin con la entidad `cliente`. Configuré el identificador autogenerado como clave primaria y definí los campos para el tipo y número de documento, nombre, teléfono, correo electrónico y estado activo.
+
+También marqué como obligatorios los datos necesarios para identificar al cliente y establecí `true` como valor predeterminado para `is_active`.
+
+![Creación de la tabla cliente en pgAdmin](Docs/Reguistro%20visual/42-tabla-cliente-postgresql-pgadmin.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `cliente` en pgAdmin y dejé preparada la entidad para almacenar la información básica de los usuarios del sistema.
