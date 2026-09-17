@@ -516,3 +516,15 @@ Configuré `valor_base` con tipo `numeric(10,2)` y valor predeterminado `0.00`, 
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `tarifa` en pgAdmin y dejé preparada la entidad para definir los precios y condiciones aplicables al sistema de alquileres.
+
+### Creación de la tabla `penalidad` en pgAdmin
+
+Continué con la creación de la tabla `penalidad` dentro de la base `Pedalibre-Visual-PgAdmin`. Definí la relación con `alquiler`, el motivo, el monto, el estado y la fecha de generación de la penalidad.
+
+Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `monto` con valor predeterminado `0.00` y establecí `PENDIENTE` como valor inicial para el estado de la sanción.
+
+![Creación de la tabla penalidad en pgAdmin](Docs/Reguistro%20visual/50-tabla-penalidad-postgresql-pgadmin.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `penalidad` en pgAdmin y dejé preparada la entidad para registrar los cargos aplicados por incumplimientos o eventos no previstos durante el servicio.
