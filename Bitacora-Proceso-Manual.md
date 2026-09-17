@@ -938,3 +938,15 @@ La sentencia se ejecutó correctamente y la clave foránea `fk_anclaje_estacion`
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `anclaje` en Oracle y establecí su relación con `estacion` para registrar los puntos disponibles en cada ubicación.
+
+### Creación de la tabla `reserva` en Oracle
+
+Continué con la creación de la tabla `reserva` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí las relaciones con `cliente`, `bicicleta` y las estaciones de origen y destino, además de las fechas de inicio y fin y el estado de la reserva.
+
+La sentencia se ejecutó correctamente y las claves foráneas quedaron configuradas para mantener la relación entre la reserva y las entidades involucradas.
+
+![Creación de la tabla reserva en Oracle](Docs/Reguistro%20visual/85-tabla-reserva-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `reserva` en Oracle y establecí sus relaciones con clientes, bicicletas y estaciones.
