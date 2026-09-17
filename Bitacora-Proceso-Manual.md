@@ -280,3 +280,13 @@ Continué con la creación de la tabla `cliente` dentro del esquema público de 
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `cliente` en PostgreSQL utilizando DBeaver.
+
+### Creación de la tabla `bicicleta` en PostgreSQL
+
+Continué con la creación de la tabla `bicicleta` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí el identificador autogenerado, el nombre, la descripción, el estado activo y las fechas de creación y actualización.
+
+![Creación de la tabla bicicleta en PostgreSQL](Docs/Reguistro%20visual/30-tabla-bicicleta-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `bicicleta` en PostgreSQL utilizando DBeaver.
