@@ -1022,3 +1022,13 @@ La sentencia se ejecutó correctamente y las claves foráneas quedaron configura
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `pago` en Oracle y establecí sus relaciones para registrar los pagos asociados al servicio, las reservas y las penalidades.
+
+### Diagrama de relaciones de Oracle en DBeaver
+
+Finalmente generé el diagrama de relaciones del esquema `PEDALIBRETERMINALDBEAVER` en DBeaver. En el diagrama verifiqué las relaciones entre las once tablas y comprobé visualmente las claves foráneas que conectan las entidades principales del sistema.
+
+![Diagrama de relaciones de Oracle en DBeaver](Docs/Reguistro%20visual/92-diagrama-oracle-dbeaver.png)
+
+### Conclusión general de Oracle en DBeaver
+
+Concluí la creación de las tablas de Oracle en DBeaver y verifiqué su estructura mediante el diagrama de relaciones. El modelo quedó organizado con claves primarias, claves foráneas y restricciones para mantener la integridad de la información de Pedalibre.
