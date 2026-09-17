@@ -720,3 +720,15 @@ La vista también permitió comprobar que las claves foráneas conectan correcta
 ### Conclusión general de SQL Server en DBeaver
 
 Concluí la etapa de SQL Server en DBeaver con las tablas de entidades de negocio, sus claves primarias, sus relaciones y sus restricciones principales. La revisión del diagrama confirmó que la estructura del modelo mantiene coherencia para registrar clientes, bicicletas, estaciones, reservas, alquileres, eventos, mantenimientos, penalidades, pagos y tarifas.
+
+## 5. SQL Server Management Studio
+
+### 5.1 Creación de la base de datos en SQL Server Management Studio
+
+Después de terminar la implementación en DBeaver, abrí SQL Server Management Studio para continuar con la revisión visual del motor. En el explorador de objetos comprobé que la base `Pedalibre-Visual-Management` quedó creada correctamente en el servidor SQL Server.
+
+![Base de datos en SQL Server Management Studio](Docs/Reguistro%20visual/67-base-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la base `Pedalibre-Visual-Management` en SQL Server Management Studio y dejé preparado el entorno para crear las tablas de entidades de negocio en este gestor.
