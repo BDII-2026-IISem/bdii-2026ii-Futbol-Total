@@ -384,3 +384,15 @@ Configuré `id` como una identidad autogenerada y dejé `fecha_fin` como un camp
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `mantenimiento` en PostgreSQL y establecí su relación con `bicicleta` para llevar el control de las intervenciones realizadas sobre cada recurso.
+
+### Creación de la tabla `pago` en PostgreSQL
+
+Continué con la creación de la tabla `pago` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí la relación con `alquiler`, el monto, el método de pago, el estado, la fecha de pago y la referencia de la transacción.
+
+Configuré `id` como una identidad autogenerada. Dejé `fecha_pago` y `referencia` como campos opcionales, y establecí `PENDIENTE` como estado predeterminado para los pagos que todavía no han sido confirmados.
+
+![Creación de la tabla pago en PostgreSQL](Docs/Reguistro%20visual/39-tabla-pago-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `pago` en PostgreSQL y establecí su relación con `alquiler` para registrar y controlar los pagos asociados al servicio.
