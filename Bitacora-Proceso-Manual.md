@@ -226,3 +226,13 @@ Continué con la definición manual de la tabla `penalidad` en el esquema `Pedal
 ### Conclusión
 
 Concluí la definición manual de la tabla `penalidad` en MySQL Workbench y establecí su relación con `alquiler`.
+
+### Creación manual de la tabla `mantenimiento` en Workbench
+
+Continué con la definición manual de la tabla `mantenimiento` en el esquema `Pedalibre-Visual-Workbench`. Configuré el recurso, el tipo de mantenimiento, las fechas programada y de cierre, el costo y el estado. También establecí la clave foránea `fk_mantenimiento_bicicleta`, relacionando `recurso_id` con `bicicleta.id`.
+
+![Creación manual de la tabla mantenimiento en Workbench](Docs/Reguistro%20visual/25-tabla-mantenimiento-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `mantenimiento` en MySQL Workbench y establecí su relación con `bicicleta`.
