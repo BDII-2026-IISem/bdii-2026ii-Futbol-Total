@@ -468,3 +468,15 @@ Configuré `estacion_id` como clave foránea hacia `estacion.id`, dejé `nombre`
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `anclaje` en pgAdmin y dejé preparada la entidad para registrar los puntos físicos disponibles en cada estación.
+
+### Creación de la tabla `reserva` en pgAdmin
+
+Continué con la creación de la tabla `reserva` dentro de la base `Pedalibre-Visual-PgAdmin`. Definí la relación con `cliente`, `bicicleta` y las estaciones de origen y destino, así como la fecha de inicio, la fecha de fin y el estado de la reserva.
+
+Configuré `cliente_id`, `bicicleta_id` y `estacion_origen_id` como campos obligatorios y dejé `estacion_destino_id` como opcional. Además, establecí `ACTIVA` como valor predeterminado para `estado` y registré las fechas de creación y actualización automáticamente.
+
+![Creación de la tabla reserva en pgAdmin](Docs/Reguistro%20visual/46-tabla-reserva-postgresql-pgadmin.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `reserva` en pgAdmin y dejé preparada la entidad para controlar los ciclos de solicitud y uso de las bicicletas en el sistema.
