@@ -998,3 +998,15 @@ La sentencia se ejecutó correctamente y la clave foránea `fk_penalidad_alquile
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `penalidad` en Oracle y establecí su relación con `alquiler` para registrar los cargos asociados a incumplimientos del servicio.
+
+### Creación de la tabla `mantenimiento` en Oracle
+
+Continué con la creación de la tabla `mantenimiento` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí la relación con `bicicleta`, el tipo de mantenimiento, la descripción, las fechas de inicio y fin, el estado y las observaciones.
+
+La sentencia se ejecutó correctamente y la clave foránea `fk_mantenimiento_bicicleta` quedó configurada para relacionar `bicicleta_id` con `bicicleta.id`.
+
+![Creación de la tabla mantenimiento en Oracle](Docs/Reguistro%20visual/90-tabla-mantenimiento-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `mantenimiento` en Oracle y establecí su relación con `bicicleta` para llevar el control del mantenimiento de cada unidad.
