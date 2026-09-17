@@ -336,3 +336,15 @@ También establecí la relación entre `alquiler.referencia_id` y `reserva.id` m
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `alquiler` en PostgreSQL y establecí su relación con `reserva`.
+
+### Creación de la tabla `evento_alquiler` en PostgreSQL
+
+Continué con la creación de la tabla `evento_alquiler` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí la referencia al alquiler, el tipo de evento, la fecha, la cantidad, las observaciones y el estado.
+
+La tabla mantiene la relación entre `evento_alquiler.referencia_id` y `alquiler.id` mediante la clave foránea correspondiente.
+
+![Creación de la tabla evento_alquiler en PostgreSQL](Docs/Reguistro%20visual/35-tabla-evento-alquiler-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `evento_alquiler` en PostgreSQL y establecí su relación con `alquiler`.
