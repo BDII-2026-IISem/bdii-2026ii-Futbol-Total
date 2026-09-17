@@ -1010,3 +1010,15 @@ La sentencia se ejecutó correctamente y la clave foránea `fk_mantenimiento_bic
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `mantenimiento` en Oracle y establecí su relación con `bicicleta` para llevar el control del mantenimiento de cada unidad.
+
+### Creación de la tabla `pago` en Oracle
+
+Continué con la creación de la tabla `pago` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí las relaciones opcionales con `alquiler`, `reserva` y `penalidad`, además del monto, el método de pago, el estado, la fecha, la referencia y las observaciones.
+
+La sentencia se ejecutó correctamente y las claves foráneas quedaron configuradas para relacionar el pago con las entidades correspondientes.
+
+![Creación de la tabla pago en Oracle](Docs/Reguistro%20visual/91-tabla-pago-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `pago` en Oracle y establecí sus relaciones para registrar los pagos asociados al servicio, las reservas y las penalidades.
