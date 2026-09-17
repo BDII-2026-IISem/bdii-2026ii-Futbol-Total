@@ -348,3 +348,15 @@ La tabla mantiene la relación entre `evento_alquiler.referencia_id` y `alquiler
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `evento_alquiler` en PostgreSQL y establecí su relación con `alquiler`.
+
+### Creación de la tabla `tarifa` en PostgreSQL
+
+Continué con la creación de la tabla `tarifa` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí el nombre de la tarifa, la regla de cálculo, el valor base, el periodo de vigencia y el estado activo.
+
+Configuré `id` como una identidad autogenerada y establecí valores predeterminados para `valor_base` e `is_active`. También dejé `vigencia_hasta` como un campo opcional para permitir tarifas que todavía se encuentren vigentes.
+
+![Creación de la tabla tarifa en PostgreSQL](Docs/Reguistro%20visual/36-tabla-tarifa-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `tarifa` en PostgreSQL y dejé preparada la estructura para administrar los valores y periodos de vigencia de las tarifas del sistema.
