@@ -372,3 +372,15 @@ Configuré `id` como una identidad autogenerada y establecí valores predetermin
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `penalidad` en PostgreSQL y establecí su relación con `alquiler` para registrar y controlar los cargos generados durante el servicio.
+
+### Creación de la tabla `mantenimiento` en PostgreSQL
+
+Continué con la creación de la tabla `mantenimiento` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí la relación con `bicicleta`, el tipo de mantenimiento, la descripción, las fechas de inicio y finalización y el estado del proceso.
+
+Configuré `id` como una identidad autogenerada y dejé `fecha_fin` como un campo opcional para permitir que se registren mantenimientos que todavía estén en curso. También establecí `PENDIENTE` como estado predeterminado.
+
+![Creación de la tabla mantenimiento en PostgreSQL](Docs/Reguistro%20visual/38-tabla-mantenimiento-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `mantenimiento` en PostgreSQL y establecí su relación con `bicicleta` para llevar el control de las intervenciones realizadas sobre cada recurso.
