@@ -804,3 +804,15 @@ La tabla quedó creada dentro del esquema `dbo`, con `reserva_id` como referenci
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `alquiler` en SQL Server Management Studio y dejé preparada la entidad para registrar el uso efectivo de las bicicletas.
+
+### Creación de la tabla `evento_alquiler` en SQL Server Management Studio
+
+Continué con la creación de la tabla `evento_alquiler` dentro de la base `Pedalibre-Visual-Management`. Definí la relación con `alquiler`, el tipo de evento, la fecha, la cantidad, las observaciones y el estado del registro.
+
+La tabla quedó creada dentro del esquema `dbo`, con `alquiler_id` como referencia al alquiler correspondiente y los campos necesarios para registrar los eventos operativos del servicio.
+
+![Creación de la tabla evento_alquiler en SQL Server Management Studio](Docs/Reguistro%20visual/74-tabla-evento-alquiler-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `evento_alquiler` en SQL Server Management Studio y dejé preparada la entidad para registrar los eventos asociados a cada alquiler.
