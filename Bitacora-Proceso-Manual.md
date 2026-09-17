@@ -236,3 +236,13 @@ Continué con la definición manual de la tabla `mantenimiento` en el esquema `P
 ### Conclusión
 
 Concluí la definición manual de la tabla `mantenimiento` en MySQL Workbench y establecí su relación con `bicicleta`.
+
+### Creación manual de la tabla `pago` en Workbench
+
+Finalicé la definición manual de las tablas de entidades de negocio con la tabla `pago` en el esquema `Pedalibre-Visual-Workbench`. Configuré el tipo de referencia, el identificador de referencia, el método de pago, el monto, la fecha y el estado.
+
+![Creación manual de la tabla pago en Workbench](Docs/Reguistro%20visual/26-tabla-pago-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `pago` en MySQL Workbench y completé las tablas de entidades de negocio del proyecto Pedalibre en este gestor.
