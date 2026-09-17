@@ -684,3 +684,15 @@ Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `monto` 
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `penalidad` en SQL Server y dejé preparada la entidad para registrar los cargos derivados de incumplimientos durante el servicio.
+
+### Creación de la tabla `mantenimiento` en SQL Server
+
+Continué con la creación de la tabla `mantenimiento` dentro de la base `Pedalibre-Terminal-Dbeaver`. Definí la relación con `bicicleta`, el tipo de mantenimiento, la descripción, las fechas de inicio y fin y el estado del proceso.
+
+Configuré `recurso_id` como clave foránea hacia `bicicleta.id`, dejé `fecha_fin` como un campo opcional y establecí `PENDIENTE` como estado inicial.
+
+![Creación de la tabla mantenimiento en SQL Server](Docs/Reguistro%20visual/64-tabla-mantenimiento-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `mantenimiento` en SQL Server y dejé preparada la entidad para registrar las intervenciones realizadas sobre las bicicletas.
