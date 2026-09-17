@@ -300,3 +300,15 @@ Continué con la creación de la tabla `estacion` dentro del esquema público de
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `estacion` en PostgreSQL utilizando DBeaver.
+
+### Creación de la tabla `anclaje` en PostgreSQL
+
+Continué con la creación de la tabla `anclaje` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí el identificador, la estación relacionada, el nombre, la descripción, el estado activo y las fechas de creación y actualización.
+
+También establecí la relación entre `anclaje.estacion_id` y `estacion.id` mediante la clave foránea definida en la tabla.
+
+![Creación de la tabla anclaje en PostgreSQL](Docs/Reguistro%20visual/32-tabla-anclaje-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `anclaje` en PostgreSQL y establecí su relación con `estacion`.
