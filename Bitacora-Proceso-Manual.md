@@ -528,3 +528,15 @@ Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `monto` 
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `penalidad` en pgAdmin y dejé preparada la entidad para registrar los cargos aplicados por incumplimientos o eventos no previstos durante el servicio.
+
+### Creación de la tabla `mantenimiento` en pgAdmin
+
+Continué con la creación de la tabla `mantenimiento` dentro de la base `Pedalibre-Visual-PgAdmin`. Definí la relación con el recurso, el tipo de mantenimiento, la descripción, las fechas de inicio y fin, y el estado actual del proceso.
+
+Configuré `recurso_id` como referencia al recurso a intervenir, dejé `fecha_fin` como un campo opcional y establecí `PENDIENTE` como valor predeterminado para `estado`.
+
+![Creación de la tabla mantenimiento en pgAdmin](Docs/Reguistro%20visual/51-tabla-mantenimiento-postgresql-pgadmin.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `mantenimiento` en pgAdmin y dejé preparada la entidad para registrar las intervenciones y revisiones programadas sobre las bicicletas del sistema.
