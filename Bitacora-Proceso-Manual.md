@@ -324,3 +324,15 @@ La tabla mantiene la relación entre `reserva.cliente_id` y `cliente.id` mediant
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `reserva` en PostgreSQL y establecí su relación con `cliente`.
+
+### Creación de la tabla `alquiler` en PostgreSQL
+
+Continué con la creación de la tabla `alquiler` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí la referencia a la reserva, las fechas de inicio y finalización, el total, el estado y las observaciones.
+
+También establecí la relación entre `alquiler.referencia_id` y `reserva.id` mediante la clave foránea correspondiente.
+
+![Creación de la tabla alquiler en PostgreSQL](Docs/Reguistro%20visual/34-tabla-alquiler-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `alquiler` en PostgreSQL y establecí su relación con `reserva`.
