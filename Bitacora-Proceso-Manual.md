@@ -480,3 +480,15 @@ Configuré `cliente_id`, `bicicleta_id` y `estacion_origen_id` como campos oblig
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `reserva` en pgAdmin y dejé preparada la entidad para controlar los ciclos de solicitud y uso de las bicicletas en el sistema.
+
+### Creación de la tabla `alquiler` en pgAdmin
+
+Continué con la creación de la tabla `alquiler` dentro de la base `Pedalibre-Visual-PgAdmin`. Definí la relación con `reserva`, la fecha de inicio, la fecha de fin, la fecha de entrega, el total, el estado y las observaciones del servicio.
+
+Configuré `reserva_id` como clave foránea hacia `reserva.id`, dejé `total` con valor predeterminado `0.00` y mantuve `estado` en un valor inicial de `ACTIVO`. Las columnas de auditoría `created_at` y `updated_at` quedaron habilitadas para registrar la fecha y hora de cada modificación.
+
+![Creación de la tabla alquiler en pgAdmin](Docs/Reguistro%20visual/47-tabla-alquiler-postgresql-pgadmin.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `alquiler` en pgAdmin y dejé preparada la entidad principal para registrar el uso efectivo de las bicicletas durante cada reserva.
