@@ -206,3 +206,13 @@ Continué con la definición manual de la tabla `evento_alquiler` en el esquema 
 ### Conclusión
 
 Concluí la definición manual de la tabla `evento_alquiler` en MySQL Workbench y establecí su relación con `alquiler`.
+
+### Creación manual de la tabla `tarifa` en Workbench
+
+Continué con la definición manual de la tabla `tarifa` en el esquema `Pedalibre-Visual-Workbench`. Configuré el nombre, la regla de cálculo, el valor base, la vigencia y el estado activo.
+
+![Creación manual de la tabla tarifa en Workbench](Docs/Reguistro%20visual/23-tabla-tarifa-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `tarifa` en MySQL Workbench y dejé preparada su estructura para registrar las condiciones de cobro del proyecto Pedalibre.
