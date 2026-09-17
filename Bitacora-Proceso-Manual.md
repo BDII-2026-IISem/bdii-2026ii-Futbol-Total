@@ -146,3 +146,13 @@ En MySQL Workbench inicié la creación manual de la tabla `cliente` dentro del 
 ### Conclusión
 
 Concluí la definición manual de la tabla `cliente` en MySQL Workbench y dejé lista la estructura para aplicarla al esquema visual del proyecto Pedalibre.
+
+### Creación manual de la tabla `bicicleta` en Workbench
+
+Continué con la definición manual de la tabla `bicicleta` en el esquema `Pedalibre-Visual-Workbench`. Configuré el identificador, el nombre, la descripción, el estado activo y las fechas de creación y actualización.
+
+![Creación manual de la tabla bicicleta en Workbench](Docs/Reguistro%20visual/17-tabla-bicicleta-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `bicicleta` en MySQL Workbench y dejé preparada su estructura para el esquema visual del proyecto Pedalibre.
