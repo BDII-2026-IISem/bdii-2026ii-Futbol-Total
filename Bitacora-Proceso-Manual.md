@@ -962,3 +962,15 @@ La sentencia se ejecutó correctamente y la clave foránea `fk_alquiler_reserva`
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `alquiler` en Oracle y establecí su relación con `reserva` para registrar el uso efectivo de cada bicicleta.
+
+### Creación de la tabla `evento_alquiler` en Oracle
+
+Continué con la creación de la tabla `evento_alquiler` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí la relación con `alquiler`, el tipo y la fecha del evento, la cantidad, las observaciones y el estado del registro.
+
+La sentencia se ejecutó correctamente y la clave foránea `fk_evento_alquiler_alquiler` quedó configurada para relacionar `alquiler_id` con `alquiler.id`.
+
+![Creación de la tabla evento_alquiler en Oracle](Docs/Reguistro%20visual/87-tabla-evento-alquiler-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `evento_alquiler` en Oracle y establecí su relación con `alquiler` para registrar los eventos asociados a cada alquiler.
