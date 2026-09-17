@@ -196,3 +196,13 @@ Continué con la definición manual de la tabla `alquiler` en el esquema `Pedali
 ### Conclusión
 
 Concluí la definición manual de la tabla `alquiler` en MySQL Workbench y establecí su relación con `reserva`.
+
+### Creación manual de la tabla `evento_alquiler` en Workbench
+
+Continué con la definición manual de la tabla `evento_alquiler` en el esquema `Pedalibre-Visual-Workbench`. Configuré el tipo de evento, la fecha, la cantidad, las observaciones y el estado. También establecí la clave foránea `fk_evento_alquiler`, relacionando `referencia_id` con `alquiler.id`.
+
+![Creación manual de la tabla evento_alquiler en Workbench](Docs/Reguistro%20visual/22-tabla-evento-alquiler-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `evento_alquiler` en MySQL Workbench y establecí su relación con `alquiler`.
