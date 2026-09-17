@@ -696,3 +696,15 @@ Configuré `recurso_id` como clave foránea hacia `bicicleta.id`, dejé `fecha_f
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `mantenimiento` en SQL Server y dejé preparada la entidad para registrar las intervenciones realizadas sobre las bicicletas.
+
+### Creación de la tabla `pago` en SQL Server
+
+Continué con la creación de la tabla `pago` dentro de la base `Pedalibre-Terminal-Dbeaver`. Definí la relación con `alquiler`, el monto, el método de pago, el estado, la fecha de pago y la referencia de la transacción.
+
+Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `monto` con tipo `decimal(10,2)` y establecí `PENDIENTE` como estado inicial. Los campos `fecha_pago` y `referencia` quedaron como opcionales.
+
+![Creación de la tabla pago en SQL Server](Docs/Reguistro%20visual/65-tabla-pago-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `pago` en SQL Server y dejé preparada la entidad para registrar las transacciones asociadas a cada alquiler.
