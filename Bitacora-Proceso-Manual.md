@@ -792,3 +792,15 @@ La tabla quedó creada dentro del esquema `dbo`, con las referencias necesarias 
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `reserva` en SQL Server Management Studio y establecí sus relaciones con las entidades que participan en la solicitud del servicio.
+
+### Creación de la tabla `alquiler` en SQL Server Management Studio
+
+Continué con la creación de la tabla `alquiler` dentro de la base `Pedalibre-Visual-Management`. Definí la relación con `reserva`, las fechas de inicio, fin y entrega, el total del servicio, el estado y las observaciones.
+
+La tabla quedó creada dentro del esquema `dbo`, con `reserva_id` como referencia a `reserva.id`, `total` como valor decimal y los campos de auditoría para controlar la creación y actualización del registro.
+
+![Creación de la tabla alquiler en SQL Server Management Studio](Docs/Reguistro%20visual/73-tabla-alquiler-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `alquiler` en SQL Server Management Studio y dejé preparada la entidad para registrar el uso efectivo de las bicicletas.
