@@ -926,3 +926,15 @@ La sentencia se ejecutó correctamente y la tabla quedó disponible en el esquem
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `estacion` en Oracle y dejé preparada la entidad para registrar las estaciones del sistema de bicicletas compartidas.
+
+### Creación de la tabla `anclaje` en Oracle
+
+Continué con la creación de la tabla `anclaje` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí el identificador como una identidad autogenerada, la referencia a la estación, el nombre, la descripción, el estado activo y las fechas de creación y actualización.
+
+La sentencia se ejecutó correctamente y la clave foránea `fk_anclaje_estacion` quedó configurada para relacionar `estacion_id` con `estacion.id`.
+
+![Creación de la tabla anclaje en Oracle](Docs/Reguistro%20visual/84-tabla-anclaje-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `anclaje` en Oracle y establecí su relación con `estacion` para registrar los puntos disponibles en cada ubicación.
