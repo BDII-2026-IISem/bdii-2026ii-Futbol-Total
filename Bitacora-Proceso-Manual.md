@@ -890,3 +890,15 @@ Después de crear la conexión, comprobé que el esquema aparece en DBeaver con 
 ### Conclusión
 
 Concluí correctamente la configuración del esquema `PEDALIBRETERMINALDBEAVER` en Oracle y dejé preparada la conexión de DBeaver para comenzar a crear las tablas del modelo.
+
+### Creación de la tabla `cliente` en Oracle
+
+Continué con la creación de la tabla `cliente` dentro del esquema `PEDALIBRETERMINALDBEAVER`. Definí el identificador como una identidad autogenerada, el tipo y número de documento, el nombre, el teléfono, el correo electrónico y el estado activo.
+
+La sentencia se ejecutó correctamente y la tabla quedó visible en el esquema de trabajo de Oracle.
+
+![Creación de la tabla cliente en Oracle](Docs/Reguistro%20visual/81-tabla-cliente-oracle-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `cliente` en Oracle y dejé preparada la entidad para registrar la información básica de los usuarios del sistema.
