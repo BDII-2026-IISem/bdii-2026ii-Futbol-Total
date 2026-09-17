@@ -246,3 +246,15 @@ Finalicé la definición manual de las tablas de entidades de negocio con la tab
 ### Conclusión
 
 Concluí la definición manual de la tabla `pago` en MySQL Workbench y completé las tablas de entidades de negocio del proyecto Pedalibre en este gestor.
+
+### Diagrama final del modelo en Workbench
+
+Finalmente revisé el diagrama del esquema `Pedalibre-Visual-Workbench` en MySQL Workbench. En la vista pude observar las tablas creadas, sus campos principales y las relaciones establecidas entre las entidades del proyecto.
+
+![Diagrama final del modelo en Workbench](Docs/Reguistro%20visual/27-diagrama-workbench.png)
+
+## Conclusión general
+
+Concluí la creación de las bases de datos de MySQL utilizando DBeaver, terminal y MySQL Workbench. Primero preparé la base `Pedalibre-Terminal-Dbeaver`, donde construí las entidades de negocio y verifiqué sus relaciones. Después preparé `Pedalibre-Visual-Workbench` y reproduje manualmente la estructura de las tablas en MySQL Workbench.
+
+Durante el proceso comprendí la importancia de respetar el orden de creación de las tablas, configurar correctamente las claves primarias y utilizar tipos de datos compatibles entre las claves foráneas y sus campos referenciados. El diagrama final me permitió comprobar visualmente la organización del modelo y dejar documentado el avance mediante evidencias de cada etapa.
