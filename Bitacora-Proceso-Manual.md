@@ -186,3 +186,13 @@ Continué con la definición manual de la tabla `reserva` en el esquema `Pedalib
 ### Conclusión
 
 Concluí la definición manual de la tabla `reserva` en MySQL Workbench y establecí su relación con `cliente`.
+
+### Creación manual de la tabla `alquiler` en Workbench
+
+Continué con la definición manual de la tabla `alquiler` en el esquema `Pedalibre-Visual-Workbench`. Configuré las fechas del alquiler, la referencia a la reserva, el total, el estado y las observaciones. También establecí la clave foránea `fk_alquiler_reserva`, relacionando `referencia_id` con `reserva.id`.
+
+![Creación manual de la tabla alquiler en Workbench](Docs/Reguistro%20visual/21-tabla-alquiler-workbench.png)
+
+### Conclusión
+
+Concluí la definición manual de la tabla `alquiler` en MySQL Workbench y establecí su relación con `reserva`.
