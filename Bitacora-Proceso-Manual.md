@@ -564,3 +564,15 @@ El diagrama también deja visible la integración entre reservas, alquileres, ta
 ### Conclusión general de PostgreSQL en pgAdmin
 
 Concluí la etapa de PostgreSQL en pgAdmin validando que la base `Pedalibre-Visual-PgAdmin` quedó estructurada con las entidades necesarias para el funcionamiento del sistema. La ejecución de cada tabla, la revisión de sus columnas y la validación visual del diagrama permitieron confirmar que el modelo relacional mantiene consistencia en las relaciones de negocio, en los estados y en los registros de operación.
+
+## 4. SQL Server en DBeaver
+
+### 4.1 Creación de la base de datos SQL Server en DBeaver
+
+Inicié la etapa de SQL Server levantando el motor desde el contenedor `mssql-server`. Después me conecté desde DBeaver y comprobé la creación de la base de datos `Pedalibre-Terminal-Dbeaver`, que utilizaré para definir las tablas de entidades de negocio en este motor.
+
+![Base de datos SQL Server en DBeaver](Docs/Reguistro%20visual/54-base-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la base `Pedalibre-Terminal-Dbeaver` en SQL Server y dejé lista la conexión de DBeaver para comenzar a crear las tablas del modelo.
