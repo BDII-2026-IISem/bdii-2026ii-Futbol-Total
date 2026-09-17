@@ -312,3 +312,15 @@ También establecí la relación entre `anclaje.estacion_id` y `estacion.id` med
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `anclaje` en PostgreSQL y establecí su relación con `estacion`.
+
+### Creación de la tabla `reserva` en PostgreSQL
+
+Continué con la creación de la tabla `reserva` dentro del esquema público de `Pedalibre-Terminal-Dbeaver`. Definí el identificador, el cliente relacionado, las fechas de inicio y finalización, el estado y las observaciones.
+
+La tabla mantiene la relación entre `reserva.cliente_id` y `cliente.id` mediante la clave foránea correspondiente.
+
+![Creación de la tabla reserva en PostgreSQL](Docs/Reguistro%20visual/33-tabla-reserva-postgresql-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `reserva` en PostgreSQL y establecí su relación con `cliente`.
