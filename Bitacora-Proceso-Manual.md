@@ -576,3 +576,15 @@ Inicié la etapa de SQL Server levantando el motor desde el contenedor `mssql-se
 ### Conclusión
 
 Concluí correctamente la creación de la base `Pedalibre-Terminal-Dbeaver` en SQL Server y dejé lista la conexión de DBeaver para comenzar a crear las tablas del modelo.
+
+### Creación de la tabla `cliente` en SQL Server
+
+Continué con la creación de la tabla `cliente` dentro de la base `Pedalibre-Terminal-Dbeaver`. Definí el identificador autoincremental como clave primaria, el tipo y número de documento, el nombre, el teléfono, el correo electrónico y el estado activo.
+
+También configuré `numero_documento` como un valor único y establecí `1` como valor predeterminado para `is_active`. La sentencia se ejecutó correctamente y la tabla quedó visible en el esquema `dbo`.
+
+![Creación de la tabla cliente en SQL Server](Docs/Reguistro%20visual/55-tabla-cliente-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `cliente` en SQL Server y dejé preparada la entidad para almacenar la información básica de los usuarios del sistema.
