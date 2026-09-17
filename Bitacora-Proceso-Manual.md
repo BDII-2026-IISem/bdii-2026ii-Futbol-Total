@@ -1032,3 +1032,17 @@ Finalmente generé el diagrama de relaciones del esquema `PEDALIBRETERMINALDBEAV
 ### Conclusión general de Oracle en DBeaver
 
 Concluí la creación de las tablas de Oracle en DBeaver y verifiqué su estructura mediante el diagrama de relaciones. El modelo quedó organizado con claves primarias, claves foráneas y restricciones para mantener la integridad de la información de Pedalibre.
+
+## Oracle SQL Developer
+
+### Conexión al esquema de Oracle SQL Developer
+
+Después de terminar el trabajo en DBeaver, abrí Oracle SQL Developer y configuré la conexión `Pedalibre Visual SQL Developer` utilizando el esquema `PEDALIBREVISUALSQLDEVELOPER`. Utilicé el host `172.18.50.255`, el puerto `1521` y el servicio `Pedalibre`.
+
+La conexión se estableció correctamente y pude visualizar el árbol de objetos del esquema, por lo que quedó preparado el entorno para crear las tablas de Oracle SQL Developer.
+
+![Conexión de Oracle SQL Developer](Docs/Reguistro%20visual/93-conexion-oracle-sql-developer.png)
+
+### Conclusión
+
+Concluí correctamente la conexión de Oracle SQL Developer con el esquema destinado a esta herramienta. A partir de este punto continuaré creando las tablas de negocio y registraré cada evidencia por separado.
