@@ -540,3 +540,15 @@ Configuré `recurso_id` como referencia al recurso a intervenir, dejé `fecha_fi
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `mantenimiento` en pgAdmin y dejé preparada la entidad para registrar las intervenciones y revisiones programadas sobre las bicicletas del sistema.
+
+### Creación de la tabla `pago` en pgAdmin
+
+Continué con la creación de la tabla `pago` dentro de la base `Pedalibre-Visual-PgAdmin`. Definí la relación con `alquiler`, el monto, el método de pago, el estado, la fecha de pago y la referencia del comprobante.
+
+Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `monto` con tipo `numeric(10,2)` y valor predeterminado `0.00`, y establecí `PENDIENTE` como estado inicial para cada transacción aún no confirmada.
+
+![Creación de la tabla pago en pgAdmin](Docs/Reguistro%20visual/52-tabla-pago-postgresql-pgadmin.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `pago` en pgAdmin y dejé preparada la entidad para registrar la parte financiera asociada a cada alquiler y su respectivo estado de cobro.
