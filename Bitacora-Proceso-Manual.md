@@ -660,3 +660,15 @@ Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `cantida
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `evento_alquiler` en SQL Server y dejé preparada la entidad para registrar los eventos que ocurren durante cada alquiler.
+
+### Creación de la tabla `tarifa` en SQL Server
+
+Continué con la creación de la tabla `tarifa` dentro de la base `Pedalibre-Terminal-Dbeaver`. Definí el nombre, la regla de cálculo, el valor base, las fechas de vigencia y el estado activo de cada tarifa.
+
+Configuré `valor_base` con tipo `decimal(10,2)` y valor predeterminado `0.00`, dejé `vigencia_hasta` como un campo opcional y establecí `1` como valor predeterminado para `is_active`.
+
+![Creación de la tabla tarifa en SQL Server](Docs/Reguistro%20visual/62-tabla-tarifa-sqlserver-dbeaver.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `tarifa` en SQL Server y dejé preparada la entidad para definir los precios y periodos de vigencia del servicio.
