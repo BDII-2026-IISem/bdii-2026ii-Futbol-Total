@@ -780,3 +780,15 @@ La tabla quedó creada dentro del esquema `dbo` y `estacion_id` quedó configura
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `anclaje` en SQL Server Management Studio y establecí su relación con `estacion` para registrar los puntos disponibles en cada ubicación.
+
+### Creación de la tabla `reserva` en SQL Server Management Studio
+
+Continué con la creación de la tabla `reserva` dentro de la base `Pedalibre-Visual-Management`. Definí las relaciones con `cliente`, `bicicleta` y las estaciones de origen y destino, además de las fechas de inicio y fin y el estado de la reserva.
+
+La tabla quedó creada dentro del esquema `dbo`, con las referencias necesarias para conectar cada reserva con el cliente, la bicicleta y las estaciones correspondientes.
+
+![Creación de la tabla reserva en SQL Server Management Studio](Docs/Reguistro%20visual/72-tabla-reserva-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `reserva` en SQL Server Management Studio y establecí sus relaciones con las entidades que participan en la solicitud del servicio.
