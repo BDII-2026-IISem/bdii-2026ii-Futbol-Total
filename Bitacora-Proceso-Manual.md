@@ -732,3 +732,15 @@ Después de terminar la implementación en DBeaver, abrí SQL Server Management 
 ### Conclusión
 
 Concluí correctamente la creación de la base `Pedalibre-Visual-Management` en SQL Server Management Studio y dejé preparado el entorno para crear las tablas de entidades de negocio en este gestor.
+
+### Creación de la tabla `cliente` en SQL Server Management Studio
+
+Comencé la creación de las tablas en SQL Server Management Studio con la entidad `cliente`. Definí el identificador, el tipo y número de documento, el nombre, el teléfono, el correo electrónico y el estado activo.
+
+La tabla quedó creada dentro del esquema `dbo` y sus columnas muestran los tipos de datos definidos para almacenar la información básica de cada cliente.
+
+![Creación de la tabla cliente en SQL Server Management Studio](Docs/Reguistro%20visual/68-tabla-cliente-sqlserver-management-studio.png)
+
+### Conclusión
+
+Concluí correctamente la creación de la tabla `cliente` en SQL Server Management Studio y dejé preparada la entidad para registrar los usuarios del sistema.
