@@ -552,3 +552,15 @@ Configuré `alquiler_id` como clave foránea hacia `alquiler.id`, dejé `monto` 
 ### Conclusión
 
 Concluí correctamente la creación de la tabla `pago` en pgAdmin y dejé preparada la entidad para registrar la parte financiera asociada a cada alquiler y su respectivo estado de cobro.
+
+### Diagrama de relaciones de PostgreSQL en pgAdmin
+
+Después de terminar la creación de las tablas, revisé el diagrama del esquema en pgAdmin para comprobar la relación entre las entidades principales del proyecto. En la vista visual confirmé que `cliente` se relaciona con `reserva`, que `bicicleta` participa en la reserva y en el mantenimiento, que `estacion` concentra los anclajes, y que `alquiler` conecta los eventos, pagos y penalidades.
+
+El diagrama también deja visible la integración entre reservas, alquileres, tarifas y registros de operación, lo que confirma la coherencia del modelo de negocio para Pedalibre.
+
+![Diagrama final de PostgreSQL en pgAdmin](Docs/Reguistro%20visual/53-diagrama-postgresql-pgadmin.png)
+
+### Conclusión general de PostgreSQL en pgAdmin
+
+Concluí la etapa de PostgreSQL en pgAdmin validando que la base `Pedalibre-Visual-PgAdmin` quedó estructurada con las entidades necesarias para el funcionamiento del sistema. La ejecución de cada tabla, la revisión de sus columnas y la validación visual del diagrama permitieron confirmar que el modelo relacional mantiene consistencia en las relaciones de negocio, en los estados y en los registros de operación.
