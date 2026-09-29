@@ -12,7 +12,7 @@ Ya creé el modelo de datos en los cuatro motores. Las capturas que guardé en `
 
 Seleccioné `alquiler` porque es una entidad central del sistema Pedalibre: registra el uso efectivo de una bicicleta por parte de un cliente y sus cambios pueden afectar el estado operativo y el valor del servicio. Quiero poder consultar quién modificó un alquiler, cuándo lo hizo y qué valores cambiaron.
 
-Al revisar el modelo de los cuatro motores, confirmé que `alquiler` contiene estas columnas:
+En el modelo documentado para los cuatro motores, `alquiler` contiene estas columnas:
 
 | Columna | Uso en la auditoría |
 |---|---|
@@ -26,6 +26,8 @@ Al revisar el modelo de los cuatro motores, confirmé que `alquiler` contiene es
 | `observaciones` | Información adicional del alquiler. |
 
 Auditaré la fila completa para que las capturas anterior y posterior sean útiles aunque cambie la regla de negocio. Guardaré la auditoría en una tabla nueva llamada `alquiler_audit`, sin clave foránea hacia `alquiler`; así, una eliminación en cascada no borrará el historial ni la auditoría impedirá eliminar un alquiler.
+
+Al revisar la instancia MySQL en DBeaver, comprobé que su estructura real es distinta: contiene `id`, `referencia_id`, `fecha_inicio`, `fecha_fin`, `total`, `estado` y `observaciones`. No aparecen allí `reserva_id`, `bicicleta_id` ni `cliente_id`. Antes de continuar en los otros motores, revisaré también las columnas reales de cada instancia en vez de asumir que coinciden con el modelo documentado. En MySQL registraré `referencia_id` tal como existe, sin inferir a qué entidad se refiere.
 
 ### Tablas relacionadas que no se auditan en esta etapa
 
@@ -54,7 +56,7 @@ Me conecté desde DBeaver a MySQL, confirmé que podía consultar `alquiler` y c
 ```sql
 CREATE TABLE IF NOT EXISTS alquiler_audit (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  alquiler_id INT NOT NULL,
+  alquiler_id BIGINT NOT NULL,
   accion VARCHAR(10) NOT NULL,
   cambiado_en DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   cambiado_por VARCHAR(255) NOT NULL,
@@ -76,9 +78,7 @@ BEGIN
     NEW.id, 'INSERT', CURRENT_USER(), NULL,
     JSON_OBJECT(
       'id', NEW.id,
-      'reserva_id', NEW.reserva_id,
-      'bicicleta_id', NEW.bicicleta_id,
-      'cliente_id', NEW.cliente_id,
+      'referencia_id', NEW.referencia_id,
       'fecha_inicio', NEW.fecha_inicio,
       'fecha_fin', NEW.fecha_fin,
       'total', NEW.total,
@@ -101,9 +101,7 @@ BEGIN
     NEW.id, 'UPDATE', CURRENT_USER(),
     JSON_OBJECT(
       'id', OLD.id,
-      'reserva_id', OLD.reserva_id,
-      'bicicleta_id', OLD.bicicleta_id,
-      'cliente_id', OLD.cliente_id,
+      'referencia_id', OLD.referencia_id,
       'fecha_inicio', OLD.fecha_inicio,
       'fecha_fin', OLD.fecha_fin,
       'total', OLD.total,
@@ -112,9 +110,7 @@ BEGIN
     ),
     JSON_OBJECT(
       'id', NEW.id,
-      'reserva_id', NEW.reserva_id,
-      'bicicleta_id', NEW.bicicleta_id,
-      'cliente_id', NEW.cliente_id,
+      'referencia_id', NEW.referencia_id,
       'fecha_inicio', NEW.fecha_inicio,
       'fecha_fin', NEW.fecha_fin,
       'total', NEW.total,
@@ -137,9 +133,7 @@ BEGIN
     OLD.id, 'DELETE', CURRENT_USER(),
     JSON_OBJECT(
       'id', OLD.id,
-      'reserva_id', OLD.reserva_id,
-      'bicicleta_id', OLD.bicicleta_id,
-      'cliente_id', OLD.cliente_id,
+      'referencia_id', OLD.referencia_id,
       'fecha_inicio', OLD.fecha_inicio,
       'fecha_fin', OLD.fecha_fin,
       'total', OLD.total,
@@ -312,7 +306,7 @@ En Oracle, `/` se ejecuta como terminador del bloque PL/SQL en clientes como SQL
 
 ## 8. PostgreSQL
 
-Finalmente, me conectaré a `Pedalibre` en PostgreSQL y al esquema que contiene `alquiler`. Crearé una función de trigger y la asignaré a los eventos `INSERT`, `UPDATE` y `DELETE`. `to_jsonb(OLD)` y `to_jsonb(NEW)` serializan la fila completa y me permiten conservar los campos existentes sin repetirlos dentro de cada rama.
+Me conecté a PostgreSQL y revisé las columnas reales de `alquiler`: `id`, `referencia_id`, `fecha_inicio`, `fecha_fin`, `total`, `estado` y `observaciones`. Los tipos de fecha son `timestamp with time zone`, y `alquiler.id` es `bigint`. Después creé `alquiler_audit`; revisaré el tipo real de su columna `alquiler_id` antes de asociar la función a los eventos `INSERT`, `UPDATE` y `DELETE`. `to_jsonb(OLD)` y `to_jsonb(NEW)` conservarán la fila completa en los snapshots.
 
 ```sql
 CREATE TABLE IF NOT EXISTS alquiler_audit (
@@ -368,7 +362,7 @@ FOR EACH ROW EXECUTE FUNCTION registrar_auditoria_alquiler();
 
 ## 9. Prueba y verificación
 
-1. En cada motor, elegiré un `cliente_id` y un `bicicleta_id` que existan. Para la prueba de inserción, usaré `reserva_id = NULL` o un identificador de reserva válido.
+1. Para cada motor, revisaré primero las columnas y prepararé una fila de prueba que respete las restricciones reales de `alquiler`.
 2. Iniciaré una transacción, insertaré un alquiler de prueba, cambiaré un campo como `estado` y consultaré `alquiler_audit` para verificar que aparecen `INSERT` y `UPDATE` con sus datos respectivos.
 3. Eliminaré únicamente ese alquiler de prueba dentro de la misma transacción y comprobaré que aparece `DELETE` con los datos anteriores.
 4. Ejecutaré `ROLLBACK` para no dejar cambios de prueba en las tablas del proyecto. La auditoría también se revertirá porque los triggers participan en la misma transacción.
@@ -459,7 +453,97 @@ Si ocurre un error, revisaré el motor y el esquema seleccionados, los permisos 
 
 **Conclusión:** guardé en un commit y publiqué el avance de creación de la tabla de auditoría MySQL antes de continuar con los triggers.
 
-A medida que avance, incluiré cada captura nueva aquí con una conclusión de lo que hice y guardaré cada etapa en un commit separado antes de continuar.
+### MySQL 02: verificación del trigger
+
+![Consulta de triggers de alquiler sin resultados](../trazabilidad/mysql-02-verificacion-trigger-pendiente.png)
+
+**Conclusión:** consulté el catálogo de MySQL y confirmé que todavía no aparece ningún trigger asociado a `alquiler`. Esta captura registra la verificación; aún no demuestra que el trigger esté creado.
+
+### MySQL 03: revisión de las columnas reales de alquiler
+
+![Columnas reales de alquiler en MySQL](../trazabilidad/mysql-02-estructura-real-alquiler.png)
+
+**Conclusión:** comprobé en DBeaver que la tabla real contiene `id`, `referencia_id`, `fecha_inicio`, `fecha_fin`, `total`, `estado` y `observaciones`. El error al crear el trigger se produjo porque el código anterior mencionaba columnas que no existen en esta tabla. Ajusté el ejemplo de MySQL para usar la estructura observada.
+
+### MySQL 04: creación del trigger de inserción
+
+![Trigger ai_alquiler_audit creado en DBeaver](../trazabilidad/mysql-02-trigger-insert-creado.png)
+
+**Conclusión:** creé el trigger `ai_alquiler_audit` en MySQL para registrar cada nueva fila insertada en `alquiler`, guardando sus valores en `alquiler_audit`. La captura muestra el trigger en DBeaver y la sentencia asociada.
+
+### MySQL 05: creación del trigger de actualización
+
+![Triggers de inserción y actualización de alquiler visibles en DBeaver](../trazabilidad/mysql-05-trigger-update-creado.png)
+
+**Conclusión:** creé `au_alquiler_audit` para guardar en `alquiler_audit` los valores anteriores y nuevos cuando actualizo un alquiler. En DBeaver confirmé que los triggers de inserción y actualización aparecen asociados a `alquiler`.
+
+### MySQL 06: creación del trigger de eliminación
+
+![Trigger ad_alquiler_audit creado en DBeaver](../trazabilidad/mysql-06-trigger-delete-creado.png)
+
+**Conclusión:** creé `ad_alquiler_audit` para guardar en `alquiler_audit` los datos del alquiler eliminado. Con este trigger quedan definidos los registros automáticos para `INSERT`, `UPDATE` y `DELETE`.
+
+### PostgreSQL 01: creación de la tabla de auditoría
+
+![Tabla alquiler_audit creada en PostgreSQL](../trazabilidad/postgres-01-tabla-auditoria-creada.png)
+
+**Conclusión:** creé `alquiler_audit` en el esquema `public` de PostgreSQL. La estructura visible muestra `alquiler_id` como `int`, mientras que `alquiler.id` es `bigint`; antes de crear la función de auditoría, ajustaré ese tipo para que coincida.
+
+### PostgreSQL 02: ajuste del tipo de identificador
+
+![Cambio de public.alquiler_audit.alquiler_id a BIGINT](../trazabilidad/postgres-02-ajuste-tipo-id-auditoria.png)
+
+**Conclusión:** cambié `public.alquiler_audit.alquiler_id` a `BIGINT` para que coincida con `public.alquiler.id`. Así, la columna donde guardaré el identificador del alquiler puede almacenar el mismo tipo de valor que la tabla auditada.
+
+### PostgreSQL 03: creación de la función de auditoría
+
+![Función registrar_auditoria_alquiler creada en PostgreSQL](../trazabilidad/postgres-03-funcion-auditoria-creada.png)
+
+**Conclusión:** creé la función `public.registrar_auditoria_alquiler` en PostgreSQL. Esta función registra los datos anteriores y nuevos según la operación; en el siguiente paso la asociaré al evento `INSERT`.
+
+### PostgreSQL 04: verificación del trigger de inserción
+
+![DBeaver muestra el error de trigger duplicado y el panel Event Triggers](../trazabilidad/postgres-04-trigger-insert-duplicado.png)
+
+**Conclusión:** al ejecutar la creación otra vez, PostgreSQL informó que `trg_ai_alquiler_audit` ya existe. El panel **Event Triggers** de la captura corresponde a triggers globales de eventos de la base, no a los triggers DML de la tabla `alquiler`; verificaré el trigger en el catálogo de PostgreSQL.
+
+### PostgreSQL 05: trigger INSERT verificado
+
+![Consulta del catálogo mostrando trg_ai_alquiler_audit sobre alquiler](../trazabilidad/postgres-05-trigger-insert-verificado.png)
+
+**Conclusión:** consulté el catálogo de PostgreSQL y confirmé que `trg_ai_alquiler_audit` está asociado a la tabla `alquiler` y configurado para ejecutarse después de cada inserción.
+
+### PostgreSQL 06: creación del trigger UPDATE
+
+![Ejecución de CREATE TRIGGER trg_au_alquiler_audit](../trazabilidad/postgres-06-trigger-update-creado.png)
+
+**Conclusión:** ejecuté la creación de `trg_au_alquiler_audit` para asociar la función de auditoría al evento `UPDATE` de `public.alquiler`. En la captura se muestra el SQL ejecutado sin un error visible; el panel **Event Triggers** no es la lista de triggers DML de la tabla, así que confirmaré su registro mediante el catálogo.
+
+### PostgreSQL 07: verificación de INSERT y UPDATE
+
+![Triggers INSERT y UPDATE listados en el catálogo de PostgreSQL](../trazabilidad/postgres-07-verificacion-insert-update.png)
+
+**Conclusión:** consulté el catálogo y confirmé que `trg_ai_alquiler_audit` y `trg_au_alquiler_audit` están asociados a `alquiler`. Quedaron registrados los triggers para las operaciones `INSERT` y `UPDATE`.
+
+### PostgreSQL 08: creación del trigger DELETE
+
+![Ejecución de CREATE TRIGGER trg_ad_alquiler_audit](../trazabilidad/postgres-08-trigger-delete-creado.png)
+
+**Conclusión:** ejecuté la creación de `trg_ad_alquiler_audit` para asociar la función de auditoría al evento `DELETE` de `public.alquiler`. En la captura se observa el SQL ejecutado sin un error visible; verificaré en el catálogo que los tres triggers estén registrados.
+
+### PostgreSQL 09: verificación de los tres triggers
+
+![Consulta del catálogo con los triggers INSERT, UPDATE y DELETE](../trazabilidad/postgres-09-verificacion-tres-triggers.png)
+
+**Conclusión:** consulté el catálogo de PostgreSQL y confirmé que `trg_ai_alquiler_audit`, `trg_au_alquiler_audit` y `trg_ad_alquiler_audit` están asociados a `alquiler`. Quedaron registrados los tres eventos de auditoría.
+
+### Organización de evidencias y publicación
+
+![Commit 8463eb6 y publicación de la organización del informe](../trazabilidad/mysql-02-commit-organizacion-y-push.png)
+
+**Conclusión:** organicé las evidencias y los avances en el informe y publiqué esos cambios en el commit `8463eb6`. Este commit corresponde a la documentación inicial.
+
+En los siguientes avances, incluiré cada captura nueva junto al paso que documenta y una conclusión breve de lo que hice. Guardaré cada etapa en un commit separado antes de continuar.
 
 ## Referencias del proyecto
 
