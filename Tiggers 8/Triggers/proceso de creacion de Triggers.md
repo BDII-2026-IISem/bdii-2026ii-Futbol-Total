@@ -49,7 +49,7 @@ El SQL de cada apartado es específico para el motor indicado. Ejecutaré solame
 
 ## 5. Proceso en MySQL paso a paso
 
-Primero me conectaré desde DBeaver a `Pedalibre` en MySQL y confirmaré que puedo consultar la tabla `alquiler`. Después iré creando la tabla de auditoría y cada trigger en etapas verificables. Los bloques usan `DELIMITER` para que el cliente distinga los puntos y coma que están dentro del cuerpo de cada trigger.
+Me conecté desde DBeaver a MySQL, confirmé que podía consultar `alquiler` y creé `alquiler_audit`. En la captura se ve la ejecución y la tabla en el navegador de objetos. Con este paso quedó creada la tabla donde guardaré las acciones de auditoría. Continuaré creando y probando cada trigger en etapas verificables. Los bloques usan `DELIMITER` para que el cliente distinga los puntos y coma que están dentro del cuerpo de cada trigger.
 
 ```sql
 CREATE TABLE IF NOT EXISTS alquiler_audit (
@@ -385,16 +385,75 @@ Si ocurre un error, revisaré el motor y el esquema seleccionados, los permisos 
 
 ## 10. Evidencias de trazabilidad
 
-En `../trazabilidad/` guardé copias de las capturas existentes de creación de la base, la tabla `alquiler` y el diagrama de relaciones en DBeaver para cada motor. Estas evidencias documentan el modelo de partida:
+### Commit inicial
 
-| Motor | Base de datos | Tabla `alquiler` | Diagrama |
-|---|---|---|---|
-| MySQL | [02-creacion-bd-mysql-dbeaver.png](../trazabilidad/02-creacion-bd-mysql-dbeaver.png) | [08-tabla-alquiler-mysql.png](../trazabilidad/08-tabla-alquiler-mysql.png) | [14-diagrama-relaciones-mysql.png](../trazabilidad/14-diagrama-relaciones-mysql.png) |
-| PostgreSQL | [28-base-postgresql-dbeaver.png](../trazabilidad/28-base-postgresql-dbeaver.png) | [34-tabla-alquiler-postgresql-dbeaver.png](../trazabilidad/34-tabla-alquiler-postgresql-dbeaver.png) | [40-diagrama-postgresql-dbeaver.png](../trazabilidad/40-diagrama-postgresql-dbeaver.png) |
-| MSSQL | [54-base-sqlserver-dbeaver.png](../trazabilidad/54-base-sqlserver-dbeaver.png) | [60-tabla-alquiler-sqlserver-dbeaver.png](../trazabilidad/60-tabla-alquiler-sqlserver-dbeaver.png) | [66-diagrama-sqlserver-dbeaver.png](../trazabilidad/66-diagrama-sqlserver-dbeaver.png) |
-| Oracle | [80-base-oracle-dbeaver.png](../trazabilidad/80-base-oracle-dbeaver.png) | [86-tabla-alquiler-oracle-dbeaver.png](../trazabilidad/86-tabla-alquiler-oracle-dbeaver.png) | [92-diagrama-oracle-dbeaver.png](../trazabilidad/92-diagrama-oracle-dbeaver.png) |
+![Evidencia del primer commit y publicación del proyecto](../trazabilidad/00-commit-inicial-y-push.png)
 
-A medida que avance, añadiré capturas nuevas del DDL ejecutado, la lista de triggers, la consulta de auditoría con las tres acciones y la transacción de prueba revertida. Mantendré cada avance separado para poder documentarlo y hacer un commit antes de pasar al siguiente.
+**Conclusión:** registré el informe inicial y las evidencias existentes en el primer commit, y publiqué esos cambios en el repositorio.
+
+### MySQL
+
+![Creación de la base Pedalibre en MySQL](../trazabilidad/02-creacion-bd-mysql-dbeaver.png)
+
+**Conclusión:** confirmé la creación de la base de datos MySQL que utilizaré para implementar y probar los triggers.
+
+![Tabla alquiler en MySQL](../trazabilidad/08-tabla-alquiler-mysql.png)
+
+**Conclusión:** revisé la estructura de `alquiler` en MySQL y sus columnas antes de preparar la auditoría.
+
+![Diagrama de relaciones del modelo MySQL](../trazabilidad/14-diagrama-relaciones-mysql.png)
+
+**Conclusión:** identifiqué las relaciones de `alquiler` con las demás tablas del modelo Pedalibre.
+
+### PostgreSQL
+
+![Base Pedalibre en PostgreSQL](../trazabilidad/28-base-postgresql-dbeaver.png)
+
+**Conclusión:** confirmé la base Pedalibre en PostgreSQL como parte del modelo existente para la etapa futura de ese motor.
+
+![Tabla alquiler en PostgreSQL](../trazabilidad/34-tabla-alquiler-postgresql-dbeaver.png)
+
+**Conclusión:** revisé la estructura de `alquiler` en PostgreSQL para adaptar el trigger a sus tipos y sintaxis.
+
+![Diagrama de relaciones del modelo PostgreSQL](../trazabilidad/40-diagrama-postgresql-dbeaver.png)
+
+**Conclusión:** verifiqué las relaciones de `alquiler` en el modelo PostgreSQL.
+
+### MSSQL
+
+![Base Pedalibre en MSSQL](../trazabilidad/54-base-sqlserver-dbeaver.png)
+
+**Conclusión:** confirmé la base Pedalibre en MSSQL como parte del modelo existente para la etapa futura de ese motor.
+
+![Tabla alquiler en MSSQL](../trazabilidad/60-tabla-alquiler-sqlserver-dbeaver.png)
+
+**Conclusión:** revisé la estructura de `alquiler` en MSSQL para considerar que sus triggers trabajan con las tablas `inserted` y `deleted`.
+
+![Diagrama de relaciones del modelo MSSQL](../trazabilidad/66-diagrama-sqlserver-dbeaver.png)
+
+**Conclusión:** verifiqué las relaciones de `alquiler` en el modelo MSSQL.
+
+### Oracle
+
+![Base Pedalibre en Oracle](../trazabilidad/80-base-oracle-dbeaver.png)
+
+**Conclusión:** confirmé la base Pedalibre en Oracle como parte del modelo existente para la etapa futura de ese motor.
+
+![Tabla alquiler en Oracle](../trazabilidad/86-tabla-alquiler-oracle-dbeaver.png)
+
+**Conclusión:** revisé la estructura de `alquiler` en Oracle para adaptar los triggers a PL/SQL.
+
+![Diagrama de relaciones del modelo Oracle](../trazabilidad/92-diagrama-oracle-dbeaver.png)
+
+**Conclusión:** verifiqué las relaciones de `alquiler` en el modelo Oracle.
+
+### Avance MySQL 01: tabla de auditoría
+
+![Ejecución de CREATE TABLE y tabla alquiler_audit visible en DBeaver](../trazabilidad/mysql-01-tabla-alquiler-audit.png)
+
+**Conclusión:** ejecuté la creación de `alquiler_audit` en MySQL y confirmé que la tabla aparece en el navegador de DBeaver. En este avance todavía no he creado los triggers.
+
+A medida que avance, incluiré cada captura nueva aquí con una conclusión de lo que hice y guardaré cada etapa en un commit separado antes de continuar.
 
 ## Referencias del proyecto
 
