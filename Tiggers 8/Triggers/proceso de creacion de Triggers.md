@@ -2,7 +2,7 @@
 
 ## 1. Objetivo y alcance
 
-En este informe documento, en primera persona y por etapas, cómo crear en DBeaver un registro de auditoría para la tabla `alquiler` de la base de datos `Pedalibre`, en MySQL, Microsoft SQL Server (MSSQL), Oracle y PostgreSQL. Registraré las inserciones, actualizaciones y eliminaciones, conservando una copia de los valores anteriores y posteriores cuando corresponda. Comenzaré por MySQL; después de cada avance guardaré la evidencia correspondiente y prepararé un commit antes de continuar con el siguiente paso o motor.
+En este informe consta de cómo crear en DBeaver un registro de auditoría para la tabla `alquiler` de la base de datos `Pedalibre`, en MySQL, Microsoft SQL Server (MSSQL), Oracle y PostgreSQL. Registraré las inserciones, actualizaciones y eliminaciones, conservando una copia de los valores anteriores y posteriores cuando corresponda. Comenzaré por MySQL; después de cada avance guardaré la evidencia correspondiente y prepararé un commit antes de continuar con el siguiente paso o motor.
 
 Ya creé el modelo de datos en los cuatro motores. Las capturas que guardé en `../trazabilidad/` muestran la base, la tabla y el diagrama existentes; no las presento como evidencia de que ya ejecuté los triggers.
 
@@ -14,16 +14,16 @@ Seleccioné `alquiler` porque es una entidad central del sistema Pedalibre: regi
 
 En el modelo documentado para los cuatro motores, `alquiler` contiene estas columnas:
 
-| Columna | Uso en la auditoría |
-|---|---|
-| `id` | Identificador del alquiler y vínculo lógico desde el registro de auditoría. |
-| `reserva_id` | Reserva asociada, cuando existe. |
-| `bicicleta_id` | Bicicleta utilizada. |
-| `cliente_id` | Cliente relacionado con el alquiler. |
-| `fecha_inicio`, `fecha_fin` | Periodo del alquiler. |
-| `total` | Importe registrado. |
-| `estado` | Estado operativo del alquiler. |
-| `observaciones` | Información adicional del alquiler. |
+| Columna                         | Uso en la auditoría                                                           |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| `id`                          | Identificador del alquiler y vínculo lógico desde el registro de auditoría. |
+| `reserva_id`                  | Reserva asociada, cuando existe.                                               |
+| `bicicleta_id`                | Bicicleta utilizada.                                                           |
+| `cliente_id`                  | Cliente relacionado con el alquiler.                                           |
+| `fecha_inicio`, `fecha_fin` | Periodo del alquiler.                                                          |
+| `total`                       | Importe registrado.                                                            |
+| `estado`                      | Estado operativo del alquiler.                                                 |
+| `observaciones`               | Información adicional del alquiler.                                           |
 
 Auditaré la fila completa para que las capturas anterior y posterior sean útiles aunque cambie la regla de negocio. Guardaré la auditoría en una tabla nueva llamada `alquiler_audit`, sin clave foránea hacia `alquiler`; así, una eliminación en cascada no borrará el historial ni la auditoría impedirá eliminar un alquiler.
 
@@ -202,7 +202,7 @@ GO
 
 ## 7. Oracle
 
-Después de MSSQL, me conectaré en DBeaver al servicio `Pedalibre` y al esquema propietario de `alquiler`. Usaré `CLOB` para los snapshots JSON, evitando depender del tipo nativo `JSON` y de la versión de Oracle XE.
+Me conecté en DBeaver a Oracle y revisé las columnas reales de `ALQUILER`: `ID`, `RESERVA_ID`, `FECHA_HORA_INICIO`, `FECHA_HORA_FIN`, `FECHA_HORA_ENTREGA`, `TOTAL`, `ESTADO`, `OBSERVACIONES`, `CREATED_AT` y `UPDATED_AT`. La captura de esa revisión está incluida en la sección de avances. Usaré `CLOB` para los snapshots JSON.
 
 ```sql
 CREATE TABLE alquiler_audit (
@@ -227,13 +227,14 @@ BEGIN
     JSON_OBJECT(
       'id' VALUE :NEW.id,
       'reserva_id' VALUE :NEW.reserva_id,
-      'bicicleta_id' VALUE :NEW.bicicleta_id,
-      'cliente_id' VALUE :NEW.cliente_id,
-      'fecha_inicio' VALUE :NEW.fecha_inicio,
-      'fecha_fin' VALUE :NEW.fecha_fin,
+      'fecha_hora_inicio' VALUE :NEW.fecha_hora_inicio,
+      'fecha_hora_fin' VALUE :NEW.fecha_hora_fin,
+      'fecha_hora_entrega' VALUE :NEW.fecha_hora_entrega,
       'total' VALUE :NEW.total,
       'estado' VALUE :NEW.estado,
-      'observaciones' VALUE :NEW.observaciones
+      'observaciones' VALUE :NEW.observaciones,
+      'created_at' VALUE :NEW.created_at,
+      'updated_at' VALUE :NEW.updated_at
       RETURNING CLOB
     )
   );
@@ -251,25 +252,27 @@ BEGIN
     JSON_OBJECT(
       'id' VALUE :OLD.id,
       'reserva_id' VALUE :OLD.reserva_id,
-      'bicicleta_id' VALUE :OLD.bicicleta_id,
-      'cliente_id' VALUE :OLD.cliente_id,
-      'fecha_inicio' VALUE :OLD.fecha_inicio,
-      'fecha_fin' VALUE :OLD.fecha_fin,
+      'fecha_hora_inicio' VALUE :OLD.fecha_hora_inicio,
+      'fecha_hora_fin' VALUE :OLD.fecha_hora_fin,
+      'fecha_hora_entrega' VALUE :OLD.fecha_hora_entrega,
       'total' VALUE :OLD.total,
       'estado' VALUE :OLD.estado,
-      'observaciones' VALUE :OLD.observaciones
+      'observaciones' VALUE :OLD.observaciones,
+      'created_at' VALUE :OLD.created_at,
+      'updated_at' VALUE :OLD.updated_at
       RETURNING CLOB
     ),
     JSON_OBJECT(
       'id' VALUE :NEW.id,
       'reserva_id' VALUE :NEW.reserva_id,
-      'bicicleta_id' VALUE :NEW.bicicleta_id,
-      'cliente_id' VALUE :NEW.cliente_id,
-      'fecha_inicio' VALUE :NEW.fecha_inicio,
-      'fecha_fin' VALUE :NEW.fecha_fin,
+      'fecha_hora_inicio' VALUE :NEW.fecha_hora_inicio,
+      'fecha_hora_fin' VALUE :NEW.fecha_hora_fin,
+      'fecha_hora_entrega' VALUE :NEW.fecha_hora_entrega,
       'total' VALUE :NEW.total,
       'estado' VALUE :NEW.estado,
-      'observaciones' VALUE :NEW.observaciones
+      'observaciones' VALUE :NEW.observaciones,
+      'created_at' VALUE :NEW.created_at,
+      'updated_at' VALUE :NEW.updated_at
       RETURNING CLOB
     )
   );
@@ -287,13 +290,14 @@ BEGIN
     JSON_OBJECT(
       'id' VALUE :OLD.id,
       'reserva_id' VALUE :OLD.reserva_id,
-      'bicicleta_id' VALUE :OLD.bicicleta_id,
-      'cliente_id' VALUE :OLD.cliente_id,
-      'fecha_inicio' VALUE :OLD.fecha_inicio,
-      'fecha_fin' VALUE :OLD.fecha_fin,
+      'fecha_hora_inicio' VALUE :OLD.fecha_hora_inicio,
+      'fecha_hora_fin' VALUE :OLD.fecha_hora_fin,
+      'fecha_hora_entrega' VALUE :OLD.fecha_hora_entrega,
       'total' VALUE :OLD.total,
       'estado' VALUE :OLD.estado,
-      'observaciones' VALUE :OLD.observaciones
+      'observaciones' VALUE :OLD.observaciones,
+      'created_at' VALUE :OLD.created_at,
+      'updated_at' VALUE :OLD.updated_at
       RETURNING CLOB
     ),
     NULL
@@ -542,6 +546,42 @@ Si ocurre un error, revisaré el motor y el esquema seleccionados, los permisos 
 ![Commit 8463eb6 y publicación de la organización del informe](../trazabilidad/mysql-02-commit-organizacion-y-push.png)
 
 **Conclusión:** organicé las evidencias y los avances en el informe y publiqué esos cambios en el commit `8463eb6`. Este commit corresponde a la documentación inicial.
+
+### Commit: triggers de auditoría en PostgreSQL
+
+![Commit y push de los triggers de auditoría de PostgreSQL](../trazabilidad/postgres-10-commit-y-push.png)
+
+**Conclusión:** registré en un commit los avances y las evidencias de la creación y verificación de los triggers de auditoría en PostgreSQL, y publiqué los cambios en el repositorio remoto.
+
+### Oracle 01: revisión de las columnas de alquiler
+
+![Columnas de ALQUILER en Oracle](../trazabilidad/oracle-01-columnas-alquiler.png)
+
+**Conclusión:** revisé en Oracle la estructura real de `ALQUILER` y confirmé sus diez columnas. Adapté el código del informe a esos nombres; en este motor usaré `FECHA_HORA_INICIO`, `FECHA_HORA_FIN` y `FECHA_HORA_ENTREGA`, que no existen con esos nombres en las otras conexiones revisadas.
+
+### Oracle 02: creación de la tabla de auditoría
+
+![Tabla ALQUILER_AUDIT creada en Oracle](../trazabilidad/oracle-02-tabla-auditoria-creada.png)
+
+**Conclusión:** creé `ALQUILER_AUDIT` en Oracle con columnas para identificar el alquiler, registrar la acción, la fecha y usuario del cambio, y almacenar los datos anteriores y nuevos.
+
+### Oracle 03: creación del trigger INSERT
+
+![Trigger AI_ALQUILER_AUDIT creado y habilitado en Oracle](../trazabilidad/oracle-03-trigger-insert-creado.png)
+
+**Conclusión:** creé y confirmé habilitado el trigger `AI_ALQUILER_AUDIT` sobre `ALQUILER` para el evento `INSERT`. Este trigger registra la fila insertada en `ALQUILER_AUDIT`.
+
+### Oracle 04: creación del trigger UPDATE
+
+![Triggers INSERT y UPDATE habilitados sobre ALQUILER en Oracle](../trazabilidad/oracle-04-trigger-update-creado.png)
+
+**Conclusión:** creé y confirmé habilitado el trigger `AU_ALQUILER_AUDIT` para el evento `UPDATE`. En DBeaver aparecen asociados a `ALQUILER` los triggers `INSERT` y `UPDATE`.
+
+### Oracle 05: creación y verificación del trigger DELETE
+
+![Triggers INSERT, UPDATE y DELETE habilitados sobre ALQUILER en Oracle](../trazabilidad/oracle-05-verificacion-tres-triggers.png)
+
+**Conclusión:** creé y confirmé habilitado el trigger `AD_ALQUILER_AUDIT` para el evento `DELETE`. En DBeaver aparecen los tres triggers de auditoría asociados a `ALQUILER`.
 
 En los siguientes avances, incluiré cada captura nueva junto al paso que documenta y una conclusión breve de lo que hice. Guardaré cada etapa en un commit separado antes de continuar.
 
