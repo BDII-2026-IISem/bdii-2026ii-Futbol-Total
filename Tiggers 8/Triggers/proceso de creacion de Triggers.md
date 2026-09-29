@@ -385,12 +385,6 @@ Si ocurre un error, revisaré el motor y el esquema seleccionados, los permisos 
 
 ## 10. Evidencias de trazabilidad
 
-### Commit inicial
-
-![Evidencia del primer commit y publicación del proyecto](../trazabilidad/00-commit-inicial-y-push.png)
-
-**Conclusión:** registré el informe inicial y las evidencias existentes en el primer commit, y publiqué esos cambios en el repositorio.
-
 ### MySQL
 
 ![Creación de la base Pedalibre en MySQL](../trazabilidad/02-creacion-bd-mysql-dbeaver.png)
@@ -447,11 +441,23 @@ Si ocurre un error, revisaré el motor y el esquema seleccionados, los permisos 
 
 **Conclusión:** verifiqué las relaciones de `alquiler` en el modelo Oracle.
 
-### Avance MySQL 01: tabla de auditoría
+## 11. Avances y commits
+
+### Commit inicial
+
+![Evidencia del primer commit y publicación del proyecto](../trazabilidad/00-commit-inicial-y-push.png)
+
+**Conclusión:** registré el informe inicial y las evidencias del modelo en el primer commit, y publiqué esos cambios en el repositorio.
+
+### MySQL 01: creación de la tabla de auditoría
 
 ![Ejecución de CREATE TABLE y tabla alquiler_audit visible en DBeaver](../trazabilidad/mysql-01-tabla-alquiler-audit.png)
 
-**Conclusión:** ejecuté la creación de `alquiler_audit` en MySQL y confirmé que la tabla aparece en el navegador de DBeaver. En este avance todavía no he creado los triggers.
+**Conclusión:** ejecuté la creación de `alquiler_audit` en MySQL y confirmé que la tabla aparece en el navegador de DBeaver. En este avance todavía no había creado los triggers.
+
+![Commit y publicación del avance MySQL 01](../trazabilidad/mysql-01-commit-y-push.png)
+
+**Conclusión:** guardé en un commit y publiqué el avance de creación de la tabla de auditoría MySQL antes de continuar con los triggers.
 
 A medida que avance, incluiré cada captura nueva aquí con una conclusión de lo que hice y guardaré cada etapa en un commit separado antes de continuar.
 
