@@ -595,9 +595,9 @@ ORDER BY i.reported_at DESC;
 
 **Evidencia de ejecucion:**
 **PostgreSQL: Buscar reportes de revisión**
-*Captura pendiente: `postgresql_incidentes_revision_ilike.png`.*
+![PostgreSQL: Buscar reportes de revisión](trazabilidad/postgresql_incidentes_revision_ilike.png)
 
-**Retroalimentacion:** `ILIKE` busca el texto `revision` sin distinguir entre mayusculas y minusculas, y devuelve los incidentes cuya descripcion menciona esa tarea. Anotare cuantas filas aparecen y sus severidades tras ejecutar la consulta.
+**Retroalimentacion:** `ILIKE` busca el texto `revision` sin distinguir entre mayusculas y minusculas. Observo 25 incidentes en la cuadrícula, con severidades `low`, `medium` y `high`, y descripciones que mencionan revisiones de bicicletas.
 
 **Lo que aprendi:** Aprendere a usar `ILIKE` de PostgreSQL para realizar una busqueda de texto sin sensibilidad a mayusculas.
 
