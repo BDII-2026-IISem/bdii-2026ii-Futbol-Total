@@ -330,9 +330,9 @@ ORDER BY table_name;
 
 **Evidencia de ejecucion:**
 **PostgreSQL: Verificar las tablas de la base**
-*Captura pendiente: `postgresql_inventario_tablas_postgresql.png`.*
+![PostgreSQL: Verificar las tablas de la base](trazabilidad/postgresql_inventario_tablas_postgresql.png)
 
-**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada. Revisa que aparezcan las tablas PedalLibre antes de continuar.
+**Retroalimentacion:** La consulta revisa el catalogo `information_schema.tables` y filtra el esquema `public` para mostrar solo tablas base. Observo las 21 tablas del proyecto PedalLibre.
 
 **Lo que aprendi:** Aprendi a consultar el catalogo de PostgreSQL para verificar las tablas del esquema `public`.
 
@@ -821,6 +821,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Alquileres completados: `mysql_alquileres_completados.png`, `postgresql_alquileres_completados.png`, `sqlserver_alquileres_completados.png` y `oracle_alquileres_completados.png`.
 - Base de datos activa en MySQL: `mysql_base_seleccionada.png`.
 - Tablas visibles en MySQL: `mysql_inventario_tablas_mysql.png`.
+- Tablas visibles en PostgreSQL: `postgresql_inventario_tablas_postgresql.png`.
 
 ## Referencias
 
