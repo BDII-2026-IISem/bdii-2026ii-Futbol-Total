@@ -836,7 +836,7 @@ ORDER BY total_revenue DESC, b.bicycle_type;
 
 ## Consultas propias de cada motor
 
-Ademas de las consultas comunes, preparo una consulta que aprovecha una funcion propia de cada motor. Las ejecuto solo en el motor indicado; las capturas y la retroalimentacion del resultado se agregaran despues de que las ejecutes en DBeaver.
+Ademas de las consultas comunes, presento ejemplos que aprovechan funciones propias de cada motor. Ejecuto cada consulta solo en el motor indicado; debajo registro la captura y lo que observo, y dejo como pendiente la evidencia de las consultas que aun faltan por ejecutar.
 
 ### MySQL: agrupar alquileres con `GROUP_CONCAT`
 
