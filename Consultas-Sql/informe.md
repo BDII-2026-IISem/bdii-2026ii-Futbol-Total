@@ -574,9 +574,9 @@ ORDER BY average_docking_minutes DESC, s.station_id;
 
 **Evidencia de ejecucion:**
 **PostgreSQL: Calcular tiempo de uso de anclajes**
-*Captura pendiente: `postgresql_tiempo_uso_anclajes.png`.*
+![PostgreSQL: Calcular tiempo de uso de anclajes](trazabilidad/postgresql_tiempo_uso_anclajes.png)
 
-**Retroalimentacion:** La consulta considera los acoplamientos que ya tienen hora de retiro, calcula su duracion en minutos con `EXTRACT(EPOCH ...)` y promedia por estacion. Anotare las estaciones y duraciones observadas al ejecutarla.
+**Retroalimentacion:** La consulta considera los acoplamientos que ya tienen hora de retiro, calcula su duracion en minutos con `EXTRACT(EPOCH ...)` y promedia por estacion. Observo 33 estaciones con acoplamientos completados; en el resultado visible cada una tiene un acoplamiento de 25 minutos.
 
 **Lo que aprendi:** Aprendere a restar marcas de tiempo en PostgreSQL y convertir el intervalo a minutos para comparar el uso de estaciones.
 
