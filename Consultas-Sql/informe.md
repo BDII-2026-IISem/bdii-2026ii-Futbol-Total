@@ -601,27 +601,27 @@ ORDER BY i.reported_at DESC;
 
 **Lo que aprendi:** Aprendere a usar `ILIKE` de PostgreSQL para realizar una busqueda de texto sin sensibilidad a mayusculas.
 
-#### Ingresos pagados por mes
+#### Evolución mensual de las calificaciones
 
 ```sql
 SELECT
-    TO_CHAR(paid_at, 'YYYY-MM') AS payment_month,
-    COUNT(*) AS payment_count,
-    SUM(amount) AS monthly_total
-FROM payments
-WHERE status = 'paid'
-  AND paid_at IS NOT NULL
-GROUP BY TO_CHAR(paid_at, 'YYYY-MM')
-ORDER BY payment_month;
+    date_trunc('month', created_at)::date AS review_month,
+    COUNT(*) AS review_count,
+    ROUND(AVG(rating)::numeric, 2) AS average_rating,
+    MIN(rating) AS lowest_rating,
+    MAX(rating) AS highest_rating
+FROM reviews
+GROUP BY date_trunc('month', created_at)::date
+ORDER BY review_month;
 ```
 
 **Evidencia de ejecucion:**
-**PostgreSQL: Resumir pagos realizados por mes**
-*Captura pendiente: `postgresql_ingresos_pagados_por_mes_postgresql.png`.*
+**PostgreSQL: Resumir calificaciones por mes**
+*Captura pendiente: `postgresql_calificaciones_por_mes.png`.*
 
-**Retroalimentacion:** La consulta filtra pagos pagados, agrupa por mes y calcula cantidad e importe mensual. La ejecucion y los valores devueltos siguen pendientes de captura.
+**Retroalimentacion:** La consulta agrupa las resenas por mes con `date_trunc` y calcula su cantidad, promedio, minima y maxima calificacion. Anotare los valores reales despues de ejecutarla.
 
-**Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
+**Lo que aprendi:** Aprendere a resumir la evolucion de las calificaciones usando agrupacion temporal nativa de PostgreSQL.
 
 ### Microsoft SQL Server
 
