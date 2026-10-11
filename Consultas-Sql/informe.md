@@ -857,9 +857,9 @@ LIMIT 10;
 
 **Evidencia de ejecucion:**
 **MySQL: Listar alquileres por cliente con GROUP_CONCAT**
-*Captura pendiente: `mysql_alquileres_por_cliente_group_concat.png`.*
+![MySQL: Listar alquileres por cliente con GROUP_CONCAT](trazabilidad/mysql_alquileres_por_cliente_group_concat.png)
 
-**Retroalimentacion:** `GROUP_CONCAT` combina en una sola cadena los identificadores de alquiler por cliente, ordenados por fecha descendente. Anotare los clientes y los identificadores que devuelva DBeaver despues de ejecutar la consulta.
+**Retroalimentacion:** `GROUP_CONCAT` combina los identificadores de alquiler en una cadena por cliente. Observo diez clientes en el resultado; cada uno tiene un alquiler y la columna `rental_ids` contiene su identificador.
 
 **Lo que aprendi:** Aprendere a usar `GROUP_CONCAT` de MySQL para resumir varios registros relacionados en una sola fila.
 
