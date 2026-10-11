@@ -617,9 +617,9 @@ ORDER BY review_month;
 
 **Evidencia de ejecucion:**
 **PostgreSQL: Resumir calificaciones por mes**
-*Captura pendiente: `postgresql_calificaciones_por_mes.png`.*
+![PostgreSQL: Resumir calificaciones por mes](trazabilidad/postgresql_calificaciones_por_mes.png)
 
-**Retroalimentacion:** La consulta agrupa las resenas por mes con `date_trunc` y calcula su cantidad, promedio, minima y maxima calificacion. Anotare los valores reales despues de ejecutarla.
+**Retroalimentacion:** La consulta agrupa las resenas por mes con `date_trunc` y calcula su cantidad, promedio, minima y maxima calificacion. Observo 100 resenas para octubre de 2026, promedio de 3, calificacion minima de 1 y maxima de 5.
 
 **Lo que aprendi:** Aprendere a resumir la evolucion de las calificaciones usando agrupacion temporal nativa de PostgreSQL.
 
