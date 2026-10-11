@@ -832,6 +832,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Tablas visibles en Oracle: `oracle_inventario_tablas_oracle.png`.
 - Clientes con mas alquileres en MySQL: `mysql_clientes_mas_alquileres_mysql.png`.
 - Puntos de anclaje disponibles en MySQL: `mysql_puntos_disponibles_por_estacion_mysql.png`.
+- Incidentes abiertos en MySQL: `mysql_incidentes_abiertos_mysql.png`.
 
 ## Referencias
 
