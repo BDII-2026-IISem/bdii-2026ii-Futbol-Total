@@ -433,7 +433,7 @@ FETCH FIRST 10 ROWS ONLY;
 
 ## Consultas adicionales por motor
 
-En esta sección presento cuatro análisis distintos por motor. Las consultas adicionales de MySQL ya están ejecutadas; para PostgreSQL, SQL Server y Oracle seleccioné temas y funciones diferentes, sin repetir los análisis de las otras secciones. Ejecuto cada grupo solo en la conexión indicada.
+En esta sección presento análisis propios de cada motor. Las consultas adicionales de MySQL ya están ejecutadas; para PostgreSQL, SQL Server y Oracle seleccioné temas y funciones diferentes, sin repetir los análisis de las otras secciones. Ejecuto cada grupo solo en la conexión indicada.
 
 ### MySQL
 
@@ -887,6 +887,38 @@ ORDER BY payment_method;
 
 **Lo que aprendi:** Aprendere a filtrar cada agregado de PostgreSQL sin separar el resultado en varias consultas.
 
+### PostgreSQL: obtener el último alquiler de cada cliente
+
+Esta consulta devuelve la fecha del alquiler mas reciente y usa una subconsulta correlacionada para recuperar su importe; al final limita la salida a diez clientes.
+
+```sql
+SELECT
+    c.client_id,
+    c.first_name,
+    c.last_name,
+    MAX(r.started_at) AS latest_rental_at,
+    (
+        SELECT r2.total_amount
+        FROM rentals r2
+        WHERE r2.client_id = c.client_id
+        ORDER BY r2.started_at DESC NULLS LAST
+        LIMIT 1
+    ) AS latest_rental_amount
+FROM clients c
+LEFT JOIN rentals r ON r.client_id = c.client_id
+GROUP BY c.client_id, c.first_name, c.last_name
+ORDER BY latest_rental_at DESC NULLS LAST, c.client_id
+FETCH FIRST 10 ROWS ONLY;
+```
+
+**Evidencia de ejecucion:**
+**PostgreSQL: Consultar el último alquiler de cada cliente**
+![PostgreSQL: Consultar el último alquiler de cada cliente](trazabilidad/postgresql_ultimo_alquiler_por_cliente.png)
+
+**Retroalimentacion:** La consulta ordena los clientes por la fecha de su alquiler mas reciente y la subconsulta busca el importe de ese alquiler. Observo diez clientes; la primera fila corresponde al cliente 40, Samuel Lopez, con fecha 11 de octubre de 2026 a las 14:25 y un importe de 1.820.
+
+**Lo que aprendi:** Aprendi a combinar una agregacion por cliente con una subconsulta correlacionada y `LIMIT 1` para recuperar un valor de su registro mas reciente.
+
 ### SQL Server: duración media de alquiler por tipo de bicicleta
 
 Esta consulta usa `DATEDIFF` para calcular la duracion en minutos de los alquileres completados y promedia el resultado por tipo de bicicleta.
@@ -954,6 +986,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Diez alquileres recientes en SQL Server: `sqlserver_alquileres_completados_top10_sqlserver.png`.
 - Tablas visibles en Oracle: `oracle_inventario_tablas_oracle.png`.
 - Clientes con mas alquileres en MySQL: `mysql_clientes_mas_alquileres_mysql.png`.
+- Ultimo alquiler por cliente en PostgreSQL: `postgresql_ultimo_alquiler_por_cliente.png`.
 - Puntos de anclaje disponibles en MySQL: `mysql_puntos_disponibles_por_estacion_mysql.png`.
 - Incidentes abiertos en MySQL: `mysql_incidentes_abiertos_mysql.png`.
 - Ingresos pagados por mes en MySQL: `mysql_ingresos_pagados_por_mes_mysql.png`.
