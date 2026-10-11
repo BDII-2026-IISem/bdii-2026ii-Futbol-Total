@@ -783,9 +783,9 @@ ORDER BY c.rental_day;
 
 **Evidencia de ejecucion:**
 **Oracle: Generar calendario de alquileres por día**
-*Captura pendiente: `oracle_calendario_diario_connect_by.png`.*
+![Oracle: Generar calendario de alquileres por día](trazabilidad/oracle_calendario_diario_connect_by.png)
 
-**Retroalimentacion:** `CONNECT BY LEVEL` genera una fila por cada fecha desde el primer hasta el ultimo alquiler. El `LEFT JOIN` permite ver tambien los dias sin alquileres; anotare el rango y los conteos que aparezcan.
+**Retroalimentacion:** `CONNECT BY LEVEL` genera una fila por fecha entre el primer y el ultimo alquiler. Observo tres dias: 9 de octubre de 2026 con 2 alquileres, 10 de octubre con 54 y 11 de octubre con 44.
 
 **Lo que aprendi:** Aprendere a generar una secuencia de fechas en Oracle mediante la jerarquia `CONNECT BY`.
 
