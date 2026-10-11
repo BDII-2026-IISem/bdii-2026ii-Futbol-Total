@@ -881,9 +881,9 @@ ORDER BY payment_method;
 
 **Evidencia de ejecucion:**
 **PostgreSQL: Comparar estados de pago con FILTER**
-*Captura pendiente: `postgresql_pagos_por_estado_filter.png`.*
+![PostgreSQL: Comparar estados de pago con FILTER](trazabilidad/postgresql_pagos_por_estado_filter.png)
 
-**Retroalimentacion:** La clausula `FILTER` permite calcular conteos distintos por estado dentro de una sola agrupacion por metodo. `COALESCE` presenta cero si un metodo no tiene pagos pagados. Anotare las cantidades e importes que muestre DBeaver.
+**Retroalimentacion:** `FILTER` calcula conteos e importes por estado en una sola agrupacion. Observo cuatro metodos: tarjeta de credito con 18 pagos, 3 pendientes, 4 reembolsados y total pagado 135.816; debito con 18, 3, 4 y 156.078; billetera digital con 17, 4, 4 y 132.563; PSE con 18, 4, 3 y 143.688.
 
 **Lo que aprendi:** Aprendere a filtrar cada agregado de PostgreSQL sin separar el resultado en varias consultas.
 
