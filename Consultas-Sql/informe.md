@@ -367,9 +367,9 @@ ORDER BY TABLE_SCHEMA, TABLE_NAME;
 
 **Evidencia de ejecucion:**
 **SQL Server: Verificar las tablas de la base**
-*Captura pendiente: `sqlserver_inventario_tablas_postgresql.png`.*
+![SQL Server: Verificar las tablas de la base](trazabilidad/sqlserver_inventario_tablas_sqlserver.png)
 
-**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada. Revisa que aparezcan las tablas PedalLibre antes de continuar.
+**Retroalimentacion:** La consulta revisa `INFORMATION_SCHEMA.TABLES` y muestra esquema y nombre de cada tabla base. Observo las 21 tablas del proyecto bajo el esquema `dbo`.
 
 **Lo que aprendi:** Aprendi a consultar `INFORMATION_SCHEMA` para identificar las tablas del esquema de SQL Server.
 
@@ -823,6 +823,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Tablas visibles en MySQL: `mysql_inventario_tablas_mysql.png`.
 - Tablas visibles en PostgreSQL: `postgresql_inventario_tablas_postgresql.png`.
 - Diez alquileres recientes en PostgreSQL: `postgresql_alquileres_completados_top10_postgresql.png`.
+- Tablas visibles en SQL Server: `sqlserver_inventario_tablas_sqlserver.png`.
 
 ## Referencias
 
