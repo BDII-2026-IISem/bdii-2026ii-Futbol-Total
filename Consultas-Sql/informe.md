@@ -403,9 +403,9 @@ ORDER BY table_name;
 
 **Evidencia de ejecucion:**
 **Oracle: Verificar las tablas de la base**
-*Captura pendiente: `oracle_inventario_tablas_oracle.png`.*
+![Oracle: Verificar las tablas de la base](trazabilidad/oracle_inventario_tablas_oracle.png)
 
-**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada. Revisa que aparezcan las tablas PedalLibre antes de continuar.
+**Retroalimentacion:** La consulta usa `USER_TABLES` para listar las tablas que pertenecen al usuario conectado. Observo las 21 tablas de PedalLibre en el esquema `PEDALIBRETERMINALDBEAVER`.
 
 **Lo que aprendi:** Aprendi a revisar las tablas que pertenecen al usuario/esquema Oracle conectado.
 
@@ -825,6 +825,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Diez alquileres recientes en PostgreSQL: `postgresql_alquileres_completados_top10_postgresql.png`.
 - Tablas visibles en SQL Server: `sqlserver_inventario_tablas_sqlserver.png`.
 - Diez alquileres recientes en SQL Server: `sqlserver_alquileres_completados_top10_sqlserver.png`.
+- Tablas visibles en Oracle: `oracle_inventario_tablas_oracle.png`.
 
 ## Referencias
 
