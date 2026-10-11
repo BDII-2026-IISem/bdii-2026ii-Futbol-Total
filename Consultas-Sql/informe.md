@@ -454,9 +454,9 @@ LIMIT 5;
 
 **Evidencia de ejecucion:**
 **MySQL: Identificar clientes con mas alquileres**
-*Captura pendiente: `mysql_clientes_mas_alquileres_mysql.png`.*
+![MySQL: Identificar clientes con mas alquileres](trazabilidad/mysql_clientes_mas_alquileres_mysql.png)
 
-**Retroalimentacion:** La consulta cuenta alquileres por cliente y ordena para mostrar los cinco con mayor cantidad; `LEFT JOIN` conserva clientes sin alquileres. La ejecucion y las filas reales siguen pendientes de captura.
+**Retroalimentacion:** La consulta cuenta los alquileres por cliente y presenta los cinco valores mas altos; el `LEFT JOIN` tambien conserva a clientes sin alquileres. En el resultado observo cinco clientes con un alquiler cada uno; el desempate por `client_id` los ordena de forma ascendente.
 
 **Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
 
