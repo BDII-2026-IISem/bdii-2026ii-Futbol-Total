@@ -172,24 +172,24 @@ ORDER BY status;
 
 **Evidencia de ejecucion:**
 **MySQL: Resumir alquileres por estado**
-*Captura pendiente: `mysql_resumen_alquileres_por_estado.png`.*
+![MySQL: Resumir alquileres por estado](trazabilidad/mysql_resumen_alquileres_por_estado.png)
 
-**Retroalimentacion:** La sentencia agrupa alquileres por estado y calcula cantidad, suma y promedio del importe. La ejecucion y los valores agrupados siguen pendientes de captura.
+**Retroalimentacion:** La consulta agrupa los alquileres por estado y calcula la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
 
 **PostgreSQL: Resumir alquileres por estado**
-*Captura pendiente: `postgresql_resumen_alquileres_por_estado.png`.*
+![PostgreSQL: Resumir alquileres por estado](trazabilidad/postgresql_resumen_alquileres_por_estado.png)
 
-**Retroalimentacion:** La sentencia agrupa alquileres por estado y calcula cantidad, suma y promedio del importe. La ejecucion y los valores agrupados siguen pendientes de captura.
+**Retroalimentacion:** La consulta agrupa los alquileres por estado y calcula la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
 
 **SQL Server: Resumir alquileres por estado**
-*Captura pendiente: `sqlserver_resumen_alquileres_por_estado.png`.*
+![SQL Server: Resumir alquileres por estado](trazabilidad/sqlserver_resumen_alquileres_por_estado.png)
 
-**Retroalimentacion:** La sentencia agrupa alquileres por estado y calcula cantidad, suma y promedio del importe. La ejecucion y los valores agrupados siguen pendientes de captura.
+**Retroalimentacion:** La consulta agrupa los alquileres por estado y calcula la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
 
 **Oracle: Resumir alquileres por estado**
-*Captura pendiente: `oracle_resumen_alquileres_por_estado.png`.*
+![Oracle: Resumir alquileres por estado](trazabilidad/oracle_resumen_alquileres_por_estado.png)
 
-**Retroalimentacion:** La sentencia agrupa alquileres por estado y calcula cantidad, suma y promedio del importe. La ejecucion y los valores agrupados siguen pendientes de captura.
+**Retroalimentacion:** La consulta agrupa los alquileres por estado y calcula la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
 
 **Lo que aprendi:** Aprendi a agrupar alquileres por estado y resumirlos con `COUNT`, `SUM` y `AVG`.
 
