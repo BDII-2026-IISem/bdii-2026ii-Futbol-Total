@@ -759,27 +759,35 @@ ORDER BY completed_revenue DESC, rt.rate_id;
 
 **Lo que aprendi:** Aprendere a usar `NVL` y agregados condicionales de Oracle para comparar el uso y los ingresos de cada tarifa.
 
-#### Puntos de anclaje disponibles por estación
+#### Generar calendario diario de alquileres con `CONNECT BY`
 
 ```sql
+WITH date_bounds AS (
+    SELECT TRUNC(MIN(started_at)) AS first_day,
+           TRUNC(MAX(started_at)) AS last_day
+    FROM rentals
+),
+calendar AS (
+    SELECT first_day + LEVEL - 1 AS rental_day
+    FROM date_bounds
+    CONNECT BY LEVEL <= last_day - first_day + 1
+)
 SELECT
-    s.station_id,
-    s.name AS station_name,
-    COUNT(dp.docking_point_id) AS docking_point_count,
-    SUM(CASE WHEN dp.status = 'available' THEN 1 ELSE 0 END) AS available_points
-FROM stations s
-LEFT JOIN docking_points dp ON dp.station_id = s.station_id
-GROUP BY s.station_id, s.name
-ORDER BY s.station_id;
+    c.rental_day,
+    COUNT(r.rental_id) AS rental_count
+FROM calendar c
+LEFT JOIN rentals r ON TRUNC(r.started_at) = c.rental_day
+GROUP BY c.rental_day
+ORDER BY c.rental_day;
 ```
 
 **Evidencia de ejecucion:**
-**Oracle: Contar anclajes disponibles por estacion**
-*Captura pendiente: `oracle_puntos_disponibles_por_estacion_oracle.png`.*
+**Oracle: Generar calendario de alquileres por día**
+*Captura pendiente: `oracle_calendario_diario_connect_by.png`.*
 
-**Retroalimentacion:** La sentencia agrupa los anclajes por estacion y cuenta el total y los que estan disponibles usando `CASE`. La ejecucion y los conteos observados siguen pendientes de captura.
+**Retroalimentacion:** `CONNECT BY LEVEL` genera una fila por cada fecha desde el primer hasta el ultimo alquiler. El `LEFT JOIN` permite ver tambien los dias sin alquileres; anotare el rango y los conteos que aparezcan.
 
-**Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
+**Lo que aprendi:** Aprendere a generar una secuencia de fechas en Oracle mediante la jerarquia `CONNECT BY`.
 
 #### Incidentes abiertos
 
