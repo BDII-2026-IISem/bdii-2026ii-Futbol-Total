@@ -893,6 +893,32 @@ ORDER BY average_duration_minutes DESC, b.bicycle_type;
 
 **Lo que aprendi:** Aprendere a calcular intervalos de tiempo con `DATEDIFF` de SQL Server y a resumirlos por categoria.
 
+### Oracle: obtener el importe del alquiler más reciente con `KEEP`
+
+Esta consulta conserva a todos los clientes y recupera la fecha y el importe de su alquiler mas reciente. Si hay empate de fechas, `MAX` devuelve el importe mayor entre los alquileres empatados.
+
+```sql
+SELECT
+    c.client_id,
+    c.first_name,
+    c.last_name,
+    MAX(r.started_at) AS latest_rental_at,
+    MAX(r.total_amount) KEEP (DENSE_RANK LAST ORDER BY r.started_at) AS latest_rental_amount
+FROM clients c
+LEFT JOIN rentals r ON r.client_id = c.client_id
+GROUP BY c.client_id, c.first_name, c.last_name
+ORDER BY latest_rental_at DESC NULLS LAST, c.client_id
+FETCH FIRST 10 ROWS ONLY;
+```
+
+**Evidencia de ejecucion:**
+**Oracle: Recuperar el alquiler mas reciente con KEEP**
+*Captura pendiente: `oracle_alquiler_mas_reciente_keep.png`.*
+
+**Retroalimentacion:** La funcion de agregado `KEEP (DENSE_RANK LAST ...)` devuelve el importe asociado a la fecha maxima de alquiler por cliente. El `LEFT JOIN` mantiene clientes sin alquileres, que apareceran con fecha e importe nulos. Anotare las filas reales tras ejecutarla.
+
+**Lo que aprendi:** Aprendere a usar `KEEP` y `DENSE_RANK` en Oracle para recuperar una medida de la fila que ocupa la posicion mas reciente dentro de cada grupo.
+
 ## Evidencia de trazabilidad
 
 Debajo de cada evidencia puse el titulo del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentacion que explica para que sirve la consulta y que se observa en el resultado. Las primeras ocho capturas muestran 80 bicicletas disponibles y 67 alquileres completados en cada motor. Las consultas todavia no ejecutadas tienen la captura marcada como pendiente; completare su observacion cuando tenga el resultado real.
