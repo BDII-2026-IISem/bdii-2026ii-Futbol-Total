@@ -257,9 +257,9 @@ SHOW TABLES;
 
 **Evidencia de ejecucion:**
 **MySQL: Verificar las tablas de la base**
-*Captura pendiente: `mysql_inventario_tablas_mysql.png`.*
+![MySQL: Verificar las tablas de la base](trazabilidad/mysql_inventario_tablas_mysql.png)
 
-**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada. Revisa que aparezcan las tablas PedalLibre antes de continuar.
+**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada, sin consultar sus registros. Observo 21 tablas del proyecto, entre ellas `bicycles`, `clients`, `payments` y `rentals`; esto confirma que el esquema esperado está visible en DBeaver.
 
 **Lo que aprendi:** Aprendi a comprobar que tablas estan visibles en la base seleccionada de MySQL.
 
@@ -820,6 +820,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Bicicletas disponibles: `mysql_bicicletas_disponibles.png`, `postgresql_bicicletas_disponibles.png`, `sqlserver_bicicletas_disponibles.png` y `oracle_bicicletas_disponibles.png`.
 - Alquileres completados: `mysql_alquileres_completados.png`, `postgresql_alquileres_completados.png`, `sqlserver_alquileres_completados.png` y `oracle_alquileres_completados.png`.
 - Base de datos activa en MySQL: `mysql_base_seleccionada.png`.
+- Tablas visibles en MySQL: `mysql_inventario_tablas_mysql.png`.
 
 ## Referencias
 
