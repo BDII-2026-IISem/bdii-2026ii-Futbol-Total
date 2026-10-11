@@ -654,13 +654,13 @@ ORDER BY bicycle_type;
 SELECT
     s.station_id,
     s.name AS station_name,
-    (
+    JSON_QUERY((
         SELECT dp.docking_point_id, dp.code, dp.status
         FROM dbo.docking_points AS dp
         WHERE dp.station_id = s.station_id
         ORDER BY dp.docking_point_id
         FOR JSON PATH
-    ) AS docking_points_json
+    )) AS docking_points_json
 FROM dbo.stations AS s
 ORDER BY s.station_id
 FOR JSON PATH;
