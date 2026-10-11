@@ -727,9 +727,9 @@ ORDER BY client_id, started_at, rental_id;
 
 **Evidencia de ejecucion:**
 **SQL Server: Comparar importes consecutivos por cliente**
-*Captura pendiente: `sqlserver_comparar_importes_alquileres_lag.png`.*
+![SQL Server: Comparar importes consecutivos por cliente](trazabilidad/sqlserver_comparar_importes_alquileres_lag.png)
 
-**Retroalimentacion:** `LAG` obtiene el importe del alquiler completado anterior del mismo cliente. La consulta muestra la diferencia entre ambos importes para hasta 20 filas; anotare el resultado real al ejecutarla.
+**Retroalimentacion:** `LAG` busca el importe del alquiler completado anterior para cada cliente. La captura muestra una cuadrícula sin filas (`No data`), así que en estos datos no hay pares de alquileres completados del mismo cliente que permitan calcular esa diferencia.
 
 **Lo que aprendi:** Aprendere a comparar registros consecutivos por cliente con la funcion de ventana `LAG`.
 
