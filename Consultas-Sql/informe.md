@@ -642,9 +642,9 @@ ORDER BY bicycle_type;
 
 **Evidencia de ejecucion:**
 **SQL Server: Comparar estados de bicicletas con PIVOT**
-*Captura pendiente: `sqlserver_bicicletas_por_estado_pivot.png`.*
+![SQL Server: Comparar estados de bicicletas con PIVOT](trazabilidad/sqlserver_bicicletas_por_estado_pivot.png)
 
-**Retroalimentacion:** `PIVOT` convierte los estados seleccionados en columnas y cuenta las bicicletas de cada tipo en cada estado. Anotare las cantidades observadas al ejecutar la consulta.
+**Retroalimentacion:** `PIVOT` convierte los estados seleccionados en columnas y cuenta las bicicletas de cada tipo en cada estado. Observo 20 bicicletas disponibles por cada tipo; `electric` y `mountain` tienen 5 en mantenimiento, mientras `standard` y `urban` tienen 5 reservadas.
 
 **Lo que aprendi:** Aprendere a usar `PIVOT` en SQL Server para convertir valores de filas en columnas de resumen.
 
