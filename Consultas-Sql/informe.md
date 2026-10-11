@@ -815,6 +815,35 @@ ORDER BY payment_month;
 
 **Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
 
+## Consultas propias de cada motor
+
+Ademas de las consultas comunes, preparo una consulta que aprovecha una funcion propia de cada motor. Las ejecuto solo en el motor indicado; las capturas y la retroalimentacion del resultado se agregaran despues de que las ejecutes en DBeaver.
+
+### MySQL: agrupar alquileres con `GROUP_CONCAT`
+
+Esta consulta resume los alquileres de cada cliente y concatena sus identificadores ordenados del mas reciente al mas antiguo.
+
+```sql
+SELECT
+    c.client_id,
+    CONCAT(c.first_name, ' ', c.last_name) AS client_name,
+    COUNT(r.rental_id) AS rental_count,
+    GROUP_CONCAT(r.rental_id ORDER BY r.started_at DESC SEPARATOR ', ') AS rental_ids
+FROM clients c
+JOIN rentals r ON r.client_id = c.client_id
+GROUP BY c.client_id, c.first_name, c.last_name
+ORDER BY rental_count DESC, c.client_id
+LIMIT 10;
+```
+
+**Evidencia de ejecucion:**
+**MySQL: Listar alquileres por cliente con GROUP_CONCAT**
+*Captura pendiente: `mysql_alquileres_por_cliente_group_concat.png`.*
+
+**Retroalimentacion:** `GROUP_CONCAT` combina en una sola cadena los identificadores de alquiler por cliente, ordenados por fecha descendente. Anotare los clientes y los identificadores que devuelva DBeaver despues de ejecutar la consulta.
+
+**Lo que aprendi:** Aprendere a usar `GROUP_CONCAT` de MySQL para resumir varios registros relacionados en una sola fila.
+
 ## Evidencia de trazabilidad
 
 Debajo de cada evidencia puse el titulo del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentacion que explica para que sirve la consulta y que se observa en el resultado. Las primeras ocho capturas muestran 80 bicicletas disponibles y 67 alquileres completados en cada motor. Las consultas todavia no ejecutadas tienen la captura marcada como pendiente; completare su observacion cuando tenga el resultado real.
