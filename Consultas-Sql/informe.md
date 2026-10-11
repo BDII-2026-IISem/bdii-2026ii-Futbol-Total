@@ -547,9 +547,9 @@ ORDER BY week_start;
 
 **Evidencia de ejecucion:**
 **PostgreSQL: Resumir alquileres por semana**
-*Captura pendiente: `postgresql_alquileres_por_semana.png`.*
+![PostgreSQL: Resumir alquileres por semana](trazabilidad/postgresql_alquileres_por_semana.png)
 
-**Retroalimentacion:** `date_trunc('week', ...)` agrupa las fechas por semana; los agregados con `FILTER` separan el total de alquileres de los completados y suman el importe completado. Anotare las semanas y valores que devuelva DBeaver.
+**Retroalimentacion:** `date_trunc('week', ...)` agrupa las fechas por semana; los agregados con `FILTER` separan el total de alquileres de los completados y suman el importe completado. Observo una semana que inicia el 5 de octubre de 2026, con 100 alquileres, 67 completados y un importe de 528.213.
 
 **Lo que aprendi:** Aprendere a usar `date_trunc` y agregados filtrados para analizar la actividad semanal en PostgreSQL.
 
