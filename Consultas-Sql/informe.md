@@ -753,9 +753,9 @@ ORDER BY completed_revenue DESC, rt.rate_id;
 
 **Evidencia de ejecucion:**
 **Oracle: Resumir uso e ingresos por tarifa**
-*Captura pendiente: `oracle_rendimiento_tarifas.png`.*
+![Oracle: Resumir uso e ingresos por tarifa](trazabilidad/oracle_rendimiento_tarifas.png)
 
-**Retroalimentacion:** La consulta relaciona cada tarifa con sus alquileres, cuenta los completados y suma sus importes. `NVL` muestra cero cuando no hay ingresos completados para una tarifa. Anotare los valores observados en DBeaver.
+**Retroalimentacion:** La consulta relaciona cada tarifa con sus alquileres, cuenta los completados y suma sus importes. Observo 100 tarifas; en las filas visibles cada tarifa tiene un alquiler completado, y los ingresos varian segun el plan.
 
 **Lo que aprendi:** Aprendere a usar `NVL` y agregados condicionales de Oracle para comparar el uso y los ingresos de cada tarifa.
 
