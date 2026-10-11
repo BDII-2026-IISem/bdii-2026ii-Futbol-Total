@@ -292,9 +292,9 @@ ORDER BY tabla;
 
 **Evidencia de ejecucion:**
 **MySQL: Contar registros por tabla**
-*Captura pendiente: `mysql_conteo_registros.png`.*
+![MySQL: Contar registros por tabla](trazabilidad/mysql_conteo_registros.png)
 
-**Retroalimentacion:** La consulta cuenta las filas de las 21 tablas. La guia de insercion indica 100 registros por tabla; compara ese valor esperado con los conteos que devuelva DBeaver.
+**Retroalimentacion:** La consulta cuenta las filas de cada una de las 21 tablas. Observo que cada tabla muestra 100 registros, coincidiendo con la cantidad esperada en la guia de insercion.
 
 **Lo que aprendi:** Aprendi a validar con `COUNT(*)` la cantidad de registros cargados antes de analizar los datos.
 
@@ -310,9 +310,9 @@ LIMIT 10;
 
 **Evidencia de ejecucion:**
 **MySQL: Mostrar los 10 alquileres completados mas recientes**
-*Captura pendiente: `mysql_alquileres_completados_top10_mysql.png`.*
+![MySQL: Mostrar los 10 alquileres completados mas recientes](trazabilidad/mysql_alquileres_completados_top10_mysql.png)
 
-**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
+**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes, ordenados por fecha de inicio descendente. Observo diez filas con estado `completed`; la primera corresponde al registro mas reciente mostrado.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
