@@ -868,6 +868,31 @@ ORDER BY payment_method;
 
 **Lo que aprendi:** Aprendere a filtrar cada agregado de PostgreSQL sin separar el resultado en varias consultas.
 
+### SQL Server: duración media de alquiler por tipo de bicicleta
+
+Esta consulta usa `DATEDIFF` para calcular la duracion en minutos de los alquileres completados y promedia el resultado por tipo de bicicleta.
+
+```sql
+SELECT
+    b.bicycle_type,
+    COUNT(*) AS rental_count,
+    AVG(CAST(DATEDIFF(MINUTE, r.started_at, r.ended_at) AS decimal(10, 2))) AS average_duration_minutes
+FROM rentals r
+JOIN bicycles b ON b.bicycle_id = r.bicycle_id
+WHERE r.status = 'completed'
+  AND r.ended_at IS NOT NULL
+GROUP BY b.bicycle_type
+ORDER BY average_duration_minutes DESC, b.bicycle_type;
+```
+
+**Evidencia de ejecucion:**
+**SQL Server: Calcular duracion promedio con DATEDIFF**
+*Captura pendiente: `sqlserver_duracion_alquiler_por_tipo_datediff.png`.*
+
+**Retroalimentacion:** `DATEDIFF(MINUTE, ...)` mide los minutos entre el inicio y el fin de cada alquiler completado; el promedio se agrupa por tipo de bicicleta. Anotare los tipos, cantidades y duraciones devueltos al ejecutar la consulta.
+
+**Lo que aprendi:** Aprendere a calcular intervalos de tiempo con `DATEDIFF` de SQL Server y a resumirlos por categoria.
+
 ## Evidencia de trazabilidad
 
 Debajo de cada evidencia puse el titulo del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentacion que explica para que sirve la consulta y que se observa en el resultado. Las primeras ocho capturas muestran 80 bicicletas disponibles y 67 alquileres completados en cada motor. Las consultas todavia no ejecutadas tienen la captura marcada como pendiente; completare su observacion cuando tenga el resultado real.
