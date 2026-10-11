@@ -990,6 +990,21 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Puntos de anclaje disponibles en MySQL: `mysql_puntos_disponibles_por_estacion_mysql.png`.
 - Incidentes abiertos en MySQL: `mysql_incidentes_abiertos_mysql.png`.
 - Ingresos pagados por mes en MySQL: `mysql_ingresos_pagados_por_mes_mysql.png`.
+- Alquileres por semana en PostgreSQL: `postgresql_alquileres_por_semana.png`.
+- Tiempo de uso de anclajes en PostgreSQL: `postgresql_tiempo_uso_anclajes.png`.
+- Incidentes con reportes de revisión en PostgreSQL: `postgresql_incidentes_revision_ilike.png`.
+- Calificaciones mensuales en PostgreSQL: `postgresql_calificaciones_por_mes.png`.
+- Estados de bicicletas con PIVOT en SQL Server: `sqlserver_bicicletas_por_estado_pivot.png`.
+- Inventario JSON en SQL Server: `sqlserver_estaciones_json.png`.
+- Impuestos de facturas en SQL Server: `sqlserver_validar_impuestos_facturas.png`.
+- Importes de alquileres consecutivos en SQL Server: `sqlserver_comparar_importes_alquileres_lag.png`.
+- Rendimiento de tarifas en Oracle: `oracle_rendimiento_tarifas.png`.
+- Calendario de alquileres en Oracle: `oracle_calendario_diario_connect_by.png`.
+- Incidentes agrupados con ROLLUP en Oracle: `oracle_incidentes_rollup_severidad.png`.
+- Participación de ingresos por bicicleta en Oracle: `oracle_participacion_ingresos_bicicletas.png`.
+- Alquileres concatenados por cliente en MySQL: `mysql_alquileres_por_cliente_group_concat.png`.
+- Pagos por estado con FILTER en PostgreSQL: `postgresql_pagos_por_estado_filter.png`.
+- Duración por tipo con DATEDIFF en SQL Server: `sqlserver_duracion_alquiler_por_tipo_datediff.png`.
 
 ## Referencias
 
