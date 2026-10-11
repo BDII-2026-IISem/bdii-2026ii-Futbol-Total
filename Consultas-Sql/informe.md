@@ -668,9 +668,9 @@ FOR JSON PATH;
 
 **Evidencia de ejecucion:**
 **SQL Server: Exportar inventario de estaciones a JSON**
-*Captura pendiente: `sqlserver_estaciones_json.png`.*
+![SQL Server: Exportar inventario de estaciones a JSON](trazabilidad/sqlserver_estaciones_json.png)
 
-**Retroalimentacion:** La subconsulta crea un arreglo JSON con los anclajes de cada estacion y la consulta exterior entrega el inventario en formato JSON. Anotare la forma y las filas de salida que muestre DBeaver.
+**Retroalimentacion:** `FOR JSON PATH` devuelve estaciones con sus anclajes en un arreglo JSON anidado; `JSON_QUERY` conserva ese arreglo como JSON en vez de escaparlo como texto. Observo ocho filas JSON en la cuadrícula, cada una con la estacion y el detalle de sus puntos de anclaje.
 
 **Lo que aprendi:** Aprendere a usar `FOR JSON PATH` de SQL Server para representar registros relacionados como JSON anidado.
 
