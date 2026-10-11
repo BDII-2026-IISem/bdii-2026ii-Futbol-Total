@@ -421,7 +421,11 @@ FETCH FIRST 10 ROWS ONLY;
 
 **Evidencia de ejecucion:**
 **Oracle: Mostrar los 10 alquileres completados mas recientes**
-*Captura pendiente: `oracle_alquileres_completados_top10_oracle.png`.*
+![Oracle: Mostrar los 10 alquileres completados mas recientes](trazabilidad/oracle_alquileres_completados_top10_oracle.png)
+
+**Retroalimentacion:** `FETCH FIRST 10 ROWS ONLY` limita la salida a diez alquileres completados ordenados por fecha de inicio descendente. Observo diez filas y todas tienen estado `completed`.
+
+**Lo que aprendi:** Aprendi que Oracle puede limitar filas con `FETCH FIRST`, mientras que PostgreSQL usa `LIMIT` y SQL Server usa `TOP`.
 
 **Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
 
