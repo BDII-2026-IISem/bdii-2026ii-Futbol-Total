@@ -553,27 +553,32 @@ ORDER BY week_start;
 
 **Lo que aprendi:** Aprendere a usar `date_trunc` y agregados filtrados para analizar la actividad semanal en PostgreSQL.
 
-#### Puntos de anclaje disponibles por estación
+#### Tiempo promedio de uso de anclajes por estación
 
 ```sql
 SELECT
     s.station_id,
     s.name AS station_name,
-    COUNT(dp.docking_point_id) AS docking_point_count,
-    SUM(CASE WHEN dp.status = 'available' THEN 1 ELSE 0 END) AS available_points
+    COUNT(bd.bicycle_docking_id) AS completed_dockings,
+    ROUND(
+        AVG(EXTRACT(EPOCH FROM (bd.undocked_at - bd.docked_at)) / 60)::numeric,
+        2
+    ) AS average_docking_minutes
 FROM stations s
-LEFT JOIN docking_points dp ON dp.station_id = s.station_id
+JOIN docking_points dp ON dp.station_id = s.station_id
+JOIN bicycle_dockings bd ON bd.docking_point_id = dp.docking_point_id
+WHERE bd.undocked_at IS NOT NULL
 GROUP BY s.station_id, s.name
-ORDER BY s.station_id;
+ORDER BY average_docking_minutes DESC, s.station_id;
 ```
 
 **Evidencia de ejecucion:**
-**PostgreSQL: Contar anclajes disponibles por estacion**
-*Captura pendiente: `postgresql_puntos_disponibles_por_estacion_postgresql.png`.*
+**PostgreSQL: Calcular tiempo de uso de anclajes**
+*Captura pendiente: `postgresql_tiempo_uso_anclajes.png`.*
 
-**Retroalimentacion:** La sentencia agrupa los anclajes por estacion y cuenta el total y los que estan disponibles usando `CASE`. La ejecucion y los conteos observados siguen pendientes de captura.
+**Retroalimentacion:** La consulta considera los acoplamientos que ya tienen hora de retiro, calcula su duracion en minutos con `EXTRACT(EPOCH ...)` y promedia por estacion. Anotare las estaciones y duraciones observadas al ejecutarla.
 
-**Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
+**Lo que aprendi:** Aprendere a restar marcas de tiempo en PostgreSQL y convertir el intervalo a minutos para comparar el uso de estaciones.
 
 #### Incidentes abiertos
 
