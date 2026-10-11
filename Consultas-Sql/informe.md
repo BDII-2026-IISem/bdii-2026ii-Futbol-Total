@@ -830,6 +830,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Tablas visibles en SQL Server: `sqlserver_inventario_tablas_sqlserver.png`.
 - Diez alquileres recientes en SQL Server: `sqlserver_alquileres_completados_top10_sqlserver.png`.
 - Tablas visibles en Oracle: `oracle_inventario_tablas_oracle.png`.
+- Clientes con mas alquileres en MySQL: `mysql_clientes_mas_alquileres_mysql.png`.
 
 ## Referencias
 
