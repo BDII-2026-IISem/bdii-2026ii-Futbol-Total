@@ -476,9 +476,9 @@ ORDER BY s.station_id;
 
 **Evidencia de ejecucion:**
 **MySQL: Contar anclajes disponibles por estacion**
-*Captura pendiente: `mysql_puntos_disponibles_por_estacion_mysql.png`.*
+![MySQL: Contar anclajes disponibles por estacion](trazabilidad/mysql_puntos_disponibles_por_estacion_mysql.png)
 
-**Retroalimentacion:** La sentencia agrupa los anclajes por estacion y cuenta el total y los que estan disponibles usando `CASE`. La ejecucion y los conteos observados siguen pendientes de captura.
+**Retroalimentacion:** La sentencia agrupa los puntos de anclaje por estacion, cuenta los puntos asociados y suma los disponibles con `CASE`. La captura muestra 100 filas; en las estaciones visibles hay un punto asociado por estacion y `available_points` vale 0 o 1 segun su estado.
 
 **Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
 
