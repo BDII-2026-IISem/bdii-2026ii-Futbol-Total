@@ -844,6 +844,30 @@ LIMIT 10;
 
 **Lo que aprendi:** Aprendere a usar `GROUP_CONCAT` de MySQL para resumir varios registros relacionados en una sola fila.
 
+### PostgreSQL: comparar estados de pago con `FILTER`
+
+Esta consulta compara en una fila por metodo el numero de pagos pagados, pendientes y reembolsados, y suma el importe pagado.
+
+```sql
+SELECT
+    payment_method,
+    COUNT(*) FILTER (WHERE status = 'paid') AS paid_count,
+    COUNT(*) FILTER (WHERE status = 'pending') AS pending_count,
+    COUNT(*) FILTER (WHERE status = 'refunded') AS refunded_count,
+    COALESCE(SUM(amount) FILTER (WHERE status = 'paid'), 0) AS paid_total
+FROM payments
+GROUP BY payment_method
+ORDER BY payment_method;
+```
+
+**Evidencia de ejecucion:**
+**PostgreSQL: Comparar estados de pago con FILTER**
+*Captura pendiente: `postgresql_pagos_por_estado_filter.png`.*
+
+**Retroalimentacion:** La clausula `FILTER` permite calcular conteos distintos por estado dentro de una sola agrupacion por metodo. `COALESCE` presenta cero si un metodo no tiene pagos pagados. Anotare las cantidades e importes que muestre DBeaver.
+
+**Lo que aprendi:** Aprendere a filtrar cada agregado de PostgreSQL sin separar el resultado en varias consultas.
+
 ## Evidencia de trazabilidad
 
 Debajo de cada evidencia puse el titulo del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentacion que explica para que sirve la consulta y que se observa en el resultado. Las primeras ocho capturas muestran 80 bicicletas disponibles y 67 alquileres completados en cada motor. Las consultas todavia no ejecutadas tienen la captura marcada como pendiente; completare su observacion cuando tenga el resultado real.
