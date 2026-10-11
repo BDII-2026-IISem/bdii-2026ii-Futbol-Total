@@ -433,7 +433,7 @@ FETCH FIRST 10 ROWS ONLY;
 
 ## Consultas adicionales por motor
 
-En esta sección agrego cuatro consultas para cada motor. Cubren clientes con más alquileres, disponibilidad de puntos por estación, incidentes abiertos e ingresos pagados por mes. Las consultas de cada sección pueden ejecutarse por separado en la conexión correspondiente.
+En esta sección presento cuatro análisis distintos por motor. Las consultas adicionales de MySQL ya están ejecutadas; para PostgreSQL, SQL Server y Oracle seleccioné temas y funciones diferentes, sin repetir los análisis de las otras secciones. Ejecuto cada grupo solo en la conexión indicada.
 
 ### MySQL
 
@@ -532,28 +532,26 @@ ORDER BY payment_month;
 
 ### PostgreSQL
 
-#### Clientes con más alquileres
+#### Volumen semanal de alquileres
 
 ```sql
 SELECT
-    c.client_id,
-    c.first_name,
-    c.last_name,
-    COUNT(r.rental_id) AS rental_count
-FROM clients c
-LEFT JOIN rentals r ON r.client_id = c.client_id
-GROUP BY c.client_id, c.first_name, c.last_name
-ORDER BY rental_count DESC, c.client_id
-LIMIT 5;
+    date_trunc('week', started_at)::date AS week_start,
+    COUNT(*) AS rental_count,
+    COUNT(*) FILTER (WHERE status = 'completed') AS completed_count,
+    COALESCE(SUM(total_amount) FILTER (WHERE status = 'completed'), 0) AS completed_amount
+FROM rentals
+GROUP BY date_trunc('week', started_at)::date
+ORDER BY week_start;
 ```
 
 **Evidencia de ejecucion:**
-**PostgreSQL: Identificar clientes con mas alquileres**
-*Captura pendiente: `postgresql_clientes_mas_alquileres_postgresql.png`.*
+**PostgreSQL: Resumir alquileres por semana**
+*Captura pendiente: `postgresql_alquileres_por_semana.png`.*
 
-**Retroalimentacion:** La consulta cuenta alquileres por cliente y ordena para mostrar los cinco con mayor cantidad; `LEFT JOIN` conserva clientes sin alquileres. La ejecucion y las filas reales siguen pendientes de captura.
+**Retroalimentacion:** `date_trunc('week', ...)` agrupa las fechas por semana; los agregados con `FILTER` separan el total de alquileres de los completados y suman el importe completado. Anotare las semanas y valores que devuelva DBeaver.
 
-**Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
+**Lo que aprendi:** Aprendere a usar `date_trunc` y agregados filtrados para analizar la actividad semanal en PostgreSQL.
 
 #### Puntos de anclaje disponibles por estación
 
