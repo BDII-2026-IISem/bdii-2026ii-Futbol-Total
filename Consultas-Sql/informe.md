@@ -199,6 +199,262 @@ ORDER BY started_at DESC
 FETCH FIRST 10 ROWS ONLY;
 ```
 
+## Consultas adicionales por motor
+
+En esta sección agrego cuatro consultas para cada motor. Cubren clientes con más alquileres, disponibilidad de puntos por estación, incidentes abiertos e ingresos pagados por mes. Las consultas de cada sección pueden ejecutarse por separado en la conexión correspondiente.
+
+### MySQL
+
+#### Clientes con más alquileres
+
+```sql
+SELECT
+    c.client_id,
+    c.first_name,
+    c.last_name,
+    COUNT(r.rental_id) AS rental_count
+FROM clients c
+LEFT JOIN rentals r ON r.client_id = c.client_id
+GROUP BY c.client_id, c.first_name, c.last_name
+ORDER BY rental_count DESC, c.client_id
+LIMIT 5;
+```
+
+#### Puntos de anclaje disponibles por estación
+
+```sql
+SELECT
+    s.station_id,
+    s.name AS station_name,
+    COUNT(dp.docking_point_id) AS docking_point_count,
+    SUM(CASE WHEN dp.status = 'available' THEN 1 ELSE 0 END) AS available_points
+FROM stations s
+LEFT JOIN docking_points dp ON dp.station_id = s.station_id
+GROUP BY s.station_id, s.name
+ORDER BY s.station_id;
+```
+
+#### Incidentes abiertos
+
+```sql
+SELECT
+    i.incident_id,
+    i.severity,
+    i.description,
+    i.reported_at,
+    b.serial_number,
+    c.first_name,
+    c.last_name
+FROM incidents i
+LEFT JOIN bicycles b ON b.bicycle_id = i.bicycle_id
+LEFT JOIN clients c ON c.client_id = i.client_id
+WHERE i.status = 'open'
+ORDER BY i.reported_at DESC;
+```
+
+#### Ingresos pagados por mes
+
+```sql
+SELECT
+    DATE_FORMAT(paid_at, '%Y-%m') AS payment_month,
+    COUNT(*) AS payment_count,
+    SUM(amount) AS monthly_total
+FROM payments
+WHERE status = 'paid'
+  AND paid_at IS NOT NULL
+GROUP BY DATE_FORMAT(paid_at, '%Y-%m')
+ORDER BY payment_month;
+```
+
+### PostgreSQL
+
+#### Clientes con más alquileres
+
+```sql
+SELECT
+    c.client_id,
+    c.first_name,
+    c.last_name,
+    COUNT(r.rental_id) AS rental_count
+FROM clients c
+LEFT JOIN rentals r ON r.client_id = c.client_id
+GROUP BY c.client_id, c.first_name, c.last_name
+ORDER BY rental_count DESC, c.client_id
+LIMIT 5;
+```
+
+#### Puntos de anclaje disponibles por estación
+
+```sql
+SELECT
+    s.station_id,
+    s.name AS station_name,
+    COUNT(dp.docking_point_id) AS docking_point_count,
+    SUM(CASE WHEN dp.status = 'available' THEN 1 ELSE 0 END) AS available_points
+FROM stations s
+LEFT JOIN docking_points dp ON dp.station_id = s.station_id
+GROUP BY s.station_id, s.name
+ORDER BY s.station_id;
+```
+
+#### Incidentes abiertos
+
+```sql
+SELECT
+    i.incident_id,
+    i.severity,
+    i.description,
+    i.reported_at,
+    b.serial_number,
+    c.first_name,
+    c.last_name
+FROM incidents i
+LEFT JOIN bicycles b ON b.bicycle_id = i.bicycle_id
+LEFT JOIN clients c ON c.client_id = i.client_id
+WHERE i.status = 'open'
+ORDER BY i.reported_at DESC;
+```
+
+#### Ingresos pagados por mes
+
+```sql
+SELECT
+    TO_CHAR(paid_at, 'YYYY-MM') AS payment_month,
+    COUNT(*) AS payment_count,
+    SUM(amount) AS monthly_total
+FROM payments
+WHERE status = 'paid'
+  AND paid_at IS NOT NULL
+GROUP BY TO_CHAR(paid_at, 'YYYY-MM')
+ORDER BY payment_month;
+```
+
+### Microsoft SQL Server
+
+#### Clientes con más alquileres
+
+```sql
+SELECT TOP (5)
+    c.client_id,
+    c.first_name,
+    c.last_name,
+    COUNT(r.rental_id) AS rental_count
+FROM clients c
+LEFT JOIN rentals r ON r.client_id = c.client_id
+GROUP BY c.client_id, c.first_name, c.last_name
+ORDER BY rental_count DESC, c.client_id;
+```
+
+#### Puntos de anclaje disponibles por estación
+
+```sql
+SELECT
+    s.station_id,
+    s.name AS station_name,
+    COUNT(dp.docking_point_id) AS docking_point_count,
+    SUM(CASE WHEN dp.status = 'available' THEN 1 ELSE 0 END) AS available_points
+FROM stations s
+LEFT JOIN docking_points dp ON dp.station_id = s.station_id
+GROUP BY s.station_id, s.name
+ORDER BY s.station_id;
+```
+
+#### Incidentes abiertos
+
+```sql
+SELECT
+    i.incident_id,
+    i.severity,
+    i.description,
+    i.reported_at,
+    b.serial_number,
+    c.first_name,
+    c.last_name
+FROM incidents i
+LEFT JOIN bicycles b ON b.bicycle_id = i.bicycle_id
+LEFT JOIN clients c ON c.client_id = i.client_id
+WHERE i.status = 'open'
+ORDER BY i.reported_at DESC;
+```
+
+#### Ingresos pagados por mes
+
+```sql
+SELECT
+    YEAR(paid_at) AS payment_year,
+    MONTH(paid_at) AS payment_month,
+    COUNT(*) AS payment_count,
+    SUM(amount) AS monthly_total
+FROM payments
+WHERE status = 'paid'
+  AND paid_at IS NOT NULL
+GROUP BY YEAR(paid_at), MONTH(paid_at)
+ORDER BY payment_year, payment_month;
+```
+
+### Oracle
+
+#### Clientes con más alquileres
+
+```sql
+SELECT
+    c.client_id,
+    c.first_name,
+    c.last_name,
+    COUNT(r.rental_id) AS rental_count
+FROM clients c
+LEFT JOIN rentals r ON r.client_id = c.client_id
+GROUP BY c.client_id, c.first_name, c.last_name
+ORDER BY rental_count DESC, c.client_id
+FETCH FIRST 5 ROWS ONLY;
+```
+
+#### Puntos de anclaje disponibles por estación
+
+```sql
+SELECT
+    s.station_id,
+    s.name AS station_name,
+    COUNT(dp.docking_point_id) AS docking_point_count,
+    SUM(CASE WHEN dp.status = 'available' THEN 1 ELSE 0 END) AS available_points
+FROM stations s
+LEFT JOIN docking_points dp ON dp.station_id = s.station_id
+GROUP BY s.station_id, s.name
+ORDER BY s.station_id;
+```
+
+#### Incidentes abiertos
+
+```sql
+SELECT
+    i.incident_id,
+    i.severity,
+    i.description,
+    i.reported_at,
+    b.serial_number,
+    c.first_name,
+    c.last_name
+FROM incidents i
+LEFT JOIN bicycles b ON b.bicycle_id = i.bicycle_id
+LEFT JOIN clients c ON c.client_id = i.client_id
+WHERE i.status = 'open'
+ORDER BY i.reported_at DESC;
+```
+
+#### Ingresos pagados por mes
+
+```sql
+SELECT
+    TO_CHAR(paid_at, 'YYYY-MM') AS payment_month,
+    COUNT(*) AS payment_count,
+    SUM(amount) AS monthly_total
+FROM payments
+WHERE status = 'paid'
+  AND paid_at IS NOT NULL
+GROUP BY TO_CHAR(paid_at, 'YYYY-MM')
+ORDER BY payment_month;
+```
+
 ## Evidencia de trazabilidad
 
 Guardaré aquí las capturas reales de ejecución que aportaré, sin sustituirlas por imágenes ilustrativas:
