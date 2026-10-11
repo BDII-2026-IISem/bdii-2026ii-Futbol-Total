@@ -789,31 +789,27 @@ ORDER BY c.rental_day;
 
 **Lo que aprendi:** Aprendere a generar una secuencia de fechas en Oracle mediante la jerarquia `CONNECT BY`.
 
-#### Incidentes abiertos
+#### Resumen de incidentes por severidad con `ROLLUP`
 
 ```sql
 SELECT
-    i.incident_id,
-    i.severity,
-    i.description,
-    i.reported_at,
-    b.serial_number,
-    c.first_name,
-    c.last_name
-FROM incidents i
-LEFT JOIN bicycles b ON b.bicycle_id = i.bicycle_id
-LEFT JOIN clients c ON c.client_id = i.client_id
-WHERE i.status = 'open'
-ORDER BY i.reported_at DESC;
+    CASE
+        WHEN GROUPING(severity) = 1 THEN 'TOTAL'
+        ELSE severity
+    END AS severity_group,
+    COUNT(*) AS incident_count
+FROM incidents
+GROUP BY ROLLUP(severity)
+ORDER BY GROUPING(severity), severity_group;
 ```
 
 **Evidencia de ejecucion:**
-**Oracle: Consultar incidentes abiertos**
-*Captura pendiente: `oracle_incidentes_abiertos_oracle.png`.*
+**Oracle: Resumir incidentes por severidad**
+*Captura pendiente: `oracle_incidentes_rollup_severidad.png`.*
 
-**Retroalimentacion:** La consulta filtra incidentes abiertos y agrega, si estan asociados, el serial de la bicicleta y el nombre del cliente. La ejecucion y las filas reales siguen pendientes de captura.
+**Retroalimentacion:** `ROLLUP` calcula una fila por nivel de severidad y una fila adicional de total general; `GROUPING` distingue el total de una severidad nula. Anotare los conteos observados tras ejecutarla.
 
-**Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
+**Lo que aprendi:** Aprendere a usar `ROLLUP` y `GROUPING` en Oracle para obtener subtotales y un total general.
 
 #### Ingresos pagados por mes
 
