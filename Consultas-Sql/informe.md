@@ -906,9 +906,9 @@ ORDER BY average_duration_minutes DESC, b.bicycle_type;
 
 **Evidencia de ejecucion:**
 **SQL Server: Calcular duracion promedio con DATEDIFF**
-*Captura pendiente: `sqlserver_duracion_alquiler_por_tipo_datediff.png`.*
+![SQL Server: Calcular duracion promedio con DATEDIFF](trazabilidad/sqlserver_duracion_alquiler_por_tipo_datediff.png)
 
-**Retroalimentacion:** `DATEDIFF(MINUTE, ...)` mide los minutos entre el inicio y el fin de cada alquiler completado; el promedio se agrupa por tipo de bicicleta. Anotare los tipos, cantidades y duraciones devueltos al ejecutar la consulta.
+**Retroalimentacion:** `DATEDIFF(MINUTE, ...)` mide los minutos entre inicio y fin. Observo 17 alquileres completados para `electric`, `mountain` y `standard`, y 16 para `urban`; el promedio de duracion es de 60 minutos para cada tipo.
 
 **Lo que aprendi:** Aprendere a calcular intervalos de tiempo con `DATEDIFF` de SQL Server y a resumirlos por categoria.
 
