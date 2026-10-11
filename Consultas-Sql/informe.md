@@ -625,27 +625,28 @@ ORDER BY review_month;
 
 ### Microsoft SQL Server
 
-#### Clientes con más alquileres
+#### Distribución de bicicletas con `PIVOT`
 
 ```sql
-SELECT TOP (5)
-    c.client_id,
-    c.first_name,
-    c.last_name,
-    COUNT(r.rental_id) AS rental_count
-FROM clients c
-LEFT JOIN rentals r ON r.client_id = c.client_id
-GROUP BY c.client_id, c.first_name, c.last_name
-ORDER BY rental_count DESC, c.client_id;
+SELECT bicycle_type, [available], [reserved], [maintenance]
+FROM (
+    SELECT bicycle_type, status, bicycle_id
+    FROM dbo.bicycles
+) AS bicycle_statuses
+PIVOT (
+    COUNT(bicycle_id)
+    FOR status IN ([available], [reserved], [maintenance])
+) AS bicycle_summary
+ORDER BY bicycle_type;
 ```
 
 **Evidencia de ejecucion:**
-**SQL Server: Identificar clientes con mas alquileres**
-*Captura pendiente: `sqlserver_clientes_mas_alquileres_sqlserver.png`.*
+**SQL Server: Comparar estados de bicicletas con PIVOT**
+*Captura pendiente: `sqlserver_bicicletas_por_estado_pivot.png`.*
 
-**Retroalimentacion:** La consulta cuenta alquileres por cliente y ordena para mostrar los cinco con mayor cantidad; `LEFT JOIN` conserva clientes sin alquileres. La ejecucion y las filas reales siguen pendientes de captura.
+**Retroalimentacion:** `PIVOT` convierte los estados seleccionados en columnas y cuenta las bicicletas de cada tipo en cada estado. Anotare las cantidades observadas al ejecutar la consulta.
 
-**Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
+**Lo que aprendi:** Aprendere a usar `PIVOT` en SQL Server para convertir valores de filas en columnas de resumen.
 
 #### Puntos de anclaje disponibles por estación
 
