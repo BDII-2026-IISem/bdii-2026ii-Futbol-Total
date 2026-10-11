@@ -580,31 +580,26 @@ ORDER BY average_docking_minutes DESC, s.station_id;
 
 **Lo que aprendi:** Aprendere a restar marcas de tiempo en PostgreSQL y convertir el intervalo a minutos para comparar el uso de estaciones.
 
-#### Incidentes abiertos
+#### Buscar reportes de revisión con `ILIKE`
 
 ```sql
 SELECT
     i.incident_id,
     i.severity,
     i.description,
-    i.reported_at,
-    b.serial_number,
-    c.first_name,
-    c.last_name
+    i.reported_at
 FROM incidents i
-LEFT JOIN bicycles b ON b.bicycle_id = i.bicycle_id
-LEFT JOIN clients c ON c.client_id = i.client_id
-WHERE i.status = 'open'
+WHERE i.description ILIKE '%revision%'
 ORDER BY i.reported_at DESC;
 ```
 
 **Evidencia de ejecucion:**
-**PostgreSQL: Consultar incidentes abiertos**
-*Captura pendiente: `postgresql_incidentes_abiertos_postgresql.png`.*
+**PostgreSQL: Buscar reportes de revisión**
+*Captura pendiente: `postgresql_incidentes_revision_ilike.png`.*
 
-**Retroalimentacion:** La consulta filtra incidentes abiertos y agrega, si estan asociados, el serial de la bicicleta y el nombre del cliente. La ejecucion y las filas reales siguen pendientes de captura.
+**Retroalimentacion:** `ILIKE` busca el texto `revision` sin distinguir entre mayusculas y minusculas, y devuelve los incidentes cuya descripcion menciona esa tarea. Anotare cuantas filas aparecen y sus severidades tras ejecutar la consulta.
 
-**Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
+**Lo que aprendi:** Aprendere a usar `ILIKE` de PostgreSQL para realizar una busqueda de texto sin sensibilidad a mayusculas.
 
 #### Ingresos pagados por mes
 
