@@ -210,24 +210,24 @@ ORDER BY payment_method, status;
 
 **Evidencia de ejecucion:**
 **MySQL: Resumir pagos por metodo y estado**
-*Captura pendiente: `mysql_resumen_pagos_por_metodo_estado.png`.*
+![MySQL: Resumir pagos por metodo y estado](trazabilidad/mysql_resumen_pagos_por_metodo_estado.png)
 
-**Retroalimentacion:** La consulta agrupa los pagos por metodo y estado y suma su importe. La ejecucion y los grupos devueltos siguen pendientes de captura.
+**Retroalimentacion:** La consulta forma grupos por metodo y estado, y muestra la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
 
 **PostgreSQL: Resumir pagos por metodo y estado**
-*Captura pendiente: `postgresql_resumen_pagos_por_metodo_estado.png`.*
+![PostgreSQL: Resumir pagos por metodo y estado](trazabilidad/postgresql_resumen_pagos_por_metodo_estado.png)
 
-**Retroalimentacion:** La consulta agrupa los pagos por metodo y estado y suma su importe. La ejecucion y los grupos devueltos siguen pendientes de captura.
+**Retroalimentacion:** La consulta forma grupos por metodo y estado, y muestra la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
 
 **SQL Server: Resumir pagos por metodo y estado**
-*Captura pendiente: `sqlserver_resumen_pagos_por_metodo_estado.png`.*
+![SQL Server: Resumir pagos por metodo y estado](trazabilidad/sqlserver_resumen_pagos_por_metodo_estado.png)
 
-**Retroalimentacion:** La consulta agrupa los pagos por metodo y estado y suma su importe. La ejecucion y los grupos devueltos siguen pendientes de captura.
+**Retroalimentacion:** La consulta forma grupos por metodo y estado, y muestra la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
 
 **Oracle: Resumir pagos por metodo y estado**
-*Captura pendiente: `oracle_resumen_pagos_por_metodo_estado.png`.*
+![Oracle: Resumir pagos por metodo y estado](trazabilidad/oracle_resumen_pagos_por_metodo_estado.png)
 
-**Retroalimentacion:** La consulta agrupa los pagos por metodo y estado y suma su importe. La ejecucion y los grupos devueltos siguen pendientes de captura.
+**Retroalimentacion:** La consulta forma grupos por metodo y estado, y muestra la cantidad y la suma de los importes. Observo 12 filas. En una fila figura `digital_wallet` y en otra `digital_Wallet`, con distinta capitalizacion; por eso Oracle separa esas variantes en grupos distintos.
 
 **Lo que aprendi:** Aprendi a agrupar pagos por metodo y estado para comparar cantidades e importes.
 
