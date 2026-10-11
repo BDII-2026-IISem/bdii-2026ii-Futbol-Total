@@ -245,9 +245,9 @@ La respuesta debe ser `Pedalibre-Terminal-Dbeaver`. Si aparece otro nombre, camb
 
 **Evidencia de ejecucion:**
 **MySQL: Verificar la base de datos activa**
-*Captura pendiente: `mysql_base_seleccionada.png`.*
+![MySQL: Verificar la base de datos activa](trazabilidad/mysql_base_seleccionada.png)
 
-**Retroalimentacion:** La sentencia `SELECT DATABASE()` identifica la base MySQL activa en esta conexion. Usa el resultado para confirmar `Pedalibre-Terminal-Dbeaver` antes de continuar.
+**Retroalimentacion:** La sentencia `SELECT DATABASE()` identifica la base MySQL activa en esta conexion. Observo `Pedalibre-Terminal-Dbeaver`, por lo que confirmo que la consulta se ejecuta en la base indicada.
 
 **Lo que aprendi:** Aprendi a comprobar la base activa antes de consultar sus tablas.
 
@@ -813,12 +813,13 @@ ORDER BY payment_month;
 
 ## Evidencia de trazabilidad
 
-Debajo de cada evidencia puse el titulo del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentacion que explica para que sirve la consulta y que se observa en el resultado. Las ocho capturas recibidas muestran 80 bicicletas disponibles y 67 alquileres completados en cada motor. Las consultas todavia no ejecutadas tienen la captura marcada como pendiente; completare su observacion cuando tenga el resultado real.
+Debajo de cada evidencia puse el titulo del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentacion que explica para que sirve la consulta y que se observa en el resultado. Las primeras ocho capturas muestran 80 bicicletas disponibles y 67 alquileres completados en cada motor. Las consultas todavia no ejecutadas tienen la captura marcada como pendiente; completare su observacion cuando tenga el resultado real.
 
 Capturas agregadas a [trazabilidad/](./trazabilidad/):
 
 - Bicicletas disponibles: `mysql_bicicletas_disponibles.png`, `postgresql_bicicletas_disponibles.png`, `sqlserver_bicicletas_disponibles.png` y `oracle_bicicletas_disponibles.png`.
 - Alquileres completados: `mysql_alquileres_completados.png`, `postgresql_alquileres_completados.png`, `sqlserver_alquileres_completados.png` y `oracle_alquileres_completados.png`.
+- Base de datos activa en MySQL: `mysql_base_seleccionada.png`.
 
 ## Referencias
 
