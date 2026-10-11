@@ -648,53 +648,54 @@ ORDER BY bicycle_type;
 
 **Lo que aprendi:** Aprendere a usar `PIVOT` en SQL Server para convertir valores de filas en columnas de resumen.
 
-#### Puntos de anclaje disponibles por estación
+#### Inventario de estaciones en JSON
 
 ```sql
 SELECT
     s.station_id,
     s.name AS station_name,
-    COUNT(dp.docking_point_id) AS docking_point_count,
-    SUM(CASE WHEN dp.status = 'available' THEN 1 ELSE 0 END) AS available_points
-FROM stations s
-LEFT JOIN docking_points dp ON dp.station_id = s.station_id
-GROUP BY s.station_id, s.name
-ORDER BY s.station_id;
+    (
+        SELECT dp.docking_point_id, dp.code, dp.status
+        FROM dbo.docking_points AS dp
+        WHERE dp.station_id = s.station_id
+        ORDER BY dp.docking_point_id
+        FOR JSON PATH
+    ) AS docking_points_json
+FROM dbo.stations AS s
+ORDER BY s.station_id
+FOR JSON PATH;
 ```
 
 **Evidencia de ejecucion:**
-**SQL Server: Contar anclajes disponibles por estacion**
-*Captura pendiente: `sqlserver_puntos_disponibles_por_estacion_sqlserver.png`.*
+**SQL Server: Exportar inventario de estaciones a JSON**
+*Captura pendiente: `sqlserver_estaciones_json.png`.*
 
-**Retroalimentacion:** La sentencia agrupa los anclajes por estacion y cuenta el total y los que estan disponibles usando `CASE`. La ejecucion y los conteos observados siguen pendientes de captura.
+**Retroalimentacion:** La subconsulta crea un arreglo JSON con los anclajes de cada estacion y la consulta exterior entrega el inventario en formato JSON. Anotare la forma y las filas de salida que muestre DBeaver.
 
-**Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
+**Lo que aprendi:** Aprendere a usar `FOR JSON PATH` de SQL Server para representar registros relacionados como JSON anidado.
 
-#### Incidentes abiertos
+#### Clasificar facturas y validar el impuesto
 
 ```sql
 SELECT
-    i.incident_id,
-    i.severity,
-    i.description,
-    i.reported_at,
-    b.serial_number,
-    c.first_name,
-    c.last_name
-FROM incidents i
-LEFT JOIN bicycles b ON b.bicycle_id = i.bicycle_id
-LEFT JOIN clients c ON c.client_id = i.client_id
-WHERE i.status = 'open'
-ORDER BY i.reported_at DESC;
+    invoice_id,
+    invoice_number,
+    subtotal,
+    tax,
+    total,
+    CAST(100.0 * tax / NULLIF(subtotal, 0) AS DECIMAL(6, 2)) AS tax_percent,
+    total - subtotal - tax AS difference
+FROM dbo.invoices
+ORDER BY invoice_id;
 ```
 
 **Evidencia de ejecucion:**
-**SQL Server: Consultar incidentes abiertos**
-*Captura pendiente: `sqlserver_incidentes_abiertos_sqlserver.png`.*
+**SQL Server: Revisar importes e impuesto de facturas**
+*Captura pendiente: `sqlserver_validar_impuestos_facturas.png`.*
 
-**Retroalimentacion:** La consulta filtra incidentes abiertos y agrega, si estan asociados, el serial de la bicicleta y el nombre del cliente. La ejecucion y las filas reales siguen pendientes de captura.
+**Retroalimentacion:** La consulta calcula el porcentaje de impuesto y comprueba la diferencia entre total, subtotal e impuesto. `NULLIF` evita division entre cero; anotare si las diferencias son cero al revisar las filas.
 
-**Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
+**Lo que aprendi:** Aprendere a validar importes calculados y a evitar division entre cero con `NULLIF` en SQL Server.
 
 #### Ingresos pagados por mes
 
