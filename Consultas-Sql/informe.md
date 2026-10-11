@@ -828,9 +828,9 @@ ORDER BY total_revenue DESC, b.bicycle_type;
 
 **Evidencia de ejecucion:**
 **Oracle: Calcular participación de ingresos por bicicleta**
-*Captura pendiente: `oracle_participacion_ingresos_bicicletas.png`.*
+![Oracle: Calcular participación de ingresos por bicicleta](trazabilidad/oracle_participacion_ingresos_bicicletas.png)
 
-**Retroalimentacion:** La consulta suma los importes de alquileres completados por tipo de bicicleta y `RATIO_TO_REPORT` calcula el porcentaje que aporta cada tipo al total. Anotare los porcentajes que muestre DBeaver.
+**Retroalimentacion:** `RATIO_TO_REPORT` calcula la participacion de cada tipo en los ingresos de alquileres completados. Observo 17 alquileres `standard` con 145.779 (27,60 %), 17 `mountain` con 138.758 (26,27 %), 17 `electric` con 124.084 (23,49 %) y 16 `urban` con 119.592 (22,64 %).
 
 **Lo que aprendi:** Aprendere a calcular participaciones porcentuales de grupos con la funcion analitica `RATIO_TO_REPORT` de Oracle.
 
