@@ -49,12 +49,25 @@ ORDER BY bicycle_id;
 ```
 
 **Evidencia de ejecucion:**
-![DBeaver MySQL: bicicletas disponibles](trazabilidad/mysql_bicicletas_disponibles.png)
-![DBeaver PostgreSQL: bicicletas disponibles](trazabilidad/postgresql_bicicletas_disponibles.png)
-![DBeaver SQL Server: bicicletas disponibles](trazabilidad/sqlserver_bicicletas_disponibles.png)
-![DBeaver Oracle: bicicletas disponibles](trazabilidad/oracle_bicicletas_disponibles.png)
+**MySQL: Consultar bicicletas disponibles**
+![MySQL: Consultar bicicletas disponibles](trazabilidad/mysql_bicicletas_disponibles.png)
 
-**Lo que observe:** En las cuatro capturas, DBeaver muestra 80 filas recuperadas y todas corresponden a bicicletas con estado `available`.
+**Retroalimentacion:** La sentencia filtra `bicycles` por `status = 'available'` y ordena por identificador. Observacion: la captura muestra 80 filas recuperadas y todas tienen estado `available`.
+
+**PostgreSQL: Consultar bicicletas disponibles**
+![PostgreSQL: Consultar bicicletas disponibles](trazabilidad/postgresql_bicicletas_disponibles.png)
+
+**Retroalimentacion:** La sentencia filtra `bicycles` por `status = 'available'` y ordena por identificador. Observacion: la captura muestra 80 filas recuperadas y todas tienen estado `available`.
+
+**SQL Server: Consultar bicicletas disponibles**
+![SQL Server: Consultar bicicletas disponibles](trazabilidad/sqlserver_bicicletas_disponibles.png)
+
+**Retroalimentacion:** La sentencia filtra `bicycles` por `status = 'available'` y ordena por identificador. Observacion: la captura muestra 80 filas recuperadas y todas tienen estado `available`.
+
+**Oracle: Consultar bicicletas disponibles**
+![Oracle: Consultar bicicletas disponibles](trazabilidad/oracle_bicicletas_disponibles.png)
+
+**Retroalimentacion:** La sentencia filtra `bicycles` por `status = 'available'` y ordena por identificador. Observacion: la captura muestra 80 filas recuperadas y todas tienen estado `available`.
 
 **Lo que aprendi:** Aprendi que `WHERE` permite seleccionar solo las bicicletas disponibles y `ORDER BY` organiza su identificador.
 
@@ -70,12 +83,25 @@ ORDER BY started_at DESC;
 ```
 
 **Evidencia de ejecucion:**
-![DBeaver MySQL: alquileres completados](trazabilidad/mysql_alquileres_completados.png)
-![DBeaver PostgreSQL: alquileres completados](trazabilidad/postgresql_alquileres_completados.png)
-![DBeaver SQL Server: alquileres completados](trazabilidad/sqlserver_alquileres_completados.png)
-![DBeaver Oracle: alquileres completados](trazabilidad/oracle_alquileres_completados.png)
+**MySQL: Consultar alquileres completados**
+![MySQL: Consultar alquileres completados](trazabilidad/mysql_alquileres_completados.png)
 
-**Lo que observe:** En las cuatro capturas, DBeaver muestra 67 alquileres con estado `completed`; las filas aparecen ordenadas por fecha de inicio descendente.
+**Retroalimentacion:** La sentencia filtra `rentals` por estado `completed` y ordena por inicio descendente. Observacion: la captura muestra 67 alquileres completados ordenados del mas reciente al mas antiguo.
+
+**PostgreSQL: Consultar alquileres completados**
+![PostgreSQL: Consultar alquileres completados](trazabilidad/postgresql_alquileres_completados.png)
+
+**Retroalimentacion:** La sentencia filtra `rentals` por estado `completed` y ordena por inicio descendente. Observacion: la captura muestra 67 alquileres completados ordenados del mas reciente al mas antiguo.
+
+**SQL Server: Consultar alquileres completados**
+![SQL Server: Consultar alquileres completados](trazabilidad/sqlserver_alquileres_completados.png)
+
+**Retroalimentacion:** La sentencia filtra `rentals` por estado `completed` y ordena por inicio descendente. Observacion: la captura muestra 67 alquileres completados ordenados del mas reciente al mas antiguo.
+
+**Oracle: Consultar alquileres completados**
+![Oracle: Consultar alquileres completados](trazabilidad/oracle_alquileres_completados.png)
+
+**Retroalimentacion:** La sentencia filtra `rentals` por estado `completed` y ordena por inicio descendente. Observacion: la captura muestra 67 alquileres completados ordenados del mas reciente al mas antiguo.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -105,13 +131,26 @@ LEFT JOIN stations end_station ON end_station.station_id = r.end_station_id
 ORDER BY r.started_at DESC;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, detalle alquileres relacionados](trazabilidad/mysql_detalle_alquileres_relacionados.png)
-![Evidencia pendiente: PostgreSQL, detalle alquileres relacionados](trazabilidad/postgresql_detalle_alquileres_relacionados.png)
-![Evidencia pendiente: SQL Server, detalle alquileres relacionados](trazabilidad/sqlserver_detalle_alquileres_relacionados.png)
-![Evidencia pendiente: Oracle, detalle alquileres relacionados](trazabilidad/oracle_detalle_alquileres_relacionados.png)
+**Evidencia de ejecucion:**
+**MySQL: Consultar detalle de alquileres relacionados**
+*Captura pendiente: `mysql_detalle_alquileres_relacionados.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta enlaza cada alquiler con cliente, bicicleta y tarifa; `LEFT JOIN` incluye sus estaciones cuando existen. La ejecucion y las filas observadas siguen pendientes de captura.
+
+**PostgreSQL: Consultar detalle de alquileres relacionados**
+*Captura pendiente: `postgresql_detalle_alquileres_relacionados.png`.*
+
+**Retroalimentacion:** La consulta enlaza cada alquiler con cliente, bicicleta y tarifa; `LEFT JOIN` incluye sus estaciones cuando existen. La ejecucion y las filas observadas siguen pendientes de captura.
+
+**SQL Server: Consultar detalle de alquileres relacionados**
+*Captura pendiente: `sqlserver_detalle_alquileres_relacionados.png`.*
+
+**Retroalimentacion:** La consulta enlaza cada alquiler con cliente, bicicleta y tarifa; `LEFT JOIN` incluye sus estaciones cuando existen. La ejecucion y las filas observadas siguen pendientes de captura.
+
+**Oracle: Consultar detalle de alquileres relacionados**
+*Captura pendiente: `oracle_detalle_alquileres_relacionados.png`.*
+
+**Retroalimentacion:** La consulta enlaza cada alquiler con cliente, bicicleta y tarifa; `LEFT JOIN` incluye sus estaciones cuando existen. La ejecucion y las filas observadas siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi que puedo reunir datos relacionados con `JOIN` y conservar estaciones opcionales con `LEFT JOIN`.
 
@@ -131,13 +170,26 @@ HAVING SUM(total_amount) > 0
 ORDER BY status;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, resumen alquileres por estado](trazabilidad/mysql_resumen_alquileres_por_estado.png)
-![Evidencia pendiente: PostgreSQL, resumen alquileres por estado](trazabilidad/postgresql_resumen_alquileres_por_estado.png)
-![Evidencia pendiente: SQL Server, resumen alquileres por estado](trazabilidad/sqlserver_resumen_alquileres_por_estado.png)
-![Evidencia pendiente: Oracle, resumen alquileres por estado](trazabilidad/oracle_resumen_alquileres_por_estado.png)
+**Evidencia de ejecucion:**
+**MySQL: Resumir alquileres por estado**
+*Captura pendiente: `mysql_resumen_alquileres_por_estado.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La sentencia agrupa alquileres por estado y calcula cantidad, suma y promedio del importe. La ejecucion y los valores agrupados siguen pendientes de captura.
+
+**PostgreSQL: Resumir alquileres por estado**
+*Captura pendiente: `postgresql_resumen_alquileres_por_estado.png`.*
+
+**Retroalimentacion:** La sentencia agrupa alquileres por estado y calcula cantidad, suma y promedio del importe. La ejecucion y los valores agrupados siguen pendientes de captura.
+
+**SQL Server: Resumir alquileres por estado**
+*Captura pendiente: `sqlserver_resumen_alquileres_por_estado.png`.*
+
+**Retroalimentacion:** La sentencia agrupa alquileres por estado y calcula cantidad, suma y promedio del importe. La ejecucion y los valores agrupados siguen pendientes de captura.
+
+**Oracle: Resumir alquileres por estado**
+*Captura pendiente: `oracle_resumen_alquileres_por_estado.png`.*
+
+**Retroalimentacion:** La sentencia agrupa alquileres por estado y calcula cantidad, suma y promedio del importe. La ejecucion y los valores agrupados siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a agrupar alquileres por estado y resumirlos con `COUNT`, `SUM` y `AVG`.
 
@@ -156,13 +208,26 @@ GROUP BY payment_method, status
 ORDER BY payment_method, status;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, resumen pagos por metodo estado](trazabilidad/mysql_resumen_pagos_por_metodo_estado.png)
-![Evidencia pendiente: PostgreSQL, resumen pagos por metodo estado](trazabilidad/postgresql_resumen_pagos_por_metodo_estado.png)
-![Evidencia pendiente: SQL Server, resumen pagos por metodo estado](trazabilidad/sqlserver_resumen_pagos_por_metodo_estado.png)
-![Evidencia pendiente: Oracle, resumen pagos por metodo estado](trazabilidad/oracle_resumen_pagos_por_metodo_estado.png)
+**Evidencia de ejecucion:**
+**MySQL: Resumir pagos por metodo y estado**
+*Captura pendiente: `mysql_resumen_pagos_por_metodo_estado.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta agrupa los pagos por metodo y estado y suma su importe. La ejecucion y los grupos devueltos siguen pendientes de captura.
+
+**PostgreSQL: Resumir pagos por metodo y estado**
+*Captura pendiente: `postgresql_resumen_pagos_por_metodo_estado.png`.*
+
+**Retroalimentacion:** La consulta agrupa los pagos por metodo y estado y suma su importe. La ejecucion y los grupos devueltos siguen pendientes de captura.
+
+**SQL Server: Resumir pagos por metodo y estado**
+*Captura pendiente: `sqlserver_resumen_pagos_por_metodo_estado.png`.*
+
+**Retroalimentacion:** La consulta agrupa los pagos por metodo y estado y suma su importe. La ejecucion y los grupos devueltos siguen pendientes de captura.
+
+**Oracle: Resumir pagos por metodo y estado**
+*Captura pendiente: `oracle_resumen_pagos_por_metodo_estado.png`.*
+
+**Retroalimentacion:** La consulta agrupa los pagos por metodo y estado y suma su importe. La ejecucion y los grupos devueltos siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a agrupar pagos por metodo y estado para comparar cantidades e importes.
 
@@ -178,10 +243,11 @@ SELECT DATABASE() AS base_actual;
 
 La respuesta debe ser `Pedalibre-Terminal-Dbeaver`. Si aparece otro nombre, cambio la conexión activa en DBeaver antes de continuar.
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, base seleccionada](trazabilidad/mysql_base_seleccionada.png)
+**Evidencia de ejecucion:**
+**MySQL: Verificar la base de datos activa**
+*Captura pendiente: `mysql_base_seleccionada.png`.*
 
-**Lo que observe:** Pendiente de anotar el nombre real de la base devuelta por DBeaver.
+**Retroalimentacion:** La sentencia `SELECT DATABASE()` identifica la base MySQL activa en esta conexion. Usa el resultado para confirmar `Pedalibre-Terminal-Dbeaver` antes de continuar.
 
 **Lo que aprendi:** Aprendi a comprobar la base activa antes de consultar sus tablas.
 
@@ -189,10 +255,11 @@ La respuesta debe ser `Pedalibre-Terminal-Dbeaver`. Si aparece otro nombre, camb
 SHOW TABLES;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, inventario tablas mysql](trazabilidad/mysql_inventario_tablas_mysql.png)
+**Evidencia de ejecucion:**
+**MySQL: Verificar las tablas de la base**
+*Captura pendiente: `mysql_inventario_tablas_mysql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada. Revisa que aparezcan las tablas PedalLibre antes de continuar.
 
 **Lo que aprendi:** Aprendi a comprobar que tablas estan visibles en la base seleccionada de MySQL.
 
@@ -223,10 +290,11 @@ UNION ALL SELECT 'invoices', COUNT(*) FROM invoices
 ORDER BY tabla;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, conteo de registros por tabla](trazabilidad/mysql_conteo_registros.png)
+**Evidencia de ejecucion:**
+**MySQL: Contar registros por tabla**
+*Captura pendiente: `mysql_conteo_registros.png`.*
 
-**Lo que observe:** Pendiente de registrar los conteos reales. La semilla documenta 100 registros por tabla, pero los confirmo con este resultado.
+**Retroalimentacion:** La consulta cuenta las filas de las 21 tablas. La guia de insercion indica 100 registros por tabla; compara ese valor esperado con los conteos que devuelva DBeaver.
 
 **Lo que aprendi:** Aprendi a validar con `COUNT(*)` la cantidad de registros cargados antes de analizar los datos.
 
@@ -240,10 +308,11 @@ ORDER BY started_at DESC
 LIMIT 10;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, alquileres completados top10 mysql](trazabilidad/mysql_alquileres_completados_top10_mysql.png)
+**Evidencia de ejecucion:**
+**MySQL: Mostrar los 10 alquileres completados mas recientes**
+*Captura pendiente: `mysql_alquileres_completados_top10_mysql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -259,10 +328,11 @@ WHERE table_schema = 'public'
 ORDER BY table_name;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: PostgreSQL, inventario tablas postgresql](trazabilidad/postgresql_inventario_tablas_postgresql.png)
+**Evidencia de ejecucion:**
+**PostgreSQL: Verificar las tablas de la base**
+*Captura pendiente: `postgresql_inventario_tablas_postgresql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada. Revisa que aparezcan las tablas PedalLibre antes de continuar.
 
 **Lo que aprendi:** Aprendi a consultar el catalogo de PostgreSQL para verificar las tablas del esquema `public`.
 
@@ -276,10 +346,11 @@ ORDER BY started_at DESC
 LIMIT 10;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: PostgreSQL, alquileres completados top10 postgresql](trazabilidad/postgresql_alquileres_completados_top10_postgresql.png)
+**Evidencia de ejecucion:**
+**PostgreSQL: Mostrar los 10 alquileres completados mas recientes**
+*Captura pendiente: `postgresql_alquileres_completados_top10_postgresql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -294,10 +365,11 @@ WHERE TABLE_TYPE = 'BASE TABLE'
 ORDER BY TABLE_SCHEMA, TABLE_NAME;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: SQL Server, inventario tablas postgresql](trazabilidad/sqlserver_inventario_tablas_postgresql.png)
+**Evidencia de ejecucion:**
+**SQL Server: Verificar las tablas de la base**
+*Captura pendiente: `sqlserver_inventario_tablas_postgresql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada. Revisa que aparezcan las tablas PedalLibre antes de continuar.
 
 **Lo que aprendi:** Aprendi a consultar `INFORMATION_SCHEMA` para identificar las tablas del esquema de SQL Server.
 
@@ -311,10 +383,11 @@ WHERE status = 'completed'
 ORDER BY started_at DESC;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: SQL Server, alquileres completados top10 sqlserver](trazabilidad/sqlserver_alquileres_completados_top10_sqlserver.png)
+**Evidencia de ejecucion:**
+**SQL Server: Mostrar los 10 alquileres completados mas recientes**
+*Captura pendiente: `sqlserver_alquileres_completados_top10_sqlserver.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -328,10 +401,11 @@ FROM user_tables
 ORDER BY table_name;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: Oracle, inventario tablas oracle](trazabilidad/oracle_inventario_tablas_oracle.png)
+**Evidencia de ejecucion:**
+**Oracle: Verificar las tablas de la base**
+*Captura pendiente: `oracle_inventario_tablas_oracle.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada. Revisa que aparezcan las tablas PedalLibre antes de continuar.
 
 **Lo que aprendi:** Aprendi a revisar las tablas que pertenecen al usuario/esquema Oracle conectado.
 
@@ -345,10 +419,11 @@ ORDER BY started_at DESC
 FETCH FIRST 10 ROWS ONLY;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: Oracle, alquileres completados top10 oracle](trazabilidad/oracle_alquileres_completados_top10_oracle.png)
+**Evidencia de ejecucion:**
+**Oracle: Mostrar los 10 alquileres completados mas recientes**
+*Captura pendiente: `oracle_alquileres_completados_top10_oracle.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -373,10 +448,11 @@ ORDER BY rental_count DESC, c.client_id
 LIMIT 5;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, clientes mas alquileres mysql](trazabilidad/mysql_clientes_mas_alquileres_mysql.png)
+**Evidencia de ejecucion:**
+**MySQL: Identificar clientes con mas alquileres**
+*Captura pendiente: `mysql_clientes_mas_alquileres_mysql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta cuenta alquileres por cliente y ordena para mostrar los cinco con mayor cantidad; `LEFT JOIN` conserva clientes sin alquileres. La ejecucion y las filas reales siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
 
@@ -394,10 +470,11 @@ GROUP BY s.station_id, s.name
 ORDER BY s.station_id;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, puntos disponibles por estacion mysql](trazabilidad/mysql_puntos_disponibles_por_estacion_mysql.png)
+**Evidencia de ejecucion:**
+**MySQL: Contar anclajes disponibles por estacion**
+*Captura pendiente: `mysql_puntos_disponibles_por_estacion_mysql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La sentencia agrupa los anclajes por estacion y cuenta el total y los que estan disponibles usando `CASE`. La ejecucion y los conteos observados siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
 
@@ -419,10 +496,11 @@ WHERE i.status = 'open'
 ORDER BY i.reported_at DESC;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, incidentes abiertos mysql](trazabilidad/mysql_incidentes_abiertos_mysql.png)
+**Evidencia de ejecucion:**
+**MySQL: Consultar incidentes abiertos**
+*Captura pendiente: `mysql_incidentes_abiertos_mysql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta filtra incidentes abiertos y agrega, si estan asociados, el serial de la bicicleta y el nombre del cliente. La ejecucion y las filas reales siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
 
@@ -440,10 +518,11 @@ GROUP BY DATE_FORMAT(paid_at, '%Y-%m')
 ORDER BY payment_month;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, ingresos pagados por mes mysql](trazabilidad/mysql_ingresos_pagados_por_mes_mysql.png)
+**Evidencia de ejecucion:**
+**MySQL: Resumir pagos realizados por mes**
+*Captura pendiente: `mysql_ingresos_pagados_por_mes_mysql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta filtra pagos pagados, agrupa por mes y calcula cantidad e importe mensual. La ejecucion y los valores devueltos siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
 
@@ -464,10 +543,11 @@ ORDER BY rental_count DESC, c.client_id
 LIMIT 5;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: PostgreSQL, clientes mas alquileres postgresql](trazabilidad/postgresql_clientes_mas_alquileres_postgresql.png)
+**Evidencia de ejecucion:**
+**PostgreSQL: Identificar clientes con mas alquileres**
+*Captura pendiente: `postgresql_clientes_mas_alquileres_postgresql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta cuenta alquileres por cliente y ordena para mostrar los cinco con mayor cantidad; `LEFT JOIN` conserva clientes sin alquileres. La ejecucion y las filas reales siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
 
@@ -485,10 +565,11 @@ GROUP BY s.station_id, s.name
 ORDER BY s.station_id;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: PostgreSQL, puntos disponibles por estacion postgresql](trazabilidad/postgresql_puntos_disponibles_por_estacion_postgresql.png)
+**Evidencia de ejecucion:**
+**PostgreSQL: Contar anclajes disponibles por estacion**
+*Captura pendiente: `postgresql_puntos_disponibles_por_estacion_postgresql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La sentencia agrupa los anclajes por estacion y cuenta el total y los que estan disponibles usando `CASE`. La ejecucion y los conteos observados siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
 
@@ -510,10 +591,11 @@ WHERE i.status = 'open'
 ORDER BY i.reported_at DESC;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: PostgreSQL, incidentes abiertos postgresql](trazabilidad/postgresql_incidentes_abiertos_postgresql.png)
+**Evidencia de ejecucion:**
+**PostgreSQL: Consultar incidentes abiertos**
+*Captura pendiente: `postgresql_incidentes_abiertos_postgresql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta filtra incidentes abiertos y agrega, si estan asociados, el serial de la bicicleta y el nombre del cliente. La ejecucion y las filas reales siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
 
@@ -531,10 +613,11 @@ GROUP BY TO_CHAR(paid_at, 'YYYY-MM')
 ORDER BY payment_month;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: PostgreSQL, ingresos pagados por mes postgresql](trazabilidad/postgresql_ingresos_pagados_por_mes_postgresql.png)
+**Evidencia de ejecucion:**
+**PostgreSQL: Resumir pagos realizados por mes**
+*Captura pendiente: `postgresql_ingresos_pagados_por_mes_postgresql.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta filtra pagos pagados, agrupa por mes y calcula cantidad e importe mensual. La ejecucion y los valores devueltos siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
 
@@ -554,10 +637,11 @@ GROUP BY c.client_id, c.first_name, c.last_name
 ORDER BY rental_count DESC, c.client_id;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: SQL Server, clientes mas alquileres sqlserver](trazabilidad/sqlserver_clientes_mas_alquileres_sqlserver.png)
+**Evidencia de ejecucion:**
+**SQL Server: Identificar clientes con mas alquileres**
+*Captura pendiente: `sqlserver_clientes_mas_alquileres_sqlserver.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta cuenta alquileres por cliente y ordena para mostrar los cinco con mayor cantidad; `LEFT JOIN` conserva clientes sin alquileres. La ejecucion y las filas reales siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
 
@@ -575,10 +659,11 @@ GROUP BY s.station_id, s.name
 ORDER BY s.station_id;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: SQL Server, puntos disponibles por estacion sqlserver](trazabilidad/sqlserver_puntos_disponibles_por_estacion_sqlserver.png)
+**Evidencia de ejecucion:**
+**SQL Server: Contar anclajes disponibles por estacion**
+*Captura pendiente: `sqlserver_puntos_disponibles_por_estacion_sqlserver.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La sentencia agrupa los anclajes por estacion y cuenta el total y los que estan disponibles usando `CASE`. La ejecucion y los conteos observados siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
 
@@ -600,10 +685,11 @@ WHERE i.status = 'open'
 ORDER BY i.reported_at DESC;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: SQL Server, incidentes abiertos sqlserver](trazabilidad/sqlserver_incidentes_abiertos_sqlserver.png)
+**Evidencia de ejecucion:**
+**SQL Server: Consultar incidentes abiertos**
+*Captura pendiente: `sqlserver_incidentes_abiertos_sqlserver.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta filtra incidentes abiertos y agrega, si estan asociados, el serial de la bicicleta y el nombre del cliente. La ejecucion y las filas reales siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
 
@@ -622,10 +708,11 @@ GROUP BY YEAR(paid_at), MONTH(paid_at)
 ORDER BY payment_year, payment_month;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: SQL Server, ingresos pagados por mes sqlserver](trazabilidad/sqlserver_ingresos_pagados_por_mes_sqlserver.png)
+**Evidencia de ejecucion:**
+**SQL Server: Resumir pagos realizados por mes**
+*Captura pendiente: `sqlserver_ingresos_pagados_por_mes_sqlserver.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta filtra pagos pagados, agrupa por mes y calcula cantidad e importe mensual. La ejecucion y los valores devueltos siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
 
@@ -646,10 +733,11 @@ ORDER BY rental_count DESC, c.client_id
 FETCH FIRST 5 ROWS ONLY;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: Oracle, clientes mas alquileres oracle](trazabilidad/oracle_clientes_mas_alquileres_oracle.png)
+**Evidencia de ejecucion:**
+**Oracle: Identificar clientes con mas alquileres**
+*Captura pendiente: `oracle_clientes_mas_alquileres_oracle.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta cuenta alquileres por cliente y ordena para mostrar los cinco con mayor cantidad; `LEFT JOIN` conserva clientes sin alquileres. La ejecucion y las filas reales siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
 
@@ -667,10 +755,11 @@ GROUP BY s.station_id, s.name
 ORDER BY s.station_id;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: Oracle, puntos disponibles por estacion oracle](trazabilidad/oracle_puntos_disponibles_por_estacion_oracle.png)
+**Evidencia de ejecucion:**
+**Oracle: Contar anclajes disponibles por estacion**
+*Captura pendiente: `oracle_puntos_disponibles_por_estacion_oracle.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La sentencia agrupa los anclajes por estacion y cuenta el total y los que estan disponibles usando `CASE`. La ejecucion y los conteos observados siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
 
@@ -692,10 +781,11 @@ WHERE i.status = 'open'
 ORDER BY i.reported_at DESC;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: Oracle, incidentes abiertos oracle](trazabilidad/oracle_incidentes_abiertos_oracle.png)
+**Evidencia de ejecucion:**
+**Oracle: Consultar incidentes abiertos**
+*Captura pendiente: `oracle_incidentes_abiertos_oracle.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta filtra incidentes abiertos y agrega, si estan asociados, el serial de la bicicleta y el nombre del cliente. La ejecucion y las filas reales siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
 
@@ -713,16 +803,17 @@ GROUP BY TO_CHAR(paid_at, 'YYYY-MM')
 ORDER BY payment_month;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: Oracle, ingresos pagados por mes oracle](trazabilidad/oracle_ingresos_pagados_por_mes_oracle.png)
+**Evidencia de ejecucion:**
+**Oracle: Resumir pagos realizados por mes**
+*Captura pendiente: `oracle_ingresos_pagados_por_mes_oracle.png`.*
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Retroalimentacion:** La consulta filtra pagos pagados, agrupa por mes y calcula cantidad e importe mensual. La ejecucion y los valores devueltos siguen pendientes de captura.
 
 **Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
 
 ## Evidencia de trazabilidad
 
-Debajo de cada consulta de este informe dejé su espacio de captura, seguido por los apartados **Lo que observé** y **Lo que aprendí**. Ya incorporé las capturas de bicicletas disponibles (80 filas) y alquileres completados (67 filas) para MySQL, PostgreSQL, SQL Server y Oracle. Las evidencias que todavía no se han ejecutado permanecen marcadas como pendientes. Cada captura muestra la conexión, el comando ejecutado y las filas devueltas; registro las observaciones a partir de esos resultados visibles.
+Debajo de cada evidencia puse el titulo del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentacion que explica para que sirve la consulta y que se observa en el resultado. Las ocho capturas recibidas muestran 80 bicicletas disponibles y 67 alquileres completados en cada motor. Las consultas todavia no ejecutadas tienen la captura marcada como pendiente; completare su observacion cuando tenga el resultado real.
 
 Capturas agregadas a [trazabilidad/](./trazabilidad/):
 
