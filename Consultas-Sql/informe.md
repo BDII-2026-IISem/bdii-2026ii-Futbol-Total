@@ -502,9 +502,9 @@ ORDER BY i.reported_at DESC;
 
 **Evidencia de ejecucion:**
 **MySQL: Consultar incidentes abiertos**
-*Captura pendiente: `mysql_incidentes_abiertos_mysql.png`.*
+![MySQL: Consultar incidentes abiertos](trazabilidad/mysql_incidentes_abiertos_mysql.png)
 
-**Retroalimentacion:** La consulta filtra incidentes abiertos y agrega, si estan asociados, el serial de la bicicleta y el nombre del cliente. La ejecucion y las filas reales siguen pendientes de captura.
+**Retroalimentacion:** La consulta filtra incidentes `open` y usa `LEFT JOIN` para añadir los datos de bicicleta y cliente cuando estan asociados. La cuadrícula muestra 25 filas; los registros visibles incluyen distintos niveles de severidad y las descripciones de los incidentes.
 
 **Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
 
