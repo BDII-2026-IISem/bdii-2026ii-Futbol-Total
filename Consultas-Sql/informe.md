@@ -691,9 +691,9 @@ ORDER BY invoice_id;
 
 **Evidencia de ejecucion:**
 **SQL Server: Revisar importes e impuesto de facturas**
-*Captura pendiente: `sqlserver_validar_impuestos_facturas.png`.*
+![SQL Server: Revisar importes e impuesto de facturas](trazabilidad/sqlserver_validar_impuestos_facturas.png)
 
-**Retroalimentacion:** La consulta calcula el porcentaje de impuesto y comprueba la diferencia entre total, subtotal e impuesto. `NULLIF` evita division entre cero; anotare si las diferencias son cero al revisar las filas.
+**Retroalimentacion:** La consulta calcula el porcentaje de impuesto y comprueba la diferencia entre total, subtotal e impuesto. En las 100 facturas el impuesto observado es 19 % y `difference` vale 0, por lo que los importes coinciden con la suma de subtotal e impuesto.
 
 **Lo que aprendi:** Aprendere a validar importes calculados y a evitar division entre cero con `NULLIF` en SQL Server.
 
