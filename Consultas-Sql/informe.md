@@ -348,9 +348,9 @@ LIMIT 10;
 
 **Evidencia de ejecucion:**
 **PostgreSQL: Mostrar los 10 alquileres completados mas recientes**
-*Captura pendiente: `postgresql_alquileres_completados_top10_postgresql.png`.*
+![PostgreSQL: Mostrar los 10 alquileres completados mas recientes](trazabilidad/postgresql_alquileres_completados_top10_postgresql.png)
 
-**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
+**Retroalimentacion:** `LIMIT 10` limita la salida a los 10 alquileres completados con fecha de inicio mas reciente. Observo diez filas, todas con estado `completed`, ordenadas por `started_at` descendente.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -822,6 +822,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Base de datos activa en MySQL: `mysql_base_seleccionada.png`.
 - Tablas visibles en MySQL: `mysql_inventario_tablas_mysql.png`.
 - Tablas visibles en PostgreSQL: `postgresql_inventario_tablas_postgresql.png`.
+- Diez alquileres recientes en PostgreSQL: `postgresql_alquileres_completados_top10_postgresql.png`.
 
 ## Referencias
 
