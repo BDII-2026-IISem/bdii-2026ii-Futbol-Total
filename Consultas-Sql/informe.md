@@ -8,7 +8,7 @@ Me concentro en consultas de lectura que permiten revisar registros, filtrar res
 
 ## Base de datos y tablas
 
-En la carpeta [Creacion de Tablas y Reguistros](./Creacion%20de%20Tablas%20y%20Reguistros/) consulté la guía del esquema y los scripts de datos de prueba. Estos describen 21 tablas del dominio PedalLibre: `roles`, `users`, `clients`, `stations`, `station_locations`, `station_schedules`, `docking_points`, `bicycles`, `bicycle_dockings`, `reservations`, `rates`, `rentals`, `rental_events`, `penalties`, `maintenance`, `payments`, `incidents`, `notifications`, `bicycle_history`, `reviews` e `invoices`. El script de datos de prueba contempla 100 registros por tabla y por motor.
+En la carpeta [Creacion de Tablas y Reguistros](./Creacion%20de%20Tablas%20y%20Reguistros/) consulté la guía del esquema y los scripts de datos de prueba. Estos describen 21 tablas del dominio PedalLibre: `roles`, `users`, `clients`, `stations`, `station_locations`, `station_schedules`, `docking_points`, `bicycles`, `bicycle_dockings`, `reservations`, `rates`, `rentals`, `rental_events`, `penalties`, `maintenance`, `payments`, `incidents`, `notifications`, `bicycle_history`, `reviews` e `invoices`. La guía de inserción y la semilla MySQL contemplan 100 registros por tabla; también confirmaste que ya cargaste los datos en los cuatro motores. En DBeaver voy a validar la base seleccionada y los conteos antes de empezar con las consultas.
 
 Por tanto, las tablas que consultaré son las tablas adicionales del proyecto, creadas sobre cada motor; no son tablas que se creen automáticamente al instalar MySQL, PostgreSQL, SQL Server u Oracle. La verificación se basa en los archivos SQL del proyecto; no he abierto las conexiones locales para comprobar en vivo el estado actual de cada servidor.
 
@@ -21,7 +21,7 @@ Por tanto, las tablas que consultaré son las tablas adicionales del proyecto, c
 | PostgreSQL | `Pedalibre-Terminal-Dbeaver` |
 | Oracle | Esquema `PEDALIBRETERMINALDBEAVER` |
 
-**Observación para MySQL:** el nombre indicado para la conexión es `Pedalibre-Terminal-Dbeaver`, pero tanto la guía del esquema como el script de datos de prueba identifican la base MySQL como `Pedalibre-DW`. Antes de ejecutar, selecciono en DBeaver la base que realmente contiene las 21 tablas y confirmo ese nombre en el navegador de bases de datos. No ejecuto `USE` a ciegas ni cambio la base de destino.
+**MySQL:** la guía del esquema y el script de datos de prueba usan la base `Pedalibre-Terminal-Dbeaver`. Antes de ejecutar, confirmo con `SELECT DATABASE()` que esa sea la base seleccionada en DBeaver.
 
 ## Procedimiento en DBeaver
 
@@ -31,7 +31,7 @@ Por tanto, las tablas que consultaré son las tablas adicionales del proyecto, c
 4. Compruebo que existen las tablas del proyecto con el comando de inspección indicado para el motor. Si no aparecen `bicycles`, `rentals`, `payments` y las demás tablas del esquema, detengo la ejecución y corrijo la conexión o el esquema seleccionado.
 5. Ejecuto una consulta a la vez: selecciono el bloque completo y uso **Ejecutar sentencia** en DBeaver. Las consultas de este informe son de solo lectura.
 6. Reviso las filas devueltas en la cuadrícula de resultados. Las filas exactas pueden variar según los datos cargados en la base.
-7. Debajo de cada bloque SQL encuentro la ruta de su captura pendiente. Tomo la imagen en DBeaver mostrando conexion, sentencia y resultado; la guardo con ese nombre en `trazabilidad/`. Despues completo lo que observe y aprendi basandome en las filas reales.
+7. Debajo de cada bloque SQL encuentro la ruta de su captura pendiente. Tomo la imagen en DBeaver mostrando conexion, sentencia y resultado; la guardo con ese nombre en `trazabilidad/`. Despues completo lo que observe y aprendi basandome en las filas reales. Para empezar por MySQL, abro [consultas_mysql.sql](./consultas_mysql.sql) y ejecuto cada sentencia individualmente.
 
 ## Consultas principales
 
@@ -48,19 +48,19 @@ WHERE status = 'available'
 ORDER BY bicycle_id;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, bicicletas disponibles](trazabilidad/mysql_bicicletas_disponibles.png)
-![Evidencia pendiente: PostgreSQL, bicicletas disponibles](trazabilidad/postgresql_bicicletas_disponibles.png)
-![Evidencia pendiente: SQL Server, bicicletas disponibles](trazabilidad/sqlserver_bicicletas_disponibles.png)
-![Evidencia pendiente: Oracle, bicicletas disponibles](trazabilidad/oracle_bicicletas_disponibles.png)
+**Evidencia de ejecucion:**
+![DBeaver MySQL: bicicletas disponibles](trazabilidad/mysql_bicicletas_disponibles.png)
+![DBeaver PostgreSQL: bicicletas disponibles](trazabilidad/postgresql_bicicletas_disponibles.png)
+![DBeaver SQL Server: bicicletas disponibles](trazabilidad/sqlserver_bicicletas_disponibles.png)
+![DBeaver Oracle: bicicletas disponibles](trazabilidad/oracle_bicicletas_disponibles.png)
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Lo que observe:** En las cuatro capturas, DBeaver muestra 80 filas recuperadas y todas corresponden a bicicletas con estado `available`.
 
 **Lo que aprendi:** Aprendi que `WHERE` permite seleccionar solo las bicicletas disponibles y `ORDER BY` organiza su identificador.
 
 ### 2. Consultar alquileres completados
 
-Aplico un filtro por estado y ordeno los alquileres desde el más reciente. Limito la salida a las primeras 10 filas con la variante del motor descrita en la sección correspondiente.
+Aplico un filtro por estado y ordeno los alquileres desde el más reciente. La consulta devuelve todos los alquileres completados; las variantes para limitar a 10 resultados aparecen en la sección de cada motor.
 
 ```sql
 SELECT rental_id, client_id, bicycle_id, started_at, ended_at, total_amount, status
@@ -69,13 +69,13 @@ WHERE status = 'completed'
 ORDER BY started_at DESC;
 ```
 
-**Evidencia de ejecucion (captura pendiente):**
-![Evidencia pendiente: MySQL, alquileres completados](trazabilidad/mysql_alquileres_completados.png)
-![Evidencia pendiente: PostgreSQL, alquileres completados](trazabilidad/postgresql_alquileres_completados.png)
-![Evidencia pendiente: SQL Server, alquileres completados](trazabilidad/sqlserver_alquileres_completados.png)
-![Evidencia pendiente: Oracle, alquileres completados](trazabilidad/oracle_alquileres_completados.png)
+**Evidencia de ejecucion:**
+![DBeaver MySQL: alquileres completados](trazabilidad/mysql_alquileres_completados.png)
+![DBeaver PostgreSQL: alquileres completados](trazabilidad/postgresql_alquileres_completados.png)
+![DBeaver SQL Server: alquileres completados](trazabilidad/sqlserver_alquileres_completados.png)
+![DBeaver Oracle: alquileres completados](trazabilidad/oracle_alquileres_completados.png)
 
-**Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
+**Lo que observe:** En las cuatro capturas, DBeaver muestra 67 alquileres con estado `completed`; las filas aparecen ordenadas por fecha de inicio descendente.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -173,6 +173,19 @@ ORDER BY payment_method, status;
 Conecto a la base indicada y verifico el esquema. Si la lista está vacía o no corresponde a PedalLibre, no continúo hasta seleccionar la base correcta.
 
 ```sql
+SELECT DATABASE() AS base_actual;
+```
+
+La respuesta debe ser `Pedalibre-Terminal-Dbeaver`. Si aparece otro nombre, cambio la conexión activa en DBeaver antes de continuar.
+
+**Evidencia de ejecucion (captura pendiente):**
+![Evidencia pendiente: MySQL, base seleccionada](trazabilidad/mysql_base_seleccionada.png)
+
+**Lo que observe:** Pendiente de anotar el nombre real de la base devuelta por DBeaver.
+
+**Lo que aprendi:** Aprendi a comprobar la base activa antes de consultar sus tablas.
+
+```sql
 SHOW TABLES;
 ```
 
@@ -182,6 +195,40 @@ SHOW TABLES;
 **Lo que observe:** Pendiente de completar despues de ejecutar la consulta: anotar las filas y valores que aparecen en DBeaver. No registrar datos antes de ver el resultado real.
 
 **Lo que aprendi:** Aprendi a comprobar que tablas estan visibles en la base seleccionada de MySQL.
+
+Para confirmar que se cargaron los datos de prueba, cuento las filas de las 21 tablas. La guía de inserción espera 100 registros en cada una; comparo ese valor con el resultado que realmente muestre DBeaver.
+
+```sql
+SELECT 'roles' AS tabla, COUNT(*) AS registros FROM roles
+UNION ALL SELECT 'users', COUNT(*) FROM users
+UNION ALL SELECT 'clients', COUNT(*) FROM clients
+UNION ALL SELECT 'stations', COUNT(*) FROM stations
+UNION ALL SELECT 'station_locations', COUNT(*) FROM station_locations
+UNION ALL SELECT 'station_schedules', COUNT(*) FROM station_schedules
+UNION ALL SELECT 'docking_points', COUNT(*) FROM docking_points
+UNION ALL SELECT 'bicycles', COUNT(*) FROM bicycles
+UNION ALL SELECT 'bicycle_dockings', COUNT(*) FROM bicycle_dockings
+UNION ALL SELECT 'rates', COUNT(*) FROM rates
+UNION ALL SELECT 'reservations', COUNT(*) FROM reservations
+UNION ALL SELECT 'rentals', COUNT(*) FROM rentals
+UNION ALL SELECT 'rental_events', COUNT(*) FROM rental_events
+UNION ALL SELECT 'penalties', COUNT(*) FROM penalties
+UNION ALL SELECT 'maintenance', COUNT(*) FROM maintenance
+UNION ALL SELECT 'payments', COUNT(*) FROM payments
+UNION ALL SELECT 'incidents', COUNT(*) FROM incidents
+UNION ALL SELECT 'notifications', COUNT(*) FROM notifications
+UNION ALL SELECT 'bicycle_history', COUNT(*) FROM bicycle_history
+UNION ALL SELECT 'reviews', COUNT(*) FROM reviews
+UNION ALL SELECT 'invoices', COUNT(*) FROM invoices
+ORDER BY tabla;
+```
+
+**Evidencia de ejecucion (captura pendiente):**
+![Evidencia pendiente: MySQL, conteo de registros por tabla](trazabilidad/mysql_conteo_registros.png)
+
+**Lo que observe:** Pendiente de registrar los conteos reales. La semilla documenta 100 registros por tabla, pero los confirmo con este resultado.
+
+**Lo que aprendi:** Aprendi a validar con `COUNT(*)` la cantidad de registros cargados antes de analizar los datos.
 
 Para limitar la consulta de alquileres completados a 10 filas, agrego `LIMIT 10` al final:
 
@@ -675,7 +722,12 @@ ORDER BY payment_month;
 
 ## Evidencia de trazabilidad
 
-Debajo de cada una de las 29 consultas de este informe deje su espacio de captura, seguido por los apartados **Lo que observe** y **Lo que aprendi**. Las cinco consultas comunes tienen una ruta de imagen por cada motor en el que se ejecutan. Las imagenes estan pendientes de que me compartas las capturas reales; no he creado ni supuesto resultados. Cada captura debe mostrar en DBeaver la conexion, el comando ejecutado y las filas devueltas. Guarda cada evidencia usando exactamente la ruta indicada debajo de su consulta.
+Debajo de cada consulta de este informe dejé su espacio de captura, seguido por los apartados **Lo que observé** y **Lo que aprendí**. Ya incorporé las capturas de bicicletas disponibles (80 filas) y alquileres completados (67 filas) para MySQL, PostgreSQL, SQL Server y Oracle. Las evidencias que todavía no se han ejecutado permanecen marcadas como pendientes. Cada captura muestra la conexión, el comando ejecutado y las filas devueltas; registro las observaciones a partir de esos resultados visibles.
+
+Capturas agregadas a [trazabilidad/](./trazabilidad/):
+
+- Bicicletas disponibles: `mysql_bicicletas_disponibles.png`, `postgresql_bicicletas_disponibles.png`, `sqlserver_bicicletas_disponibles.png` y `oracle_bicicletas_disponibles.png`.
+- Alquileres completados: `mysql_alquileres_completados.png`, `postgresql_alquileres_completados.png`, `sqlserver_alquileres_completados.png` y `oracle_alquileres_completados.png`.
 
 ## Referencias
 
@@ -684,4 +736,5 @@ Debajo de cada una de las 29 consultas de este informe deje su espacio de captur
 - [Guía docente de consultas Microsoft SQL Server](https://tecnogua.com/academic/site/bd/gestion/mssql/mssql/)
 - [Guía docente de consultas Oracle](https://tecnogua.com/academic/site/bd/gestion/oracle/oracle/)
 - [Guía del esquema PedalLibre](./Creacion%20de%20Tablas%20y%20Reguistros/guia.md)
-- [Datos de prueba por motor](./Creacion%20de%20Tablas%20y%20Reguistros/seed_100_por_motor.md)
+- [Guia de insercion de datos](./Creacion%20de%20Tablas%20y%20Reguistros/guia_insert_datos.md)
+- [Consultas MySQL para ejecutar en DBeaver](./consultas_mysql.sql)
