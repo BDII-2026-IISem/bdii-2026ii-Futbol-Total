@@ -735,28 +735,29 @@ ORDER BY client_id, started_at, rental_id;
 
 ### Oracle
 
-#### Clientes con más alquileres
+#### Rendimiento de las tarifas utilizadas
 
 ```sql
 SELECT
-    c.client_id,
-    c.first_name,
-    c.last_name,
-    COUNT(r.rental_id) AS rental_count
-FROM clients c
-LEFT JOIN rentals r ON r.client_id = c.client_id
-GROUP BY c.client_id, c.first_name, c.last_name
-ORDER BY rental_count DESC, c.client_id
-FETCH FIRST 5 ROWS ONLY;
+    rt.rate_id,
+    rt.name AS rate_name,
+    rt.billing_unit,
+    COUNT(r.rental_id) AS rental_count,
+    COUNT(CASE WHEN r.status = 'completed' THEN 1 END) AS completed_count,
+    NVL(SUM(CASE WHEN r.status = 'completed' THEN r.total_amount END), 0) AS completed_revenue
+FROM rates rt
+LEFT JOIN rentals r ON r.rate_id = rt.rate_id
+GROUP BY rt.rate_id, rt.name, rt.billing_unit
+ORDER BY completed_revenue DESC, rt.rate_id;
 ```
 
 **Evidencia de ejecucion:**
-**Oracle: Identificar clientes con mas alquileres**
-*Captura pendiente: `oracle_clientes_mas_alquileres_oracle.png`.*
+**Oracle: Resumir uso e ingresos por tarifa**
+*Captura pendiente: `oracle_rendimiento_tarifas.png`.*
 
-**Retroalimentacion:** La consulta cuenta alquileres por cliente y ordena para mostrar los cinco con mayor cantidad; `LEFT JOIN` conserva clientes sin alquileres. La ejecucion y las filas reales siguen pendientes de captura.
+**Retroalimentacion:** La consulta relaciona cada tarifa con sus alquileres, cuenta los completados y suma sus importes. `NVL` muestra cero cuando no hay ingresos completados para una tarifa. Anotare los valores observados en DBeaver.
 
-**Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
+**Lo que aprendi:** Aprendere a usar `NVL` y agregados condicionales de Oracle para comparar el uso y los ingresos de cada tarifa.
 
 #### Puntos de anclaje disponibles por estación
 
