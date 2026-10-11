@@ -385,9 +385,9 @@ ORDER BY started_at DESC;
 
 **Evidencia de ejecucion:**
 **SQL Server: Mostrar los 10 alquileres completados mas recientes**
-*Captura pendiente: `sqlserver_alquileres_completados_top10_sqlserver.png`.*
+![SQL Server: Mostrar los 10 alquileres completados mas recientes](trazabilidad/sqlserver_alquileres_completados_top10_sqlserver.png)
 
-**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
+**Retroalimentacion:** `TOP (10)` limita la salida a diez alquileres completados, ordenados por fecha de inicio descendente. Observo diez filas y todos los registros muestran estado `completed`.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -824,6 +824,7 @@ Capturas agregadas a [trazabilidad/](./trazabilidad/):
 - Tablas visibles en PostgreSQL: `postgresql_inventario_tablas_postgresql.png`.
 - Diez alquileres recientes en PostgreSQL: `postgresql_alquileres_completados_top10_postgresql.png`.
 - Tablas visibles en SQL Server: `sqlserver_inventario_tablas_sqlserver.png`.
+- Diez alquileres recientes en SQL Server: `sqlserver_alquileres_completados_top10_sqlserver.png`.
 
 ## Referencias
 
