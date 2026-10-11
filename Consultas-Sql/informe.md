@@ -805,9 +805,9 @@ ORDER BY GROUPING(severity), severity_group;
 
 **Evidencia de ejecucion:**
 **Oracle: Resumir incidentes por severidad**
-*Captura pendiente: `oracle_incidentes_rollup_severidad.png`.*
+![Oracle: Resumir incidentes por severidad](trazabilidad/oracle_incidentes_rollup_severidad.png)
 
-**Retroalimentacion:** `ROLLUP` calcula una fila por nivel de severidad y una fila adicional de total general; `GROUPING` distingue el total de una severidad nula. Anotare los conteos observados tras ejecutarla.
+**Retroalimentacion:** `ROLLUP` calcula el conteo por severidad y añade el total general; `GROUPING` etiqueta esa última fila como `TOTAL`. Observo 33 incidentes `high`, 33 `low`, 34 `medium` y 100 en total.
 
 **Lo que aprendi:** Aprendere a usar `ROLLUP` y `GROUPING` en Oracle para obtener subtotales y un total general.
 
