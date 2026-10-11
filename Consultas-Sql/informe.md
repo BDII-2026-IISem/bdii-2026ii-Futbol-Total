@@ -524,9 +524,9 @@ ORDER BY payment_month;
 
 **Evidencia de ejecucion:**
 **MySQL: Resumir pagos realizados por mes**
-*Captura pendiente: `mysql_ingresos_pagados_por_mes_mysql.png`.*
+![MySQL: Resumir pagos realizados por mes](trazabilidad/mysql_ingresos_pagados_por_mes_mysql.png)
 
-**Retroalimentacion:** La consulta filtra pagos pagados, agrupa por mes y calcula cantidad e importe mensual. La ejecucion y los valores devueltos siguen pendientes de captura.
+**Retroalimentacion:** La consulta toma pagos con estado `paid` y fecha registrada, agrupa por mes usando `DATE_FORMAT` y suma sus importes. Observo 71 pagos de octubre de 2026 y un total mensual de 568.145.
 
 **Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
 
