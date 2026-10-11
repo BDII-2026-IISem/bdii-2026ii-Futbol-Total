@@ -2,15 +2,15 @@
 
 ## Introducción
 
-En este informe documento las consultas que voy a ejecutar en DBeaver sobre las bases de datos de PedalLibre. Tomo como referencia los ejemplos de consulta de las guías docentes de [MySQL](https://tecnogua.com/academic/site/bd/gestion/mysql/mysql/), [PostgreSQL](https://tecnogua.com/academic/site/bd/gestion/postgresql/postgresql/), [Microsoft SQL Server](https://tecnogua.com/academic/site/bd/gestion/mssql/mssql/) y [Oracle](https://tecnogua.com/academic/site/bd/gestion/oracle/oracle/), adaptándolos a las tablas reales del proyecto.
+En este informe documento las consultas que voy a ejecutar en DBeaver sobre las bases de datos de PedalLibre. Tomo como referencia los ejemplos de consulta de las guías docentes de [MySQL](https://tecnogua.com/academic/site/bd/gestion/mysql/mysql/), [PostgreSQL](https://tecnogua.com/academic/site/bd/gestion/postgresql/postgresql/), [Microsoft SQL Server](https://tecnogua.com/academic/site/bd/gestion/mssql/mssql/) y [Oracle](https://tecnogua.com/academic/site/bd/gestion/oracle/oracle/), y adapto esos ejemplos a las tablas reales del proyecto.
 
-Me concentro en consultas de lectura que permiten revisar registros, filtrar resultados, relacionar tablas y resumir información. No vuelvo a crear ni modificar tablas o registros, y no incluyo triggers. Las consultas principales usan sintaxis común a los cuatro motores; las consultas para limitar resultados se muestran por separado cuando cambia la sintaxis.
+Me concentro en consultas de lectura para revisar registros, filtrar resultados, relacionar tablas y resumir información. No vuelvo a crear ni modificar tablas o registros, y no incluyo triggers. Presento las consultas principales con sintaxis común a los cuatro motores y separo los límites de resultados cuando cambia la sintaxis.
 
 ## Base de datos y tablas
 
-En la carpeta [Creacion de Tablas y Reguistros](./Creacion%20de%20Tablas%20y%20Reguistros/) consulté la guía del esquema y los scripts de datos de prueba. Estos describen 21 tablas del dominio PedalLibre: `roles`, `users`, `clients`, `stations`, `station_locations`, `station_schedules`, `docking_points`, `bicycles`, `bicycle_dockings`, `reservations`, `rates`, `rentals`, `rental_events`, `penalties`, `maintenance`, `payments`, `incidents`, `notifications`, `bicycle_history`, `reviews` e `invoices`. La guía de inserción y la semilla MySQL contemplan 100 registros por tabla; también confirmaste que ya cargaste los datos en los cuatro motores. En DBeaver voy a validar la base seleccionada y los conteos antes de empezar con las consultas.
+En la carpeta [Creacion de Tablas y Reguistros](./Creacion%20de%20Tablas%20y%20Reguistros/) consulté la guía del esquema y los scripts de datos de prueba. Identifiqué 21 tablas del dominio PedalLibre: `roles`, `users`, `clients`, `stations`, `station_locations`, `station_schedules`, `docking_points`, `bicycles`, `bicycle_dockings`, `reservations`, `rates`, `rentals`, `rental_events`, `penalties`, `maintenance`, `payments`, `incidents`, `notifications`, `bicycle_history`, `reviews` e `invoices`. Verifiqué en la guía de inserción y en la semilla MySQL la expectativa de 100 registros por tabla; tomo como base que los datos ya están cargados en los cuatro motores. En DBeaver validaré la base seleccionada y los conteos antes de empezar con las consultas.
 
-Por tanto, las tablas que consultaré son las tablas adicionales del proyecto, creadas sobre cada motor; no son tablas que se creen automáticamente al instalar MySQL, PostgreSQL, SQL Server u Oracle. La verificación se basa en los archivos SQL del proyecto; no he abierto las conexiones locales para comprobar en vivo el estado actual de cada servidor.
+Por tanto, consultaré las tablas adicionales del proyecto que identifiqué en sus archivos SQL, creadas sobre cada motor y no automáticamente al instalar MySQL, PostgreSQL, SQL Server u Oracle. Todavía no he abierto las conexiones locales para comprobar en vivo el estado actual de cada servidor.
 
 ### Conexiones que usaré
 
@@ -21,7 +21,7 @@ Por tanto, las tablas que consultaré son las tablas adicionales del proyecto, c
 | PostgreSQL | `Pedalibre-Terminal-Dbeaver` |
 | Oracle | Esquema `PEDALIBRETERMINALDBEAVER` |
 
-**MySQL:** la guía del esquema y el script de datos de prueba usan la base `Pedalibre-Terminal-Dbeaver`. Antes de ejecutar, confirmo con `SELECT DATABASE()` que esa sea la base seleccionada en DBeaver.
+**MySQL:** Tomo de la guía del esquema y del script de datos de prueba el nombre de la base `Pedalibre-Terminal-Dbeaver`. Antes de ejecutar, confirmo con `SELECT DATABASE()` que esa sea la base seleccionada en DBeaver.
 
 ## Procedimiento en DBeaver
 
@@ -29,13 +29,13 @@ Por tanto, las tablas que consultaré son las tablas adicionales del proyecto, c
 2. Confirmo que la conexión esté activa y selecciono la base de datos o el esquema de la tabla PedalLibre. Para Oracle uso el esquema `PEDALIBRETERMINALDBEAVER`.
 3. Abro un editor SQL asociado a esa conexión y verifico el nombre de la conexión/base antes de ejecutar cualquier comando.
 4. Compruebo que existen las tablas del proyecto con el comando de inspección indicado para el motor. Si no aparecen `bicycles`, `rentals`, `payments` y las demás tablas del esquema, detengo la ejecución y corrijo la conexión o el esquema seleccionado.
-5. Ejecuto una consulta a la vez: selecciono el bloque completo y uso **Ejecutar sentencia** en DBeaver. Las consultas de este informe son de solo lectura.
-6. Reviso las filas devueltas en la cuadrícula de resultados. Las filas exactas pueden variar según los datos cargados en la base.
-7. Debajo de cada bloque SQL encuentro la ruta de su captura pendiente. Tomo la imagen en DBeaver mostrando conexion, sentencia y resultado; la guardo con ese nombre en `trazabilidad/`. Despues completo lo que observe y aprendi basandome en las filas reales. Para MySQL, ejecuto cada consulta de esta seccion individualmente en DBeaver.
+5. Ejecuto una consulta a la vez: selecciono el bloque completo y uso **Ejecutar sentencia** en DBeaver. Mantengo todas las consultas de este informe en modo de solo lectura.
+6. Reviso las filas devueltas en la cuadrícula de resultados y tengo presente que pueden variar según los datos cargados en la base.
+7. Debajo de cada bloque SQL identifico la ruta de la captura pendiente. Tomo en DBeaver una imagen que muestre conexión, sentencia y resultado, y la guardo con ese nombre en `trazabilidad/`. Después completo lo que observo y aprendo basándome en las filas reales. Para MySQL, ejecuto cada consulta de esta sección individualmente en DBeaver.
 
 ## Consultas principales
 
-Los siguientes bloques son SQL compatible con los cuatro motores. Los ejecuto después de seleccionar la base o esquema correcto en DBeaver.
+En los siguientes bloques presento SQL compatible con los cuatro motores. Los ejecuto después de seleccionar la base o esquema correcto en DBeaver.
 
 ### 1. Consultar bicicletas disponibles
 
@@ -52,28 +52,28 @@ ORDER BY bicycle_id;
 **MySQL: Consultar bicicletas disponibles**
 ![MySQL: Consultar bicicletas disponibles](trazabilidad/mysql_bicicletas_disponibles.png)
 
-**Retroalimentacion:** La sentencia filtra `bicycles` por `status = 'available'` y ordena por identificador. Observacion: la captura muestra 80 filas recuperadas y todas tienen estado `available`.
+**Retroalimentacion:** Con esta sentencia filtro `bicycles` por `status = 'available'` y ordeno por identificador. En la captura observo 80 filas recuperadas y todas tienen estado `available`.
 
 **PostgreSQL: Consultar bicicletas disponibles**
 ![PostgreSQL: Consultar bicicletas disponibles](trazabilidad/postgresql_bicicletas_disponibles.png)
 
-**Retroalimentacion:** La sentencia filtra `bicycles` por `status = 'available'` y ordena por identificador. Observacion: la captura muestra 80 filas recuperadas y todas tienen estado `available`.
+**Retroalimentacion:** Con esta sentencia filtro `bicycles` por `status = 'available'` y ordeno por identificador. En la captura observo 80 filas recuperadas y todas tienen estado `available`.
 
 **SQL Server: Consultar bicicletas disponibles**
 ![SQL Server: Consultar bicicletas disponibles](trazabilidad/sqlserver_bicicletas_disponibles.png)
 
-**Retroalimentacion:** La sentencia filtra `bicycles` por `status = 'available'` y ordena por identificador. Observacion: la captura muestra 80 filas recuperadas y todas tienen estado `available`.
+**Retroalimentacion:** Con esta sentencia filtro `bicycles` por `status = 'available'` y ordeno por identificador. En la captura observo 80 filas recuperadas y todas tienen estado `available`.
 
 **Oracle: Consultar bicicletas disponibles**
 ![Oracle: Consultar bicicletas disponibles](trazabilidad/oracle_bicicletas_disponibles.png)
 
-**Retroalimentacion:** La sentencia filtra `bicycles` por `status = 'available'` y ordena por identificador. Observacion: la captura muestra 80 filas recuperadas y todas tienen estado `available`.
+**Retroalimentacion:** Con esta sentencia filtro `bicycles` por `status = 'available'` y ordeno por identificador. En la captura observo 80 filas recuperadas y todas tienen estado `available`.
 
 **Lo que aprendi:** Aprendi que `WHERE` permite seleccionar solo las bicicletas disponibles y `ORDER BY` organiza su identificador.
 
 ### 2. Consultar alquileres completados
 
-Aplico un filtro por estado y ordeno los alquileres desde el más reciente. La consulta devuelve todos los alquileres completados; las variantes para limitar a 10 resultados aparecen en la sección de cada motor.
+Aplico un filtro por estado y ordeno los alquileres desde el más reciente. Con esta consulta obtengo todos los alquileres completados; en la sección de cada motor limito el resultado a 10 filas con la sintaxis correspondiente.
 
 ```sql
 SELECT rental_id, client_id, bicycle_id, started_at, ended_at, total_amount, status
@@ -86,22 +86,22 @@ ORDER BY started_at DESC;
 **MySQL: Consultar alquileres completados**
 ![MySQL: Consultar alquileres completados](trazabilidad/mysql_alquileres_completados.png)
 
-**Retroalimentacion:** La sentencia filtra `rentals` por estado `completed` y ordena por inicio descendente. Observacion: la captura muestra 67 alquileres completados ordenados del mas reciente al mas antiguo.
+**Retroalimentacion:** Con esta sentencia filtro `rentals` por estado `completed` y ordeno los inicios en forma descendente. En la captura observo 67 alquileres completados, del más reciente al más antiguo.
 
 **PostgreSQL: Consultar alquileres completados**
 ![PostgreSQL: Consultar alquileres completados](trazabilidad/postgresql_alquileres_completados.png)
 
-**Retroalimentacion:** La sentencia filtra `rentals` por estado `completed` y ordena por inicio descendente. Observacion: la captura muestra 67 alquileres completados ordenados del mas reciente al mas antiguo.
+**Retroalimentacion:** Con esta sentencia filtro `rentals` por estado `completed` y ordeno los inicios en forma descendente. En la captura observo 67 alquileres completados, del más reciente al más antiguo.
 
 **SQL Server: Consultar alquileres completados**
 ![SQL Server: Consultar alquileres completados](trazabilidad/sqlserver_alquileres_completados.png)
 
-**Retroalimentacion:** La sentencia filtra `rentals` por estado `completed` y ordena por inicio descendente. Observacion: la captura muestra 67 alquileres completados ordenados del mas reciente al mas antiguo.
+**Retroalimentacion:** Con esta sentencia filtro `rentals` por estado `completed` y ordeno los inicios en forma descendente. En la captura observo 67 alquileres completados, del más reciente al más antiguo.
 
 **Oracle: Consultar alquileres completados**
 ![Oracle: Consultar alquileres completados](trazabilidad/oracle_alquileres_completados.png)
 
-**Retroalimentacion:** La sentencia filtra `rentals` por estado `completed` y ordena por inicio descendente. Observacion: la captura muestra 67 alquileres completados ordenados del mas reciente al mas antiguo.
+**Retroalimentacion:** Con esta sentencia filtro `rentals` por estado `completed` y ordeno los inicios en forma descendente. En la captura observo 67 alquileres completados, del más reciente al más antiguo.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
@@ -135,28 +135,28 @@ ORDER BY r.started_at DESC;
 **MySQL: Consultar detalle de alquileres relacionados**
 ![MySQL: Consultar detalle de alquileres relacionados](trazabilidad/mysql_detalle_alquileres_relacionados.png)
 
-**Retroalimentacion:** El resultado presenta el identificador del alquiler junto con el nombre del cliente, serial de la bicicleta, tarifa y estaciones de inicio y fin. La captura muestra 100 filas recuperadas; los `JOIN` combinan las entidades relacionadas y los `LEFT JOIN` permiten conservar el alquiler aunque alguna estación no esté asociada.
+**Retroalimentacion:** En el resultado identifico el alquiler junto con el nombre del cliente, el serial de la bicicleta, la tarifa y las estaciones de inicio y fin. Observo 100 filas recuperadas; uso `JOIN` para combinar las entidades relacionadas y `LEFT JOIN` para conservar cada alquiler aunque alguna estación no esté asociada.
 
 **PostgreSQL: Consultar detalle de alquileres relacionados**
 ![PostgreSQL: Consultar detalle de alquileres relacionados](trazabilidad/postgresql_detalle_alquileres_relacionados.png)
 
-**Retroalimentacion:** El resultado presenta el identificador del alquiler junto con el nombre del cliente, serial de la bicicleta, tarifa y estaciones de inicio y fin. La captura muestra 100 filas recuperadas; los `JOIN` combinan las entidades relacionadas y los `LEFT JOIN` permiten conservar el alquiler aunque alguna estación no esté asociada.
+**Retroalimentacion:** En el resultado identifico el alquiler junto con el nombre del cliente, el serial de la bicicleta, la tarifa y las estaciones de inicio y fin. Observo 100 filas recuperadas; uso `JOIN` para combinar las entidades relacionadas y `LEFT JOIN` para conservar cada alquiler aunque alguna estación no esté asociada.
 
 **SQL Server: Consultar detalle de alquileres relacionados**
 ![SQL Server: Consultar detalle de alquileres relacionados](trazabilidad/sqlserver_detalle_alquileres_relacionados.png)
 
-**Retroalimentacion:** El resultado presenta el identificador del alquiler junto con el nombre del cliente, serial de la bicicleta, tarifa y estaciones de inicio y fin. La captura muestra 100 filas recuperadas; los `JOIN` combinan las entidades relacionadas y los `LEFT JOIN` permiten conservar el alquiler aunque alguna estación no esté asociada.
+**Retroalimentacion:** En el resultado identifico el alquiler junto con el nombre del cliente, el serial de la bicicleta, la tarifa y las estaciones de inicio y fin. Observo 100 filas recuperadas; uso `JOIN` para combinar las entidades relacionadas y `LEFT JOIN` para conservar cada alquiler aunque alguna estación no esté asociada.
 
 **Oracle: Consultar detalle de alquileres relacionados**
 ![Oracle: Consultar detalle de alquileres relacionados](trazabilidad/oracle_detalle_alquileres_relacionados.png)
 
-**Retroalimentacion:** El resultado presenta el identificador del alquiler junto con el nombre del cliente, serial de la bicicleta, tarifa y estaciones de inicio y fin. La captura muestra 100 filas recuperadas; los `JOIN` combinan las entidades relacionadas y los `LEFT JOIN` permiten conservar el alquiler aunque alguna estación no esté asociada.
+**Retroalimentacion:** En el resultado identifico el alquiler junto con el nombre del cliente, el serial de la bicicleta, la tarifa y las estaciones de inicio y fin. Observo 100 filas recuperadas; uso `JOIN` para combinar las entidades relacionadas y `LEFT JOIN` para conservar cada alquiler aunque alguna estación no esté asociada.
 
 **Lo que aprendi:** Aprendi que puedo reunir datos relacionados con `JOIN` y conservar estaciones opcionales con `LEFT JOIN`.
 
 ### 4. Resumir alquileres por estado
 
-Uso `GROUP BY` y funciones de agregado para comparar cantidad e importe promedio por estado. `HAVING` conserva los grupos que contienen al menos un alquiler.
+Uso `GROUP BY` y funciones de agregado para comparar la cantidad y el importe promedio por estado. Con `HAVING` conservo los grupos cuyo importe total es mayor que cero.
 
 ```sql
 SELECT
@@ -174,22 +174,22 @@ ORDER BY status;
 **MySQL: Resumir alquileres por estado**
 ![MySQL: Resumir alquileres por estado](trazabilidad/mysql_resumen_alquileres_por_estado.png)
 
-**Retroalimentacion:** La consulta agrupa los alquileres por estado y calcula la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
+**Retroalimentacion:** Agrupo los alquileres por estado y calculo la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
 
 **PostgreSQL: Resumir alquileres por estado**
 ![PostgreSQL: Resumir alquileres por estado](trazabilidad/postgresql_resumen_alquileres_por_estado.png)
 
-**Retroalimentacion:** La consulta agrupa los alquileres por estado y calcula la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
+**Retroalimentacion:** Agrupo los alquileres por estado y calculo la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
 
 **SQL Server: Resumir alquileres por estado**
 ![SQL Server: Resumir alquileres por estado](trazabilidad/sqlserver_resumen_alquileres_por_estado.png)
 
-**Retroalimentacion:** La consulta agrupa los alquileres por estado y calcula la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
+**Retroalimentacion:** Agrupo los alquileres por estado y calculo la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
 
 **Oracle: Resumir alquileres por estado**
 ![Oracle: Resumir alquileres por estado](trazabilidad/oracle_resumen_alquileres_por_estado.png)
 
-**Retroalimentacion:** La consulta agrupa los alquileres por estado y calcula la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
+**Retroalimentacion:** Agrupo los alquileres por estado y calculo la cantidad, el importe total y el promedio. Observo tres grupos: 16 `active`, 17 `cancelled` y 67 `completed`; sus importes totales son 132.808, 140.629 y 528.213, respectivamente.
 
 **Lo que aprendi:** Aprendi a agrupar alquileres por estado y resumirlos con `COUNT`, `SUM` y `AVG`.
 
@@ -212,22 +212,22 @@ ORDER BY payment_method, status;
 **MySQL: Resumir pagos por metodo y estado**
 ![MySQL: Resumir pagos por metodo y estado](trazabilidad/mysql_resumen_pagos_por_metodo_estado.png)
 
-**Retroalimentacion:** La consulta forma grupos por metodo y estado, y muestra la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
+**Retroalimentacion:** Agrupo los pagos por método y estado y consulto la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
 
 **PostgreSQL: Resumir pagos por metodo y estado**
 ![PostgreSQL: Resumir pagos por metodo y estado](trazabilidad/postgresql_resumen_pagos_por_metodo_estado.png)
 
-**Retroalimentacion:** La consulta forma grupos por metodo y estado, y muestra la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
+**Retroalimentacion:** Agrupo los pagos por método y estado y consulto la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
 
 **SQL Server: Resumir pagos por metodo y estado**
 ![SQL Server: Resumir pagos por metodo y estado](trazabilidad/sqlserver_resumen_pagos_por_metodo_estado.png)
 
-**Retroalimentacion:** La consulta forma grupos por metodo y estado, y muestra la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
+**Retroalimentacion:** Agrupo los pagos por método y estado y consulto la cantidad y la suma de los importes. Observo 12 combinaciones entre `credit_card`, `debit_card`, `digital_wallet` y `pse`, cada una con los estados `paid`, `pending` o `refunded`.
 
 **Oracle: Resumir pagos por metodo y estado**
 ![Oracle: Resumir pagos por metodo y estado](trazabilidad/oracle_resumen_pagos_por_metodo_estado.png)
 
-**Retroalimentacion:** La consulta forma grupos por metodo y estado, y muestra la cantidad y la suma de los importes. Observo 12 filas. En una fila figura `digital_wallet` y en otra `digital_Wallet`, con distinta capitalizacion; por eso Oracle separa esas variantes en grupos distintos.
+**Retroalimentacion:** Agrupo los pagos por método y estado y consulto la cantidad y la suma de los importes. Observo 12 filas. Identifico `digital_wallet` en una fila y `digital_Wallet` en otra; al distinguir la capitalización, Oracle separa esas variantes en grupos distintos.
 
 **Lo que aprendi:** Aprendi a agrupar pagos por metodo y estado para comparar cantidades e importes.
 
@@ -235,19 +235,19 @@ ORDER BY payment_method, status;
 
 ### MySQL
 
-Conecto a la base indicada y verifico el esquema. Si la lista está vacía o no corresponde a PedalLibre, no continúo hasta seleccionar la base correcta.
+Me conecto a la base indicada y verifico el esquema. Si la lista está vacía o no corresponde a PedalLibre, no continúo hasta seleccionar la base correcta.
 
 ```sql
 SELECT DATABASE() AS base_actual;
 ```
 
-La respuesta debe ser `Pedalibre-Terminal-Dbeaver`. Si aparece otro nombre, cambio la conexión activa en DBeaver antes de continuar.
+Compruebo que la respuesta sea `Pedalibre-Terminal-Dbeaver`. Si observo otro nombre, cambio la conexión activa en DBeaver antes de continuar.
 
 **Evidencia de ejecucion:**
 **MySQL: Verificar la base de datos activa**
 ![MySQL: Verificar la base de datos activa](trazabilidad/mysql_base_seleccionada.png)
 
-**Retroalimentacion:** La sentencia `SELECT DATABASE()` identifica la base MySQL activa en esta conexion. Observo `Pedalibre-Terminal-Dbeaver`, por lo que confirmo que la consulta se ejecuta en la base indicada.
+**Retroalimentacion:** Con `SELECT DATABASE()` identifico la base MySQL activa en esta conexión. Observo `Pedalibre-Terminal-Dbeaver` y confirmo que ejecuto la consulta en la base indicada.
 
 **Lo que aprendi:** Aprendi a comprobar la base activa antes de consultar sus tablas.
 
@@ -259,11 +259,11 @@ SHOW TABLES;
 **MySQL: Verificar las tablas de la base**
 ![MySQL: Verificar las tablas de la base](trazabilidad/mysql_inventario_tablas_mysql.png)
 
-**Retroalimentacion:** `SHOW TABLES` lista las tablas visibles en la base MySQL seleccionada, sin consultar sus registros. Observo 21 tablas del proyecto, entre ellas `bicycles`, `clients`, `payments` y `rentals`; esto confirma que el esquema esperado está visible en DBeaver.
+**Retroalimentacion:** Uso `SHOW TABLES` para listar las tablas visibles en la base MySQL seleccionada, sin consultar sus registros. Observo 21 tablas del proyecto, entre ellas `bicycles`, `clients`, `payments` y `rentals`, y confirmo que el esquema esperado está visible en DBeaver.
 
 **Lo que aprendi:** Aprendi a comprobar que tablas estan visibles en la base seleccionada de MySQL.
 
-Para confirmar que se cargaron los datos de prueba, cuento las filas de las 21 tablas. La guía de inserción espera 100 registros en cada una; comparo ese valor con el resultado que realmente muestre DBeaver.
+Para confirmar la carga de los datos de prueba, cuento las filas de las 21 tablas. Tomo como referencia los 100 registros por tabla indicados en la guía de inserción y comparo ese valor con el resultado que me muestra DBeaver.
 
 ```sql
 SELECT 'roles' AS tabla, COUNT(*) AS registros FROM roles
@@ -294,11 +294,11 @@ ORDER BY tabla;
 **MySQL: Contar registros por tabla**
 ![MySQL: Contar registros por tabla](trazabilidad/mysql_conteo_registros.png)
 
-**Retroalimentacion:** La consulta cuenta las filas de cada una de las 21 tablas. Observo que cada tabla muestra 100 registros, coincidiendo con la cantidad esperada en la guia de insercion.
+**Retroalimentacion:** Cuento las filas de cada una de las 21 tablas. Observo que cada tabla muestra 100 registros, coincidiendo con la cantidad esperada en la guía de inserción.
 
 **Lo que aprendi:** Aprendi a validar con `COUNT(*)` la cantidad de registros cargados antes de analizar los datos.
 
-Para limitar la consulta de alquileres completados a 10 filas, agrego `LIMIT 10` al final:
+Para limitar los alquileres completados a 10 filas, agrego `LIMIT 10` al final de la consulta:
 
 ```sql
 SELECT rental_id, client_id, bicycle_id, started_at, ended_at, total_amount, status
@@ -312,13 +312,13 @@ LIMIT 10;
 **MySQL: Mostrar los 10 alquileres completados mas recientes**
 ![MySQL: Mostrar los 10 alquileres completados mas recientes](trazabilidad/mysql_alquileres_completados_top10_mysql.png)
 
-**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes, ordenados por fecha de inicio descendente. Observo diez filas con estado `completed`; la primera corresponde al registro mas reciente mostrado.
+**Retroalimentacion:** Con `LIMIT 10` restrinjo la salida a los 10 alquileres completados más recientes, ordenados por fecha de inicio descendente. Observo diez filas con estado `completed`; identifico la primera como el registro más reciente mostrado.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
 ### PostgreSQL
 
-Verifico las tablas visibles en el esquema `public`:
+Verifico qué tablas están visibles en el esquema `public`:
 
 ```sql
 SELECT table_name
@@ -332,7 +332,7 @@ ORDER BY table_name;
 **PostgreSQL: Verificar las tablas de la base**
 ![PostgreSQL: Verificar las tablas de la base](trazabilidad/postgresql_inventario_tablas_postgresql.png)
 
-**Retroalimentacion:** La consulta revisa el catalogo `information_schema.tables` y filtra el esquema `public` para mostrar solo tablas base. Observo las 21 tablas del proyecto PedalLibre.
+**Retroalimentacion:** Consulto el catálogo `information_schema.tables` y filtro el esquema `public` para mostrar solo tablas base. Observo las 21 tablas del proyecto PedalLibre.
 
 **Lo que aprendi:** Aprendi a consultar el catalogo de PostgreSQL para verificar las tablas del esquema `public`.
 
@@ -350,13 +350,13 @@ LIMIT 10;
 **PostgreSQL: Mostrar los 10 alquileres completados mas recientes**
 ![PostgreSQL: Mostrar los 10 alquileres completados mas recientes](trazabilidad/postgresql_alquileres_completados_top10_postgresql.png)
 
-**Retroalimentacion:** `LIMIT 10` limita la salida a los 10 alquileres completados con fecha de inicio mas reciente. Observo diez filas, todas con estado `completed`, ordenadas por `started_at` descendente.
+**Retroalimentacion:** Con `LIMIT 10` limito la salida a los 10 alquileres completados con fecha de inicio más reciente. Observo diez filas, todas con estado `completed`, ordenadas por `started_at` descendente.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
 ### Microsoft SQL Server
 
-Verifico las tablas del esquema actual:
+Verifico qué tablas pertenecen al esquema actual:
 
 ```sql
 SELECT TABLE_SCHEMA, TABLE_NAME
@@ -369,7 +369,7 @@ ORDER BY TABLE_SCHEMA, TABLE_NAME;
 **SQL Server: Verificar las tablas de la base**
 ![SQL Server: Verificar las tablas de la base](trazabilidad/sqlserver_inventario_tablas_sqlserver.png)
 
-**Retroalimentacion:** La consulta revisa `INFORMATION_SCHEMA.TABLES` y muestra esquema y nombre de cada tabla base. Observo las 21 tablas del proyecto bajo el esquema `dbo`.
+**Retroalimentacion:** Consulto `INFORMATION_SCHEMA.TABLES` para ver el esquema y el nombre de cada tabla base. Observo las 21 tablas del proyecto bajo el esquema `dbo`.
 
 **Lo que aprendi:** Aprendi a consultar `INFORMATION_SCHEMA` para identificar las tablas del esquema de SQL Server.
 
@@ -387,13 +387,13 @@ ORDER BY started_at DESC;
 **SQL Server: Mostrar los 10 alquileres completados mas recientes**
 ![SQL Server: Mostrar los 10 alquileres completados mas recientes](trazabilidad/sqlserver_alquileres_completados_top10_sqlserver.png)
 
-**Retroalimentacion:** `TOP (10)` limita la salida a diez alquileres completados, ordenados por fecha de inicio descendente. Observo diez filas y todos los registros muestran estado `completed`.
+**Retroalimentacion:** Con `TOP (10)` limito la salida a diez alquileres completados, ordenados por fecha de inicio descendente. Observo diez filas y confirmo que todos muestran el estado `completed`.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
 ### Oracle
 
-Verifico las tablas accesibles para el usuario conectado. Si el usuario tiene seleccionado el esquema `PEDALIBRETERMINALDBEAVER`, sus tablas aparecen en `USER_TABLES`.
+Verifico las tablas accesibles con mi usuario conectado. Al conectarme al esquema `PEDALIBRETERMINALDBEAVER`, consulto sus tablas en `USER_TABLES`.
 
 ```sql
 SELECT table_name
@@ -405,7 +405,7 @@ ORDER BY table_name;
 **Oracle: Verificar las tablas de la base**
 ![Oracle: Verificar las tablas de la base](trazabilidad/oracle_inventario_tablas_oracle.png)
 
-**Retroalimentacion:** La consulta usa `USER_TABLES` para listar las tablas que pertenecen al usuario conectado. Observo las 21 tablas de PedalLibre en el esquema `PEDALIBRETERMINALDBEAVER`.
+**Retroalimentacion:** Consulto `USER_TABLES` para listar las tablas que pertenecen al usuario conectado. Observo las 21 tablas de PedalLibre en el esquema `PEDALIBRETERMINALDBEAVER`.
 
 **Lo que aprendi:** Aprendi a revisar las tablas que pertenecen al usuario/esquema Oracle conectado.
 
@@ -423,17 +423,17 @@ FETCH FIRST 10 ROWS ONLY;
 **Oracle: Mostrar los 10 alquileres completados mas recientes**
 ![Oracle: Mostrar los 10 alquileres completados mas recientes](trazabilidad/oracle_alquileres_completados_top10_oracle.png)
 
-**Retroalimentacion:** `FETCH FIRST 10 ROWS ONLY` limita la salida a diez alquileres completados ordenados por fecha de inicio descendente. Observo diez filas y todas tienen estado `completed`.
+**Retroalimentacion:** Con `FETCH FIRST 10 ROWS ONLY` limito la salida a diez alquileres completados, ordenados por fecha de inicio descendente. Observo diez filas y confirmo que todas tienen estado `completed`.
 
 **Lo que aprendi:** Aprendi que Oracle puede limitar filas con `FETCH FIRST`, mientras que PostgreSQL usa `LIMIT` y SQL Server usa `TOP`.
 
-**Retroalimentacion:** `LIMIT 10` restringe la salida a los 10 alquileres completados mas recientes. La ejecucion y el resultado de esta variante siguen pendientes de captura.
+**Retroalimentacion:** Con `LIMIT 10` restrinjo la salida a los 10 alquileres completados más recientes. Dejo pendiente la captura de la ejecución y el resultado de esta variante.
 
 **Lo que aprendi:** Aprendi a filtrar los alquileres por estado y ordenar los mas recientes primero; la variante del motor limita las filas mostradas.
 
 ## Consultas adicionales por motor
 
-En esta sección presento análisis propios de cada motor. Las consultas adicionales de MySQL ya están ejecutadas; para PostgreSQL, SQL Server y Oracle seleccioné temas y funciones diferentes, sin repetir los análisis de las otras secciones. Ejecuto cada grupo solo en la conexión indicada.
+En esta sección presento análisis propios de cada motor. Ya ejecuté las consultas adicionales de MySQL; para PostgreSQL, SQL Server y Oracle seleccioné temas y funciones diferentes, sin repetir los análisis de las otras secciones. Ejecuto cada grupo solo en la conexión indicada.
 
 ### MySQL
 
@@ -456,7 +456,7 @@ LIMIT 5;
 **MySQL: Identificar clientes con mas alquileres**
 ![MySQL: Identificar clientes con mas alquileres](trazabilidad/mysql_clientes_mas_alquileres_mysql.png)
 
-**Retroalimentacion:** La consulta cuenta los alquileres por cliente y presenta los cinco valores mas altos; el `LEFT JOIN` tambien conserva a clientes sin alquileres. En el resultado observo cinco clientes con un alquiler cada uno; el desempate por `client_id` los ordena de forma ascendente.
+**Retroalimentacion:** Cuento los alquileres por cliente y consulto los cinco valores más altos; con `LEFT JOIN` también conservo a los clientes sin alquileres. En el resultado observo cinco clientes con un alquiler cada uno; el desempate por `client_id` los ordena de forma ascendente.
 
 **Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
 
@@ -478,7 +478,7 @@ ORDER BY s.station_id;
 **MySQL: Contar anclajes disponibles por estacion**
 ![MySQL: Contar anclajes disponibles por estacion](trazabilidad/mysql_puntos_disponibles_por_estacion_mysql.png)
 
-**Retroalimentacion:** La sentencia agrupa los puntos de anclaje por estacion, cuenta los puntos asociados y suma los disponibles con `CASE`. La captura muestra 100 filas; en las estaciones visibles hay un punto asociado por estacion y `available_points` vale 0 o 1 segun su estado.
+**Retroalimentacion:** Agrupo los puntos de anclaje por estación, cuento los puntos asociados y sumo los disponibles con `CASE`. En la captura observo 100 filas; en las estaciones visibles identifico un punto asociado por estación y `available_points` vale 0 o 1 según su estado.
 
 **Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
 
@@ -504,7 +504,7 @@ ORDER BY i.reported_at DESC;
 **MySQL: Consultar incidentes abiertos**
 ![MySQL: Consultar incidentes abiertos](trazabilidad/mysql_incidentes_abiertos_mysql.png)
 
-**Retroalimentacion:** La consulta filtra incidentes `open` y usa `LEFT JOIN` para añadir los datos de bicicleta y cliente cuando estan asociados. La cuadrícula muestra 25 filas; los registros visibles incluyen distintos niveles de severidad y las descripciones de los incidentes.
+**Retroalimentacion:** Filtro los incidentes `open` y uso `LEFT JOIN` para añadir los datos de bicicleta y cliente cuando están asociados. En la cuadrícula observo 25 filas con distintos niveles de severidad y las descripciones de los incidentes.
 
 **Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
 
@@ -526,7 +526,7 @@ ORDER BY payment_month;
 **MySQL: Resumir pagos realizados por mes**
 ![MySQL: Resumir pagos realizados por mes](trazabilidad/mysql_ingresos_pagados_por_mes_mysql.png)
 
-**Retroalimentacion:** La consulta toma pagos con estado `paid` y fecha registrada, agrupa por mes usando `DATE_FORMAT` y suma sus importes. Observo 71 pagos de octubre de 2026 y un total mensual de 568.145.
+**Retroalimentacion:** Selecciono los pagos con estado `paid` y fecha registrada, los agrupo por mes con `DATE_FORMAT` y sumo sus importes. Observo 71 pagos de octubre de 2026 y un total mensual de 568.145.
 
 **Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
 
@@ -549,7 +549,7 @@ ORDER BY week_start;
 **PostgreSQL: Resumir alquileres por semana**
 ![PostgreSQL: Resumir alquileres por semana](trazabilidad/postgresql_alquileres_por_semana.png)
 
-**Retroalimentacion:** `date_trunc('week', ...)` agrupa las fechas por semana; los agregados con `FILTER` separan el total de alquileres de los completados y suman el importe completado. Observo una semana que inicia el 5 de octubre de 2026, con 100 alquileres, 67 completados y un importe de 528.213.
+**Retroalimentacion:** Uso `date_trunc('week', ...)` para agrupar las fechas por semana y agregados con `FILTER` para separar el total de alquileres de los completados y sumar el importe completado. Observo una semana que inicia el 5 de octubre de 2026, con 100 alquileres, 67 completados y un importe de 528.213.
 
 **Lo que aprendi:** Aprendere a usar `date_trunc` y agregados filtrados para analizar la actividad semanal en PostgreSQL.
 
@@ -576,7 +576,7 @@ ORDER BY average_docking_minutes DESC, s.station_id;
 **PostgreSQL: Calcular tiempo de uso de anclajes**
 ![PostgreSQL: Calcular tiempo de uso de anclajes](trazabilidad/postgresql_tiempo_uso_anclajes.png)
 
-**Retroalimentacion:** La consulta considera los acoplamientos que ya tienen hora de retiro, calcula su duracion en minutos con `EXTRACT(EPOCH ...)` y promedia por estacion. Observo 33 estaciones con acoplamientos completados; en el resultado visible cada una tiene un acoplamiento de 25 minutos.
+**Retroalimentacion:** Selecciono los acoplamientos que ya tienen hora de retiro, calculo su duración en minutos con `EXTRACT(EPOCH ...)` y obtengo el promedio por estación. Observo 33 estaciones con acoplamientos completados; en el resultado visible cada una tiene un acoplamiento de 25 minutos.
 
 **Lo que aprendi:** Aprendere a restar marcas de tiempo en PostgreSQL y convertir el intervalo a minutos para comparar el uso de estaciones.
 
@@ -597,7 +597,7 @@ ORDER BY i.reported_at DESC;
 **PostgreSQL: Buscar reportes de revisión**
 ![PostgreSQL: Buscar reportes de revisión](trazabilidad/postgresql_incidentes_revision_ilike.png)
 
-**Retroalimentacion:** `ILIKE` busca el texto `revision` sin distinguir entre mayusculas y minusculas. Observo 25 incidentes en la cuadrícula, con severidades `low`, `medium` y `high`, y descripciones que mencionan revisiones de bicicletas.
+**Retroalimentacion:** Uso `ILIKE` para buscar el texto `revision` sin distinguir entre mayúsculas y minúsculas. Observo 25 incidentes en la cuadrícula, con severidades `low`, `medium` y `high`, y descripciones que mencionan revisiones de bicicletas.
 
 **Lo que aprendi:** Aprendere a usar `ILIKE` de PostgreSQL para realizar una busqueda de texto sin sensibilidad a mayusculas.
 
@@ -619,7 +619,7 @@ ORDER BY review_month;
 **PostgreSQL: Resumir calificaciones por mes**
 ![PostgreSQL: Resumir calificaciones por mes](trazabilidad/postgresql_calificaciones_por_mes.png)
 
-**Retroalimentacion:** La consulta agrupa las resenas por mes con `date_trunc` y calcula su cantidad, promedio, minima y maxima calificacion. Observo 100 resenas para octubre de 2026, promedio de 3, calificacion minima de 1 y maxima de 5.
+**Retroalimentacion:** Agrupo las reseñas por mes con `date_trunc` y calculo su cantidad, promedio, calificación mínima y máxima. Observo 100 reseñas para octubre de 2026, promedio de 3, calificación mínima de 1 y máxima de 5.
 
 **Lo que aprendi:** Aprendere a resumir la evolucion de las calificaciones usando agrupacion temporal nativa de PostgreSQL.
 
@@ -644,7 +644,7 @@ ORDER BY bicycle_type;
 **SQL Server: Comparar estados de bicicletas con PIVOT**
 ![SQL Server: Comparar estados de bicicletas con PIVOT](trazabilidad/sqlserver_bicicletas_por_estado_pivot.png)
 
-**Retroalimentacion:** `PIVOT` convierte los estados seleccionados en columnas y cuenta las bicicletas de cada tipo en cada estado. Observo 20 bicicletas disponibles por cada tipo; `electric` y `mountain` tienen 5 en mantenimiento, mientras `standard` y `urban` tienen 5 reservadas.
+**Retroalimentacion:** Uso `PIVOT` para convertir los estados seleccionados en columnas y contar las bicicletas de cada tipo en cada estado. Observo 20 bicicletas disponibles por cada tipo; `electric` y `mountain` tienen 5 en mantenimiento, mientras `standard` y `urban` tienen 5 reservadas.
 
 **Lo que aprendi:** Aprendere a usar `PIVOT` en SQL Server para convertir valores de filas en columnas de resumen.
 
@@ -670,7 +670,7 @@ FOR JSON PATH;
 **SQL Server: Exportar inventario de estaciones a JSON**
 ![SQL Server: Exportar inventario de estaciones a JSON](trazabilidad/sqlserver_estaciones_json.png)
 
-**Retroalimentacion:** `FOR JSON PATH` devuelve estaciones con sus anclajes en un arreglo JSON anidado; `JSON_QUERY` conserva ese arreglo como JSON en vez de escaparlo como texto. Observo ocho filas JSON en la cuadrícula, cada una con la estacion y el detalle de sus puntos de anclaje.
+**Retroalimentacion:** Uso `FOR JSON PATH` para obtener las estaciones con sus anclajes en un arreglo JSON anidado, y `JSON_QUERY` para conservar ese arreglo como JSON en vez de escaparlo como texto. Observo ocho filas JSON en la cuadrícula, cada una con la estación y el detalle de sus puntos de anclaje.
 
 **Lo que aprendi:** Aprendere a usar `FOR JSON PATH` de SQL Server para representar registros relacionados como JSON anidado.
 
@@ -693,7 +693,7 @@ ORDER BY invoice_id;
 **SQL Server: Revisar importes e impuesto de facturas**
 ![SQL Server: Revisar importes e impuesto de facturas](trazabilidad/sqlserver_validar_impuestos_facturas.png)
 
-**Retroalimentacion:** La consulta calcula el porcentaje de impuesto y comprueba la diferencia entre total, subtotal e impuesto. En las 100 facturas el impuesto observado es 19 % y `difference` vale 0, por lo que los importes coinciden con la suma de subtotal e impuesto.
+**Retroalimentacion:** Calculo el porcentaje de impuesto y compruebo la diferencia entre total, subtotal e impuesto. En las 100 facturas observo un impuesto de 19 % y un valor de 0 en `difference`, por lo que confirmo que los importes coinciden con la suma de subtotal e impuesto.
 
 **Lo que aprendi:** Aprendere a validar importes calculados y a evitar division entre cero con `NULLIF` en SQL Server.
 
@@ -729,7 +729,7 @@ ORDER BY client_id, started_at, rental_id;
 **SQL Server: Comparar importes consecutivos por cliente**
 ![SQL Server: Comparar importes consecutivos por cliente](trazabilidad/sqlserver_comparar_importes_alquileres_lag.png)
 
-**Retroalimentacion:** `LAG` busca el importe del alquiler completado anterior para cada cliente. La captura muestra una cuadrícula sin filas (`No data`), así que en estos datos no hay pares de alquileres completados del mismo cliente que permitan calcular esa diferencia.
+**Retroalimentacion:** Uso `LAG` para buscar el importe del alquiler completado anterior de cada cliente. En la captura observo una cuadrícula sin filas (`No data`), así que concluyo que estos datos no contienen pares de alquileres completados del mismo cliente para calcular esa diferencia.
 
 **Lo que aprendi:** Aprendere a comparar registros consecutivos por cliente con la funcion de ventana `LAG`.
 
@@ -755,7 +755,7 @@ ORDER BY completed_revenue DESC, rt.rate_id;
 **Oracle: Resumir uso e ingresos por tarifa**
 ![Oracle: Resumir uso e ingresos por tarifa](trazabilidad/oracle_rendimiento_tarifas.png)
 
-**Retroalimentacion:** La consulta relaciona cada tarifa con sus alquileres, cuenta los completados y suma sus importes. Observo 100 tarifas; en las filas visibles cada tarifa tiene un alquiler completado, y los ingresos varian segun el plan.
+**Retroalimentacion:** Relaciono cada tarifa con sus alquileres, cuento los completados y sumo sus importes. Observo 100 tarifas; en las filas visibles cada tarifa tiene un alquiler completado, y los ingresos varían según el plan.
 
 **Lo que aprendi:** Aprendere a usar `NVL` y agregados condicionales de Oracle para comparar el uso y los ingresos de cada tarifa.
 
@@ -785,7 +785,7 @@ ORDER BY c.rental_day;
 **Oracle: Generar calendario de alquileres por día**
 ![Oracle: Generar calendario de alquileres por día](trazabilidad/oracle_calendario_diario_connect_by.png)
 
-**Retroalimentacion:** `CONNECT BY LEVEL` genera una fila por fecha entre el primer y el ultimo alquiler. Observo tres dias: 9 de octubre de 2026 con 2 alquileres, 10 de octubre con 54 y 11 de octubre con 44.
+**Retroalimentacion:** Uso `CONNECT BY LEVEL` para generar una fila por fecha entre el primer y el último alquiler. Observo tres días: 9 de octubre de 2026 con 2 alquileres, 10 de octubre con 54 y 11 de octubre con 44.
 
 **Lo que aprendi:** Aprendere a generar una secuencia de fechas en Oracle mediante la jerarquia `CONNECT BY`.
 
@@ -807,7 +807,7 @@ ORDER BY GROUPING(severity), severity_group;
 **Oracle: Resumir incidentes por severidad**
 ![Oracle: Resumir incidentes por severidad](trazabilidad/oracle_incidentes_rollup_severidad.png)
 
-**Retroalimentacion:** `ROLLUP` calcula el conteo por severidad y añade el total general; `GROUPING` etiqueta esa última fila como `TOTAL`. Observo 33 incidentes `high`, 33 `low`, 34 `medium` y 100 en total.
+**Retroalimentacion:** Uso `ROLLUP` para calcular el conteo por severidad y añadir el total general; con `GROUPING` identifico esa última fila como `TOTAL`. Observo 33 incidentes `high`, 33 `low`, 34 `medium` y 100 en total.
 
 **Lo que aprendi:** Aprendere a usar `ROLLUP` y `GROUPING` en Oracle para obtener subtotales y un total general.
 
@@ -830,17 +830,17 @@ ORDER BY total_revenue DESC, b.bicycle_type;
 **Oracle: Calcular participación de ingresos por bicicleta**
 ![Oracle: Calcular participación de ingresos por bicicleta](trazabilidad/oracle_participacion_ingresos_bicicletas.png)
 
-**Retroalimentacion:** `RATIO_TO_REPORT` calcula la participacion de cada tipo en los ingresos de alquileres completados. Observo 17 alquileres `standard` con 145.779 (27,60 %), 17 `mountain` con 138.758 (26,27 %), 17 `electric` con 124.084 (23,49 %) y 16 `urban` con 119.592 (22,64 %).
+**Retroalimentacion:** Uso `RATIO_TO_REPORT` para calcular la participación de cada tipo en los ingresos de alquileres completados. Observo 17 alquileres `standard` con 145.779 (27,60 %), 17 `mountain` con 138.758 (26,27 %), 17 `electric` con 124.084 (23,49 %) y 16 `urban` con 119.592 (22,64 %).
 
 **Lo que aprendi:** Aprendere a calcular participaciones porcentuales de grupos con la funcion analitica `RATIO_TO_REPORT` de Oracle.
 
 ## Consultas propias de cada motor
 
-Ademas de las consultas comunes, presento ejemplos que aprovechan funciones propias de cada motor. Ejecuto cada consulta solo en el motor indicado; debajo registro la captura y lo que observo, y dejo como pendiente la evidencia de las consultas que aun faltan por ejecutar.
+Además de las consultas comunes, presento ejemplos que aprovechan funciones propias de cada motor. Ejecuto cada consulta solo en el motor indicado; debajo registro la captura y lo que observo, y dejo pendiente la evidencia de las consultas que todavía no ejecuto.
 
 ### MySQL: agrupar alquileres con `GROUP_CONCAT`
 
-Esta consulta resume los alquileres de cada cliente y concatena sus identificadores ordenados del mas reciente al mas antiguo.
+Con esta consulta resumo los alquileres de cada cliente y concateno sus identificadores, ordenados del más reciente al más antiguo.
 
 ```sql
 SELECT
@@ -859,13 +859,13 @@ LIMIT 10;
 **MySQL: Listar alquileres por cliente con GROUP_CONCAT**
 ![MySQL: Listar alquileres por cliente con GROUP_CONCAT](trazabilidad/mysql_alquileres_por_cliente_group_concat.png)
 
-**Retroalimentacion:** `GROUP_CONCAT` combina los identificadores de alquiler en una cadena por cliente. Observo diez clientes en el resultado; cada uno tiene un alquiler y la columna `rental_ids` contiene su identificador.
+**Retroalimentacion:** Uso `GROUP_CONCAT` para combinar los identificadores de alquiler en una cadena por cliente. Observo diez clientes en el resultado; cada uno tiene un alquiler y la columna `rental_ids` contiene su identificador.
 
 **Lo que aprendi:** Aprendere a usar `GROUP_CONCAT` de MySQL para resumir varios registros relacionados en una sola fila.
 
 ### PostgreSQL: comparar estados de pago con `FILTER`
 
-Esta consulta compara en una fila por metodo el numero de pagos pagados, pendientes y reembolsados, y suma el importe pagado.
+Con esta consulta comparo, en una fila por método, el número de pagos pagados, pendientes y reembolsados, y sumo el importe pagado.
 
 ```sql
 SELECT
@@ -883,13 +883,13 @@ ORDER BY payment_method;
 **PostgreSQL: Comparar estados de pago con FILTER**
 ![PostgreSQL: Comparar estados de pago con FILTER](trazabilidad/postgresql_pagos_por_estado_filter.png)
 
-**Retroalimentacion:** `FILTER` calcula conteos e importes por estado en una sola agrupacion. Observo cuatro metodos: tarjeta de credito con 18 pagos, 3 pendientes, 4 reembolsados y total pagado 135.816; debito con 18, 3, 4 y 156.078; billetera digital con 17, 4, 4 y 132.563; PSE con 18, 4, 3 y 143.688.
+**Retroalimentacion:** Uso `FILTER` para calcular conteos e importes por estado en una sola agrupación. Observo cuatro métodos: tarjeta de crédito con 18 pagos, 3 pendientes, 4 reembolsados y total pagado 135.816; débito con 18, 3, 4 y 156.078; billetera digital con 17, 4, 4 y 132.563; PSE con 18, 4, 3 y 143.688.
 
 **Lo que aprendi:** Aprendere a filtrar cada agregado de PostgreSQL sin separar el resultado en varias consultas.
 
 ### PostgreSQL: obtener el último alquiler de cada cliente
 
-Esta consulta devuelve la fecha del alquiler mas reciente y usa una subconsulta correlacionada para recuperar su importe; al final limita la salida a diez clientes.
+Con esta consulta obtengo la fecha del alquiler más reciente y uso una subconsulta correlacionada para recuperar su importe; al final limito la salida a diez clientes.
 
 ```sql
 SELECT
@@ -915,13 +915,13 @@ FETCH FIRST 10 ROWS ONLY;
 **PostgreSQL: Consultar el último alquiler de cada cliente**
 ![PostgreSQL: Consultar el último alquiler de cada cliente](trazabilidad/postgresql_ultimo_alquiler_por_cliente.png)
 
-**Retroalimentacion:** La consulta ordena los clientes por la fecha de su alquiler mas reciente y la subconsulta busca el importe de ese alquiler. Observo diez clientes; la primera fila corresponde al cliente 40, Samuel Lopez, con fecha 11 de octubre de 2026 a las 14:25 y un importe de 1.820.
+**Retroalimentacion:** Ordeno los clientes por la fecha de su alquiler más reciente y uso la subconsulta para buscar el importe de ese alquiler. Observo diez clientes; identifico en la primera fila al cliente 40, Samuel Lopez, con fecha 11 de octubre de 2026 a las 14:25 y un importe de 1.820.
 
 **Lo que aprendi:** Aprendi a combinar una agregacion por cliente con una subconsulta correlacionada y `LIMIT 1` para recuperar un valor de su registro mas reciente.
 
 ### SQL Server: duración media de alquiler por tipo de bicicleta
 
-Esta consulta usa `DATEDIFF` para calcular la duracion en minutos de los alquileres completados y promedia el resultado por tipo de bicicleta.
+Con esta consulta uso `DATEDIFF` para calcular la duración en minutos de los alquileres completados y promedio el resultado por tipo de bicicleta.
 
 ```sql
 SELECT
@@ -940,13 +940,13 @@ ORDER BY average_duration_minutes DESC, b.bicycle_type;
 **SQL Server: Calcular duracion promedio con DATEDIFF**
 ![SQL Server: Calcular duracion promedio con DATEDIFF](trazabilidad/sqlserver_duracion_alquiler_por_tipo_datediff.png)
 
-**Retroalimentacion:** `DATEDIFF(MINUTE, ...)` mide los minutos entre inicio y fin. Observo 17 alquileres completados para `electric`, `mountain` y `standard`, y 16 para `urban`; el promedio de duracion es de 60 minutos para cada tipo.
+**Retroalimentacion:** Uso `DATEDIFF(MINUTE, ...)` para medir los minutos entre el inicio y el fin. Observo 17 alquileres completados para `electric`, `mountain` y `standard`, y 16 para `urban`; calculo un promedio de duración de 60 minutos para cada tipo.
 
 **Lo que aprendi:** Aprendere a calcular intervalos de tiempo con `DATEDIFF` de SQL Server y a resumirlos por categoria.
 
 ### Oracle: obtener el importe del alquiler más reciente con `KEEP`
 
-Esta consulta conserva a todos los clientes y recupera la fecha y el importe de su alquiler mas reciente. Si hay empate de fechas, `MAX` devuelve el importe mayor entre los alquileres empatados.
+Con esta consulta conservo a todos los clientes y recupero la fecha y el importe de su alquiler más reciente. Si hay empate de fechas, `MAX` me devuelve el importe mayor entre los alquileres empatados.
 
 ```sql
 SELECT
@@ -966,15 +966,15 @@ FETCH FIRST 10 ROWS ONLY;
 **Oracle: Recuperar el alquiler mas reciente con KEEP**
 *Captura pendiente: `oracle_alquiler_mas_reciente_keep.png`.*
 
-**Retroalimentacion:** La funcion de agregado `KEEP (DENSE_RANK LAST ...)` devuelve el importe asociado a la fecha maxima de alquiler por cliente. El `LEFT JOIN` mantiene clientes sin alquileres, que apareceran con fecha e importe nulos. Anotare las filas reales tras ejecutarla.
+**Retroalimentacion:** Uso la función de agregado `KEEP (DENSE_RANK LAST ...)` para obtener el importe asociado a la fecha máxima de alquiler por cliente. Con `LEFT JOIN` conservo a los clientes sin alquileres, que aparecerán con fecha e importe nulos. Anotaré las filas reales después de ejecutar la consulta.
 
 **Lo que aprendi:** Aprendere a usar `KEEP` y `DENSE_RANK` en Oracle para recuperar una medida de la fila que ocupa la posicion mas reciente dentro de cada grupo.
 
 ## Evidencia de trazabilidad
 
-Debajo de cada evidencia puse el titulo del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentacion que explica para que sirve la consulta y que se observa en el resultado. Las primeras ocho capturas muestran 80 bicicletas disponibles y 67 alquileres completados en cada motor. Las consultas todavia no ejecutadas tienen la captura marcada como pendiente; completare su observacion cuando tenga el resultado real.
+Debajo de cada evidencia puse el título del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentación en la que explico para qué sirve la consulta y qué observo en el resultado. En las primeras ocho capturas observo 80 bicicletas disponibles y 67 alquileres completados en cada motor. Marco como pendientes las capturas de las consultas que todavía no ejecuto; completaré la observación cuando tenga el resultado real.
 
-Capturas agregadas a [trazabilidad/](./trazabilidad/):
+Agregué a [trazabilidad/](./trazabilidad/) las siguientes capturas:
 
 - Bicicletas disponibles: `mysql_bicicletas_disponibles.png`, `postgresql_bicicletas_disponibles.png`, `sqlserver_bicicletas_disponibles.png` y `oracle_bicicletas_disponibles.png`.
 - Alquileres completados: `mysql_alquileres_completados.png`, `postgresql_alquileres_completados.png`, `sqlserver_alquileres_completados.png` y `oracle_alquileres_completados.png`.
