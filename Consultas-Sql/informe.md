@@ -697,28 +697,41 @@ ORDER BY invoice_id;
 
 **Lo que aprendi:** Aprendere a validar importes calculados y a evitar division entre cero con `NULLIF` en SQL Server.
 
-#### Ingresos pagados por mes
+#### Comparar el importe de alquileres consecutivos
 
 ```sql
-SELECT
-    YEAR(paid_at) AS payment_year,
-    MONTH(paid_at) AS payment_month,
-    COUNT(*) AS payment_count,
-    SUM(amount) AS monthly_total
-FROM payments
-WHERE status = 'paid'
-  AND paid_at IS NOT NULL
-GROUP BY YEAR(paid_at), MONTH(paid_at)
-ORDER BY payment_year, payment_month;
+WITH rental_comparison AS (
+    SELECT
+        rental_id,
+        client_id,
+        started_at,
+        total_amount,
+        LAG(total_amount) OVER (
+            PARTITION BY client_id
+            ORDER BY started_at, rental_id
+        ) AS previous_amount
+    FROM dbo.rentals
+    WHERE status = 'completed'
+)
+SELECT TOP (20)
+    client_id,
+    rental_id,
+    started_at,
+    previous_amount,
+    total_amount,
+    total_amount - previous_amount AS amount_difference
+FROM rental_comparison
+WHERE previous_amount IS NOT NULL
+ORDER BY client_id, started_at, rental_id;
 ```
 
 **Evidencia de ejecucion:**
-**SQL Server: Resumir pagos realizados por mes**
-*Captura pendiente: `sqlserver_ingresos_pagados_por_mes_sqlserver.png`.*
+**SQL Server: Comparar importes consecutivos por cliente**
+*Captura pendiente: `sqlserver_comparar_importes_alquileres_lag.png`.*
 
-**Retroalimentacion:** La consulta filtra pagos pagados, agrupa por mes y calcula cantidad e importe mensual. La ejecucion y los valores devueltos siguen pendientes de captura.
+**Retroalimentacion:** `LAG` obtiene el importe del alquiler completado anterior del mismo cliente. La consulta muestra la diferencia entre ambos importes para hasta 20 filas; anotare el resultado real al ejecutarla.
 
-**Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
+**Lo que aprendi:** Aprendere a comparar registros consecutivos por cliente con la funcion de ventana `LAG`.
 
 ### Oracle
 
