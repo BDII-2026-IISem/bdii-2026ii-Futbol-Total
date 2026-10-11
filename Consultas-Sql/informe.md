@@ -133,24 +133,24 @@ ORDER BY r.started_at DESC;
 
 **Evidencia de ejecucion:**
 **MySQL: Consultar detalle de alquileres relacionados**
-*Captura pendiente: `mysql_detalle_alquileres_relacionados.png`.*
+![MySQL: Consultar detalle de alquileres relacionados](trazabilidad/mysql_detalle_alquileres_relacionados.png)
 
-**Retroalimentacion:** La consulta enlaza cada alquiler con cliente, bicicleta y tarifa; `LEFT JOIN` incluye sus estaciones cuando existen. La ejecucion y las filas observadas siguen pendientes de captura.
+**Retroalimentacion:** El resultado presenta el identificador del alquiler junto con el nombre del cliente, serial de la bicicleta, tarifa y estaciones de inicio y fin. La captura muestra 100 filas recuperadas; los `JOIN` combinan las entidades relacionadas y los `LEFT JOIN` permiten conservar el alquiler aunque alguna estación no esté asociada.
 
 **PostgreSQL: Consultar detalle de alquileres relacionados**
-*Captura pendiente: `postgresql_detalle_alquileres_relacionados.png`.*
+![PostgreSQL: Consultar detalle de alquileres relacionados](trazabilidad/postgresql_detalle_alquileres_relacionados.png)
 
-**Retroalimentacion:** La consulta enlaza cada alquiler con cliente, bicicleta y tarifa; `LEFT JOIN` incluye sus estaciones cuando existen. La ejecucion y las filas observadas siguen pendientes de captura.
+**Retroalimentacion:** El resultado presenta el identificador del alquiler junto con el nombre del cliente, serial de la bicicleta, tarifa y estaciones de inicio y fin. La captura muestra 100 filas recuperadas; los `JOIN` combinan las entidades relacionadas y los `LEFT JOIN` permiten conservar el alquiler aunque alguna estación no esté asociada.
 
 **SQL Server: Consultar detalle de alquileres relacionados**
-*Captura pendiente: `sqlserver_detalle_alquileres_relacionados.png`.*
+![SQL Server: Consultar detalle de alquileres relacionados](trazabilidad/sqlserver_detalle_alquileres_relacionados.png)
 
-**Retroalimentacion:** La consulta enlaza cada alquiler con cliente, bicicleta y tarifa; `LEFT JOIN` incluye sus estaciones cuando existen. La ejecucion y las filas observadas siguen pendientes de captura.
+**Retroalimentacion:** El resultado presenta el identificador del alquiler junto con el nombre del cliente, serial de la bicicleta, tarifa y estaciones de inicio y fin. La captura muestra 100 filas recuperadas; los `JOIN` combinan las entidades relacionadas y los `LEFT JOIN` permiten conservar el alquiler aunque alguna estación no esté asociada.
 
 **Oracle: Consultar detalle de alquileres relacionados**
-*Captura pendiente: `oracle_detalle_alquileres_relacionados.png`.*
+![Oracle: Consultar detalle de alquileres relacionados](trazabilidad/oracle_detalle_alquileres_relacionados.png)
 
-**Retroalimentacion:** La consulta enlaza cada alquiler con cliente, bicicleta y tarifa; `LEFT JOIN` incluye sus estaciones cuando existen. La ejecucion y las filas observadas siguen pendientes de captura.
+**Retroalimentacion:** El resultado presenta el identificador del alquiler junto con el nombre del cliente, serial de la bicicleta, tarifa y estaciones de inicio y fin. La captura muestra 100 filas recuperadas; los `JOIN` combinan las entidades relacionadas y los `LEFT JOIN` permiten conservar el alquiler aunque alguna estación no esté asociada.
 
 **Lo que aprendi:** Aprendi que puedo reunir datos relacionados con `JOIN` y conservar estaciones opcionales con `LEFT JOIN`.
 
