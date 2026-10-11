@@ -811,27 +811,28 @@ ORDER BY GROUPING(severity), severity_group;
 
 **Lo que aprendi:** Aprendere a usar `ROLLUP` y `GROUPING` en Oracle para obtener subtotales y un total general.
 
-#### Ingresos pagados por mes
+#### Participación de ingresos por tipo de bicicleta con `RATIO_TO_REPORT`
 
 ```sql
 SELECT
-    TO_CHAR(paid_at, 'YYYY-MM') AS payment_month,
-    COUNT(*) AS payment_count,
-    SUM(amount) AS monthly_total
-FROM payments
-WHERE status = 'paid'
-  AND paid_at IS NOT NULL
-GROUP BY TO_CHAR(paid_at, 'YYYY-MM')
-ORDER BY payment_month;
+    b.bicycle_type,
+    COUNT(*) AS completed_rentals,
+    SUM(r.total_amount) AS total_revenue,
+    ROUND(RATIO_TO_REPORT(SUM(r.total_amount)) OVER () * 100, 2) AS revenue_percentage
+FROM rentals r
+JOIN bicycles b ON b.bicycle_id = r.bicycle_id
+WHERE r.status = 'completed'
+GROUP BY b.bicycle_type
+ORDER BY total_revenue DESC, b.bicycle_type;
 ```
 
 **Evidencia de ejecucion:**
-**Oracle: Resumir pagos realizados por mes**
-*Captura pendiente: `oracle_ingresos_pagados_por_mes_oracle.png`.*
+**Oracle: Calcular participación de ingresos por bicicleta**
+*Captura pendiente: `oracle_participacion_ingresos_bicicletas.png`.*
 
-**Retroalimentacion:** La consulta filtra pagos pagados, agrupa por mes y calcula cantidad e importe mensual. La ejecucion y los valores devueltos siguen pendientes de captura.
+**Retroalimentacion:** La consulta suma los importes de alquileres completados por tipo de bicicleta y `RATIO_TO_REPORT` calcula el porcentaje que aporta cada tipo al total. Anotare los porcentajes que muestre DBeaver.
 
-**Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
+**Lo que aprendi:** Aprendere a calcular participaciones porcentuales de grupos con la funcion analitica `RATIO_TO_REPORT` de Oracle.
 
 ## Consultas propias de cada motor
 
