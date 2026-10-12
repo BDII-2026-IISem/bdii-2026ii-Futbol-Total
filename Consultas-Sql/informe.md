@@ -1461,6 +1461,14 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
+**Evidencia de ejecucion — INSERT en MySQL:**
+
+![Resultado de la auditoría INSERT en MySQL](trazabilidad/mysql_rentals_audit_insert.png)
+
+**Retroalimentacion:** Observo que la consulta devuelve el registro `INSERT` del alquiler de prueba `101`; el valor `before_data` es `NULL` y `after_data` conserva los datos iniciales del alquiler.
+
+**Lo que aprendi:** Aprendí que el trigger registra la creación del alquiler sin una imagen previa y conserva en `after_data` los valores con los que se insertó.
+
 ```sql
 SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
 FROM rentals_audit
