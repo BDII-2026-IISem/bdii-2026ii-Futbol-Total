@@ -718,3 +718,19 @@ Django creó `apps/security/migrations/0001_initial.py` con el estado del modelo
 **Retroalimentación de la evidencia:** La captura muestra el archivo y el mensaje `Create model User`. En el contenido guardado comprobé que Django conserva `managed = False`; por tanto, esta migración describe el estado del modelo en el historial de migraciones, sin pedirle a Django administrar la tabla `users`.
 
 **Conclusión y aprendizaje:** Aprendí que `makemigrations` genera el archivo de estado y no aplica cambios a la base de datos. Antes de cualquier ejecución de `migrate`, todavía debo revisar por separado qué tablas crearían las migraciones integradas de Django. No ejecuté `migrate`.
+
+### Paso 8 - Revisión del plan completo de migraciones
+
+Inspeccioné las operaciones pendientes con:
+
+```bash
+python manage.py migrate --plan
+```
+
+El plan incluyó `security.0001_initial` y operaciones de `contenttypes`, `admin`, `auth` y `sessions`. El comando solo mostró el plan y terminó de forma normal; no aplicó ninguna migración.
+
+![EVI-03-13 - Plan de migraciones pendiente de Django](./Trazabilidad/EVI-03-13-plan-migraciones-django.png)
+
+**Retroalimentación de la evidencia:** La salida confirma que aplicar `migrate` no se limitaría al modelo PedalLibre: también procesaría las migraciones integradas de Django. La captura no muestra el SQL detallado de cada operación, por lo que revisaré ese SQL antes de decidir si es compatible con el esquema existente. No ejecuté `migrate`.
+
+**Conclusión y aprendizaje:** Aprendí a revisar el conjunto de migraciones pendientes antes de aplicarlas. El plan permite identificar las apps involucradas, pero no basta para conocer los cambios SQL concretos; por eso mantuve la base sin modificaciones hasta revisar el SQL generado.
