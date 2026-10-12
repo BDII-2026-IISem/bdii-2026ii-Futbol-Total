@@ -1468,3 +1468,19 @@ Django informó `System check identified no issues (0 silenced)`.
 **Retroalimentación de la evidencia:** La terminal confirma que Django no detectó problemas en el proyecto después de registrar los ViewSets y rutas del catálogo.
 
 **Conclusión y aprendizaje:** Aprendí a cerrar la unidad verificando los ajustes generales después de crear y probar los endpoints del catálogo.
+
+## ISS-10 - Listado de bicicletas disponibles
+
+### Paso 1 - Endpoint de disponibilidad de bicicletas
+
+Agregué `AvailableBicycleListAPIView` con `ListAPIView` y una ruta de lectura específica `GET /api/bicycles/available/`. El queryset filtra bicicletas con `status="available"`, acopladas a un punto de anclaje disponible en una estación activa. La consulta usa `distinct()` para evitar duplicados.
+
+![EVI-10-01 - ListAPIView de bicicletas disponibles en PedalLibre](./Trazabilidad/EVI-10-01-available-bicycles-view.png)
+
+![EVI-10-02 - Ruta GET /api/bicycles/available/ registrada](./Trazabilidad/EVI-10-02-available-bicycles-route.png)
+
+Ejecuté `python manage.py check`; Django informó `System check identified no issues (0 silenced)`.
+
+**Retroalimentación de las evidencias:** Observé el filtro de disponibilidad y la ruta registrada antes del router del catálogo. La comprobación de Django terminó sin problemas.
+
+**Conclusión y aprendizaje:** Aprendí a publicar una lectura especializada con `ListAPIView`, separada del CRUD, adaptando los criterios a bicicletas, puntos de anclaje y estaciones reales de PedalLibre.
