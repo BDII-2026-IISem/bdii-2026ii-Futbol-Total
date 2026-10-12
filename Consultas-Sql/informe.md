@@ -1461,6 +1461,14 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
+**Evidencia de ejecucion — INSERT en PostgreSQL:**
+
+![Resultado de la auditoría INSERT en PostgreSQL](trazabilidad/postgresql_rentals_audit_insert.png)
+
+**Retroalimentacion:** Observo el registro `INSERT` del alquiler de prueba `101`, generado por la conexión `postgres`; `before_data` es `NULL` y `after_data` contiene los valores iniciales.
+
+**Lo que aprendi:** Aprendí que PostgreSQL también registra la fila creada como estado posterior, junto con el usuario que originó el cambio.
+
 **Evidencia de ejecucion — INSERT en MySQL:**
 
 ![Resultado de la auditoría INSERT en MySQL](trazabilidad/mysql_rentals_audit_insert.png)
