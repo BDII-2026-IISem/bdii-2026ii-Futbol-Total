@@ -1132,3 +1132,19 @@ System check identified no issues (0 silenced).
 **Retroalimentación de las evidencias:** Observé en el código las relaciones con las entidades PedalLibre y los nombres de las tablas físicas. La salida de Django confirma que la configuración y los modelos no presentan problemas de sistema.
 
 **Conclusión y aprendizaje:** Aprendí a representar la operación de reservas y alquileres existente en PedalLibre sin añadir las ventas de StoreLab ni entregar a Django la administración de las tablas del esquema.
+
+### Paso 3 - Generación de la migración de estado
+
+Generé la migración inicial de la app `rental`:
+
+```bash
+python manage.py makemigrations rental
+```
+
+Django creó `apps/rental/migrations/0001_initial.py` para `BicycleDocking`, `Rental`, `RentalEvent` y `Reservation`. Revisé la migración y confirmé que los cuatro modelos mantienen `managed = False`.
+
+![EVI-06-05 - Migración inicial de rental generada](./Trazabilidad/EVI-06-05-makemigrations-rental.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma la generación de `0001_initial.py` con los cuatro modelos. La migración registra su estado en Django, sin asumir la creación de las tablas físicas ya existentes en PedalLibre.
+
+**Conclusión y aprendizaje:** Aprendí a generar la migración de estado de la app y a verificar que conserva `managed = False` para proteger las tablas administradas por el esquema SQL.
