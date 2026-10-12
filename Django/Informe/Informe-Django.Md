@@ -910,24 +910,6 @@ NO TESTS RAN
 
 **Conclusión y aprendizaje:** Aprendí que ejecutar el test runner no significa que haya cobertura si no existen casos de prueba. La guía ubica las pruebas HTTP del CRUD después de construir la API; aún no se implementaron en esta app.
 
-## ISS-07 - Preparación de Django REST Framework
-
-### Paso 1 - Instalación de dependencias de API
-
-Instalé Django REST Framework, el renderer/parser camelCase y los encabezados CORS con las versiones indicadas en la guía. Actualicé `requirements.txt` después de la instalación.
-
-```bash
-source .venv/bin/activate
-python -m pip install "djangorestframework==3.17.2" "djangorestframework-camel-case==1.4.2" "django-cors-headers==4.9.0"
-python -m pip freeze > requirements.txt
-```
-
-![EVI-07-01 - Instalación de DRF, camel case y CORS](./Trazabilidad/EVI-07-01-instalacion-dependencias-api.png)
-
-**Retroalimentación de la evidencia:** La terminal confirma la instalación de las tres dependencias y el archivo `requirements.txt` incluye sus versiones.
-
-**Conclusión y aprendizaje:** Aprendí a instalar y registrar las dependencias de la API antes de configurar sus aplicaciones, middleware y renderers.
-
 ## ISS-05 - Catálogo PedalLibre
 
 ### Paso 1 - Creación de la app `catalog`
@@ -1187,7 +1169,23 @@ System check identified no issues (0 silenced).
 
 ## ISS-07 - Configuración de REST Framework, CORS y JSON camelCase
 
-### Paso 1 - Registro de REST Framework y configuración de CORS
+### Paso 1 - Instalación de dependencias de API
+
+Instalé Django REST Framework, el renderer/parser camelCase y los encabezados CORS con las versiones indicadas en la guía. Actualicé `requirements.txt` después de la instalación.
+
+```bash
+source .venv/bin/activate
+python -m pip install "djangorestframework==3.17.2" "djangorestframework-camel-case==1.4.2" "django-cors-headers==4.9.0"
+python -m pip freeze > requirements.txt
+```
+
+![EVI-07-01 - Instalación de DRF, camel case y CORS](./Trazabilidad/EVI-07-01-instalacion-dependencias-api.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma la instalación de las tres dependencias y el archivo `requirements.txt` incluye sus versiones.
+
+**Conclusión y aprendizaje:** Aprendí a instalar y registrar las dependencias de la API antes de configurar sus aplicaciones, middleware y renderers.
+
+### Paso 2 - Registro de REST Framework y configuración de CORS
 
 Registré `rest_framework` y `corsheaders` en `INSTALLED_APPS`, agregué `CorsMiddleware` antes del middleware de seguridad y configuré `CORS_ALLOW_ALL_ORIGINS` a partir de la variable de entorno `CORS_ALLOW_ALL_ORIGINS`.
 
@@ -1197,7 +1195,7 @@ Registré `rest_framework` y `corsheaders` en `INSTALLED_APPS`, agregué `CorsMi
 
 **Conclusión y aprendizaje:** Aprendí a integrar los componentes de REST Framework y CORS en la configuración de Django. La lista de orígenes queda controlada por una variable de entorno.
 
-### Paso 2 - Renderer y parser JSON camelCase
+### Paso 3 - Renderer y parser JSON camelCase
 
 Configuré los permisos predeterminados `AllowAny`, los renderers y parsers camelCase y la paginación desactivada, de acuerdo con el ISS-07.
 
@@ -1207,7 +1205,7 @@ Configuré los permisos predeterminados `AllowAny`, los renderers y parsers came
 
 **Conclusión y aprendizaje:** Aprendí que la conversión camelCase se configura en la capa HTTP de la API, manteniendo snake_case en los modelos.
 
-### Paso 3 - Verificación de la configuración
+### Paso 4 - Verificación de la configuración
 
 Ejecuté la comprobación del sistema después de configurar DRF y CORS:
 
@@ -1227,7 +1225,7 @@ System check identified no issues (0 silenced).
 
 **Conclusión y aprendizaje:** Aprendí a comprobar los ajustes después de integrar las aplicaciones, el middleware y los renderers y parsers camelCase.
 
-### Paso 4 - Serializers de cliente, catálogo y operación
+### Paso 5 - Serializers de cliente, catálogo y operación
 
 Creé `ClientSerializer` para el perfil de cliente; `StationSerializer`, `BicycleSerializer`, `RateSerializer` y `DockingPointSerializer` para el catálogo; y `ReservationSerializer`, `RentalSerializer`, `RentalEventSerializer` y `BicycleDockingSerializer` para la operación de PedalLibre. Conservé los campos reales del esquema y marqué como de solo lectura los identificadores y fechas generadas.
 
@@ -1245,7 +1243,7 @@ La salida fue `System check identified no issues (0 silenced)`.
 
 **Conclusión y aprendizaje:** Aprendí a traducir los modelos PedalLibre a serializers sin incorporar los campos StoreLab ni cambiar los nombres del esquema físico.
 
-### Paso 5 - Verificación de los serializers y salida camelCase
+### Paso 6 - Verificación de los serializers y salida camelCase
 
 Verifiqué que `ReservationSerializer` expone el campo Python `reserved_at` y que el renderer convierte los nombres a camelCase en el JSON.
 
