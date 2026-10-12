@@ -1301,3 +1301,20 @@ La ejecución encontró y aprobó dos pruebas.
 **Retroalimentación de la evidencia:** La terminal muestra `Found 2 test(s)` y `OK`; se validaron las acciones de listado, creación, detalle, actualización completa y parcial. También se confirmó que `DELETE` no está habilitado.
 
 **Conclusión y aprendizaje:** Aprendí a probar las rutas y acciones HTTP sin acceder a la base de datos, verificando que el CRUD publicado corresponde a los métodos permitidos para `clients`.
+
+### Paso 4 - Verificación del serializer de cliente y JSON camelCase
+
+Verifiqué `ClientSerializer` con un objeto de cliente en memoria, sin consultar ni modificar la base de datos. Comprobé que expone los campos de la tabla y que el renderer convierte `created_at` a `createdAt`.
+
+La salida obtenida fue:
+
+```json
+{"id": 1, "user": null, "firstName": "Ana", "lastName": "Ruiz", "documentNumber": "DOC-001", "phone": null, "createdAt": null}
+ClientSerializer y JSON camelCase: OK
+```
+
+![EVI-08-04 - Serializer de cliente validado y salida JSON camelCase](./Trazabilidad/EVI-08-04-client-serializer-camelcase.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma los campos `firstName`, `lastName`, `documentNumber` y `createdAt` en el JSON, junto con el mensaje `ClientSerializer y JSON camelCase: OK`.
+
+**Conclusión y aprendizaje:** Aprendí a comprobar que el serializer respeta el perfil real de PedalLibre y que camelCase se aplica solo al JSON serializado.
