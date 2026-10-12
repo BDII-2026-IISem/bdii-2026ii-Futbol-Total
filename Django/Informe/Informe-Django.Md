@@ -324,3 +324,33 @@ ORDER BY esperada.table_name;
 **Conclusión y aprendizaje:** Aprendí a comprobar las tablas físicas desde `INFORMATION_SCHEMA` con una consulta que no altera la base. El requisito de las 21 tablas queda verificado para la conexión MySQL seleccionada.
 
 **Estado del ISS-01:** Completé la instalación de dependencias, la configuración de `.env` y la selección del motor, la integración con los ajustes de Django, las verificaciones `check` y `runserver`, y confirmé que existen las 21 tablas requeridas.
+
+## ISS-02 - Creación de la app de clientes
+
+> La guía del ISS-02 menciona apps `product` y `sale`, pero la referencia de PedalLibre confirma que no existen productos ni ventas en este dominio. Por eso continúo solo con la app `client` y no creo apps ajenas al esquema PedalLibre.
+
+### Paso 1 - Creación de `apps.client`
+
+Creé el paquete `apps`, utilicé `startapp` para generar la app `client` dentro de `apps/client` y ajusté `ClientConfig` para usar el nombre de paquete y la etiqueta `client`.
+
+```bash
+mkdir -p apps/client
+python manage.py startapp client apps/client
+mkdir -p apps
+touch apps/__init__.py
+```
+
+```python
+class ClientConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.client"
+    label = "client"
+```
+
+![EVI-02-01 - Estructura de la app `client` creada con `startapp`](./Trazabilidad/EVI-02-01-creacion-app-client.png)
+
+![EVI-02-02 - Configuración de `ClientConfig`](./Trazabilidad/EVI-02-02-appconfig-client.png)
+
+**Retroalimentación de las evidencias:** En la primera captura observé la ejecución de los comandos y los archivos que generó `startapp` dentro de `apps/client`. En la segunda observé que `ClientConfig` usa `name = "apps.client"` y `label = "client"`, como requiere la ubicación de la app.
+
+**Conclusión y aprendizaje:** Aprendí que `startapp` genera la estructura inicial de la app y que su `AppConfig.name` debe reflejar el paquete Python completo. La app todavía debe agregarse a `INSTALLED_APPS` para que Django la registre; lo haré en el siguiente paso.
