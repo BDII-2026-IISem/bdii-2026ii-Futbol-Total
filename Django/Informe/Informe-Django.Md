@@ -1339,7 +1339,17 @@ Consulté `GET /api/clients/` en modo de solo lectura. La respuesta fue HTTP 200
 
 **Conclusión y aprendizaje:** Aprendí a comprobar la respuesta del endpoint con una consulta de solo lectura y a validar la estructura sin divulgar datos personales de la colección.
 
-### Paso 7 - Validación de una solicitud incompleta
+### Paso 7 - Lectura de un cliente por identificador
+
+Tomé el identificador del primer resultado de la colección y consulté su detalle con GET. La respuesta fue HTTP 200 y contenía los campos camelCase esperados. El bloque de verificación no imprimió los valores personales.
+
+![EVI-08-08 - Respuesta de detalle HTTP 200 validada sin mostrar datos personales](./Trazabilidad/EVI-08-08-client-detail-readonly.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma `GET /api/clients/<id>/: HTTP 200`, los campos camelCase y que no se imprimieron datos personales.
+
+**Conclusión y aprendizaje:** Aprendí a verificar la consulta de detalle usando el identificador de un registro existente y a mantener los datos personales fuera de la salida de la prueba.
+
+### Paso 8 - Validación de una solicitud incompleta
 
 Envié una solicitud POST con el cuerpo vacío para comprobar la validación sin crear un cliente:
 
