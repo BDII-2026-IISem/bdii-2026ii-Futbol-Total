@@ -1024,6 +1024,64 @@ CALL sp_alquileres_por_cliente(10);
 
 **Lo que aprendí:** Aprendí que en DBeaver debo declarar el parámetro en el editor de procedimientos y guardar allí el procedimiento; luego puedo invocarlo desde el editor SQL con `CALL`.
 
+### PostgreSQL: último alquiler por cliente
+
+<a id="sp-avanzada-postgresql-ultimo-alquiler"></a>
+
+Parametrizo la cantidad máxima de clientes y conservo la subconsulta correlacionada que recupera el importe del alquiler más reciente. Ejecuto la consulta original, creo el procedimiento y comparo las diez filas recuperadas.
+
+**Paso a paso:** 1. Selecciono la conexión PostgreSQL y ejecuto la consulta original; 2. creo `sp_ultimo_alquiler_por_cliente` ejecutando completa su definición; 3. en una transacción, ejecuto con **Alt+X** el bloque completo desde `BEGIN` hasta `COMMIT`, manteniendo juntos `CALL` y `FETCH`; 4. reviso las diez filas y comparo las fechas e importes devueltos.
+
+```sql
+CREATE OR REPLACE PROCEDURE public.sp_ultimo_alquiler_por_cliente(
+    IN p_cantidad INTEGER,
+    INOUT p_resultado REFCURSOR
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    IF p_cantidad IS NULL OR p_cantidad < 1 THEN
+        RAISE EXCEPTION 'La cantidad debe ser mayor que cero.';
+    END IF;
+    OPEN p_resultado FOR
+        SELECT c.client_id, c.first_name, c.last_name,
+               MAX(r.started_at) AS latest_rental_at,
+               (SELECT r2.total_amount
+                FROM rentals r2
+                WHERE r2.client_id = c.client_id
+                ORDER BY r2.started_at DESC NULLS LAST
+                LIMIT 1) AS latest_rental_amount
+        FROM clients c
+        LEFT JOIN rentals r ON r.client_id = c.client_id
+        GROUP BY c.client_id, c.first_name, c.last_name
+        ORDER BY latest_rental_at DESC NULLS LAST, c.client_id
+        LIMIT p_cantidad;
+END;
+$$;
+```
+
+```sql
+BEGIN;
+CALL public.sp_ultimo_alquiler_por_cliente(10, 'cursor_alquileres');
+FETCH ALL FROM cursor_alquileres;
+COMMIT;
+```
+
+**Evidencia de creación:**
+
+**PostgreSQL: Crear `sp_ultimo_alquiler_por_cliente`**
+
+![PostgreSQL: Crear sp_ultimo_alquiler_por_cliente](trazabilidad/postgresql_sp_ultimo_alquiler_creacion.png)
+
+**Evidencia de ejecución:**
+
+**PostgreSQL: Consultar los diez alquileres más recientes por cliente**
+
+![PostgreSQL: Ejecutar sp_ultimo_alquiler_por_cliente y recuperar diez filas](trazabilidad/postgresql_sp_ultimo_alquiler_ejecucion.png)
+
+**Retroalimentación:** En DBeaver observé que la definición del procedimiento se ejecutó y quedó visible bajo las funciones del esquema `public`. Al llamar el procedimiento y recuperar el cursor, obtuve diez filas con cliente, fecha e importe del alquiler más reciente. Sin embargo, el panel de salida también muestra `there is no transaction in progress` al finalizar el bloque. Por ello, la evidencia confirma la recuperación de las filas, pero no una finalización completamente limpia de la transacción.
+
+**Lo que aprendí:** Aprendí que el cursor `REFCURSOR` debe permanecer dentro de la misma transacción hasta ejecutar `FETCH`; también debo revisar el mensaje final de DBeaver y no considerar la ejecución libre de errores mientras aparezca un aviso de transacción.
+
 ## Procedimientos almacenados
 
 En esta sección creo un procedimiento de solo lectura para listar los alquileres completados dentro de un intervalo de fechas. Uso un límite final exclusivo (`started_at < fecha_fin`) para que pueda consultar periodos consecutivos sin contar dos veces los registros ubicados justo en el límite. Cada bloque es específico para un motor; creo y ejecuto únicamente el que corresponde a mi conexión. Las capturas de creación y ejecución quedan pendientes hasta que las tome en DBeaver.
