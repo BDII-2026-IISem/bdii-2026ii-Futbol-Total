@@ -1452,3 +1452,19 @@ La ejecución encontró y aprobó dos pruebas.
 **Retroalimentación de la evidencia:** La terminal muestra `Found 2 test(s)` y `OK`, con la comprobación del sistema sin problemas.
 
 **Conclusión y aprendizaje:** Aprendí a mantener pruebas rápidas y aisladas para confirmar el enrutamiento del catálogo sin depender de la base de datos.
+
+### Paso 5 - Verificación final del catálogo
+
+Ejecuté la comprobación general del proyecto:
+
+```bash
+python manage.py check
+```
+
+Django informó `System check identified no issues (0 silenced)`.
+
+![EVI-09-05 - Comprobación final de Django sin problemas](./Trazabilidad/EVI-09-05-check-catalog.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma que Django no detectó problemas en el proyecto después de registrar los ViewSets y rutas del catálogo.
+
+**Conclusión y aprendizaje:** Aprendí a cerrar la unidad verificando los ajustes generales después de crear y probar los endpoints del catálogo.
