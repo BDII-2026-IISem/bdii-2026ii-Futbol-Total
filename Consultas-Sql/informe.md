@@ -1523,6 +1523,14 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
+**Evidencia de ejecucion — DELETE en PostgreSQL:**
+
+![Resultado de la auditoría DELETE en PostgreSQL](trazabilidad/postgresql_rentals_audit_delete.png)
+
+**Retroalimentacion:** Observo que el evento `DELETE` del alquiler `101` conserva en `before_data` el estado `completed`, mientras que `after_data` es `NULL`.
+
+**Lo que aprendi:** Aprendí que el trigger registra la eliminación conservando los datos anteriores a ella, lo que permite auditar la operación después del borrado.
+
 **Evidencia de ejecucion — DELETE en MySQL:**
 
 ![Resultado de la auditoría DELETE en MySQL](trazabilidad/mysql_rentals_audit_delete.png)
