@@ -886,3 +886,26 @@ System check identified no issues (0 silenced).
 **Retroalimentación de la evidencia:** La captura confirma que Django no detectó errores de configuración tras registrar el modelo y aplicar su migración.
 
 **Conclusión y aprendizaje:** Aprendí a volver a verificar el proyecto al completar el paso de migración para detectar errores de configuración antes de avanzar.
+
+### Paso 5 - Ejecución de las pruebas disponibles de Client
+
+Ejecuté:
+
+```bash
+python manage.py test apps.client
+```
+
+La salida indicó:
+
+```text
+Found 0 test(s).
+System check identified no issues (0 silenced).
+Ran 0 tests in 0.000s
+NO TESTS RAN
+```
+
+![EVI-04-05 - Django no encontró pruebas implementadas en `apps.client`](./Trazabilidad/EVI-04-05-test-client-sin-pruebas.png)
+
+**Retroalimentación de la evidencia:** El comando terminó sin problemas del sistema, pero Django no encontró pruebas para ejecutar. Por eso este resultado no se registra como pruebas de Client aprobadas.
+
+**Conclusión y aprendizaje:** Aprendí que ejecutar el test runner no significa que haya cobertura si no existen casos de prueba. La guía ubica las pruebas HTTP del CRUD después de construir la API; aún no se implementaron en esta app.
