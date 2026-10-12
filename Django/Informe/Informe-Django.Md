@@ -1285,3 +1285,19 @@ Verifiqué la configuración con `python manage.py check`; Django informó `Syst
 **Retroalimentación de la evidencia:** La captura muestra el router de la app `client`, su inclusión bajo `/api/` y el resultado correcto de la comprobación.
 
 **Conclusión y aprendizaje:** Aprendí a separar el prefijo general de la API en la configuración del proyecto de las rutas específicas del recurso en su aplicación.
+
+### Paso 3 - Pruebas de resolución de las rutas del CRUD
+
+Agregué pruebas que verifican la resolución de las rutas de colección y detalle, así como las acciones HTTP disponibles. Las pruebas no consultan la base de datos.
+
+```bash
+python manage.py test apps.client
+```
+
+La ejecución encontró y aprobó dos pruebas.
+
+![EVI-08-03 - Dos pruebas de las rutas de clientes aprobadas](./Trazabilidad/EVI-08-03-client-route-tests.png)
+
+**Retroalimentación de la evidencia:** La terminal muestra `Found 2 test(s)` y `OK`; se validaron las acciones de listado, creación, detalle, actualización completa y parcial. También se confirmó que `DELETE` no está habilitado.
+
+**Conclusión y aprendizaje:** Aprendí a probar las rutas y acciones HTTP sin acceder a la base de datos, verificando que el CRUD publicado corresponde a los métodos permitidos para `clients`.
