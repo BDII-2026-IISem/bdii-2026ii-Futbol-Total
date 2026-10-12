@@ -1398,3 +1398,17 @@ Django no encontró problemas y las dos pruebas terminaron en `OK`.
 **Retroalimentación de la evidencia:** La salida confirma `System check identified no issues (0 silenced)` y `Ran 2 tests` con resultado `OK`.
 
 **Conclusión y aprendizaje:** Aprendí a cerrar la unidad con la revisión general del proyecto y las pruebas automatizadas de rutas, manteniendo separadas las pruebas de escritura aisladas de la base MySQL.
+
+## ISS-09 - Catálogo PedalLibre con ModelViewSet
+
+### Paso 1 - Creación de los ViewSets del catálogo
+
+Creé los ViewSets para estaciones, bicicletas, tarifas y puntos de anclaje con `ModelViewSet`, sus serializers de PedalLibre y permiso `AllowAny`. Deshabilité `DELETE` para proteger registros vinculados con operaciones del sistema.
+
+![EVI-09-01 - ViewSets del catálogo PedalLibre y comprobación de Django](./Trazabilidad/EVI-09-01-catalog-viewsets.png)
+
+Ejecuté `python manage.py check`; Django informó `System check identified no issues (0 silenced)`.
+
+**Retroalimentación de la evidencia:** La captura muestra los cuatro ViewSets basados en sus modelos reales y la comprobación de Django sin problemas.
+
+**Conclusión y aprendizaje:** Aprendí a publicar los recursos reales del catálogo de PedalLibre sin crear modelos de productos ajenos al esquema y a proteger las relaciones deshabilitando el borrado desde la API.
