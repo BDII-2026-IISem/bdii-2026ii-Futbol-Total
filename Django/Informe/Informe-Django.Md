@@ -866,3 +866,23 @@ Django informó que aplicó `client.0001_initial` correctamente.
 **Retroalimentación de la evidencia:** La salida muestra `Applying client.0001_initial... OK`. Como `Client` tiene `managed = False`, la migración registra su estado sin crear ni modificar la tabla física `clients`.
 
 **Conclusión y aprendizaje:** Aprendí a aplicar la migración de la app y a verificar su resultado en la salida de Django.
+
+### Paso 4 - Verificación de configuración del ISS-04
+
+Ejecuté la comprobación del proyecto:
+
+```bash
+python manage.py check
+```
+
+El sistema respondió:
+
+```text
+System check identified no issues (0 silenced).
+```
+
+![EVI-04-04 - Verificación de Django sin problemas después de la migración de Client](./Trazabilidad/EVI-04-04-check-client.png)
+
+**Retroalimentación de la evidencia:** La captura confirma que Django no detectó errores de configuración tras registrar el modelo y aplicar su migración.
+
+**Conclusión y aprendizaje:** Aprendí a volver a verificar el proyecto al completar el paso de migración para detectar errores de configuración antes de avanzar.
