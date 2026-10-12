@@ -379,3 +379,31 @@ python manage.py check
 **Conclusión y aprendizaje:** Aprendí que crear una app no basta para que Django la cargue: también hay que registrarla en `INSTALLED_APPS`. La verificación confirma que Django reconoce `client`. Aún no he creado modelos de negocio.
 
 **Estado del ISS-02:** La app de clientes fue creada con la CLI, está registrada y supera `check`. No creé `product` ni `sale` porque no pertenecen al esquema PedalLibre descrito en la referencia del proyecto.
+
+## ISS-03 - Preparación de la app de seguridad
+
+### Paso 1 - Creación de `apps.security`
+
+Creé la app `security` con `startapp` dentro del paquete `apps` y configuré su `AppConfig` con el nombre completo `apps.security` y la etiqueta `security`.
+
+```bash
+mkdir -p apps/security
+python manage.py startapp security apps/security
+```
+
+```python
+class SecurityConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.security"
+    label = "security"
+```
+
+![EVI-03-01 - Estructura de la app `security` creada con `startapp`](./Trazabilidad/EVI-03-01-creacion-app-security.png)
+
+![EVI-03-02 - Configuración de `SecurityConfig`](./Trazabilidad/EVI-03-02-appconfig-security.png)
+
+**Retroalimentación de las evidencias:** En la primera captura observé los archivos generados dentro de `apps/security` y la ejecución de `startapp`. En la segunda confirmé el nombre completo del paquete y la etiqueta `security`. La app todavía no se ha registrado en `INSTALLED_APPS` y no se ha ejecutado ninguna migración.
+
+**Conclusión y aprendizaje:** Aprendí que la app de seguridad debe tener un `AppConfig` acorde con su ubicación en el paquete `apps`. Antes de declarar el modelo de usuario debo compatibilizarlo con la tabla `users` existente, en lugar de copiar sin cambios el ejemplo genérico del ISS.
+
+**Nota de revisión del ISS-03:** La tabla PedalLibre `users` tiene las columnas `user_id`, `role_id`, `username`, `password_hash`, `email`, `is_active` y `created_at`. El ejemplo `AbstractUser` del ISS incluye estructura y campos Django que no corresponden directamente a esa tabla. Por eso no lo registraré ni migraré de forma literal: primero adaptaré el mapeo y mantendré la tabla bajo administración del esquema SQL existente.
