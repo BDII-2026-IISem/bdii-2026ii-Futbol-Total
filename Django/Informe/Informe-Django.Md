@@ -927,3 +927,33 @@ python -m pip freeze > requirements.txt
 **Retroalimentación de la evidencia:** La terminal confirma la instalación de las tres dependencias y el archivo `requirements.txt` incluye sus versiones.
 
 **Conclusión y aprendizaje:** Aprendí a instalar y registrar las dependencias de la API antes de configurar sus aplicaciones, middleware y renderers.
+
+## ISS-05 - Catálogo PedalLibre
+
+### Paso 1 - Creación de la app `catalog`
+
+Creé la app `catalog` dentro de `apps`, definí su nombre completo y etiqueta en `CatalogConfig`, y la registré en `INSTALLED_APPS`.
+
+```bash
+mkdir -p apps/catalog
+python manage.py startapp catalog apps/catalog
+```
+
+```python
+class CatalogConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.catalog"
+    label = "catalog"
+```
+
+En `config/settings.py` registré:
+
+```python
+"apps.catalog.apps.CatalogConfig",
+```
+
+![EVI-05-01 - Creación y registro de la app `catalog`](./Trazabilidad/EVI-05-01-creacion-app-catalog.png)
+
+**Retroalimentación de la evidencia:** En la captura observé la estructura generada por `startapp` y la actualización de `INSTALLED_APPS`. Revisé `apps/catalog/apps.py` y confirmé `name = "apps.catalog"` y `label = "catalog"`.
+
+**Conclusión y aprendizaje:** Aprendí a crear una app de catálogo bajo el paquete `apps` y a registrarla con su ruta Python completa para el dominio PedalLibre.
