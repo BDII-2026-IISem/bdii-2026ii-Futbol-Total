@@ -1318,3 +1318,13 @@ ClientSerializer y JSON camelCase: OK
 **Retroalimentación de la evidencia:** La terminal confirma los campos `firstName`, `lastName`, `documentNumber` y `createdAt` en el JSON, junto con el mensaje `ClientSerializer y JSON camelCase: OK`.
 
 **Conclusión y aprendizaje:** Aprendí a comprobar que el serializer respeta el perfil real de PedalLibre y que camelCase se aplica solo al JSON serializado.
+
+### Paso 5 - Verificación de los métodos HTTP del endpoint
+
+Verifiqué las rutas del recurso con el cliente de API de Django. La colección expone GET y POST; el detalle expone GET, PUT y PATCH. Comprobé que DELETE devuelve `405 Method Not Allowed`.
+
+![EVI-08-05 - Métodos HTTP del endpoint de clientes verificados](./Trazabilidad/EVI-08-05-client-methods-verified.png)
+
+**Retroalimentación de la evidencia:** La terminal muestra las rutas de colección y detalle aprobadas y confirma `DELETE responde 405 Method Not Allowed: OK`.
+
+**Conclusión y aprendizaje:** Aprendí a verificar el comportamiento HTTP del ViewSet y a confirmar que no se pueden borrar perfiles de clientes mediante el endpoint.
