@@ -733,4 +733,20 @@ El plan incluyó `security.0001_initial` y operaciones de `contenttypes`, `admin
 
 **Retroalimentación de la evidencia:** La salida confirma que aplicar `migrate` no se limitaría al modelo PedalLibre: también procesaría las migraciones integradas de Django. La captura no muestra el SQL detallado de cada operación, por lo que revisaré ese SQL antes de decidir si es compatible con el esquema existente. No ejecuté `migrate`.
 
+### Paso 9 - Aplicación de las migraciones
+
+Ejecuté el comando indicado por el ISS:
+
+```bash
+python manage.py migrate
+```
+
+La terminal mostró como aplicadas correctamente `security.0001_initial`, las migraciones de `contenttypes`, `admin`, `auth` y `sessions`.
+
+![EVI-03-14 - Resultado de la aplicación de migraciones](./Trazabilidad/EVI-03-14-migraciones-aplicadas.png)
+
+**Retroalimentación de la evidencia:** La salida muestra `OK` para cada migración pendiente y el regreso al prompt. La migración de `security` conserva `managed = False` para el modelo `users`; las apps integradas de Django también registraron sus migraciones.
+
+**Conclusión y aprendizaje:** Aprendí a aplicar el plan de migraciones y comprobar su resultado en la terminal. La evidencia confirma que las migraciones pendientes finalizaron sin error.
+
 **Conclusión y aprendizaje:** Aprendí a revisar el conjunto de migraciones pendientes antes de aplicarlas. El plan permite identificar las apps involucradas, pero no basta para conocer los cambios SQL concretos; por eso mantuve la base sin modificaciones hasta revisar el SQL generado.
