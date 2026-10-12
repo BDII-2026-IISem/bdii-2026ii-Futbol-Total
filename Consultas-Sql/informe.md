@@ -1743,6 +1743,14 @@ ORDER BY audit_id DESC
 FETCH FIRST 1 ROW ONLY;
 ```
 
+**Evidencia de ejecucion — DELETE en Oracle:**
+
+![Resultado de la auditoría DELETE en Oracle](trazabilidad/oracle_rentals_audit_delete.png)
+
+**Retroalimentacion:** Observo que el evento `DELETE` del alquiler `101` conserva `completed` en `before_data` y presenta `NULL` en `after_data`.
+
+**Lo que aprendi:** Aprendí que Oracle registra la imagen anterior a la eliminación, lo que permite consultar los valores borrados desde `rentals_audit`.
+
 ## Evidencia de trazabilidad
 
 Debajo de cada evidencia puse el título del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentación en la que explico para qué sirve la consulta y qué observo en el resultado. En las primeras ocho capturas observo 80 bicicletas disponibles y 67 alquileres completados en cada motor. También dejo marcadas como pendientes las capturas de los procedimientos, los triggers y las consultas que todavía no ejecuto; completaré cada observación cuando tenga el resultado real.
