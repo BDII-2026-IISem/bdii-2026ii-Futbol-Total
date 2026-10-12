@@ -1259,3 +1259,17 @@ Serializer rental y JSON camelCase: OK
 **Retroalimentación de la evidencia:** La terminal muestra `reservedAt` y `totalAmount` en la respuesta, mientras el serializer mantiene `reserved_at` en Python. La verificación terminó con `Serializer rental y JSON camelCase: OK`.
 
 **Conclusión y aprendizaje:** Aprendí a verificar la conversión de nombres en la salida HTTP sin renombrar los campos del modelo ni del serializer.
+
+## ISS-08 - Cliente con ModelViewSet
+
+### Paso 1 - Creación del ClientViewSet
+
+Creé `ClientViewSet` con `ModelViewSet`, `ClientSerializer` y permiso `AllowAny`. Como la tabla `clients` de PedalLibre no tiene columna `status`, no añadí baja lógica ni habilité `DELETE`.
+
+![EVI-08-01 - ClientViewSet creado y comprobación del sistema](./Trazabilidad/EVI-08-01-client-viewset.png)
+
+Ejecuté la comprobación del sistema y Django informó `System check identified no issues (0 silenced)`.
+
+**Retroalimentación de la evidencia:** En el archivo observé el queryset de clientes, el serializer, el permiso y los métodos HTTP habilitados sin `DELETE`. La terminal confirma que Django no detectó problemas.
+
+**Conclusión y aprendizaje:** Aprendí a adaptar el ViewSet al esquema real de `clients` y a no copiar la baja lógica del ejemplo StoreLab, cuyo campo `status` no existe en PedalLibre.
