@@ -1226,3 +1226,21 @@ System check identified no issues (0 silenced).
 **Retroalimentación de la evidencia:** La terminal confirma que Django no encontró problemas con la configuración de REST Framework y CORS.
 
 **Conclusión y aprendizaje:** Aprendí a comprobar los ajustes después de integrar las aplicaciones, el middleware y los renderers y parsers camelCase.
+
+### Paso 4 - Serializers de cliente, catálogo y operación
+
+Creé `ClientSerializer` para el perfil de cliente; `StationSerializer`, `BicycleSerializer`, `RateSerializer` y `DockingPointSerializer` para el catálogo; y `ReservationSerializer`, `RentalSerializer`, `RentalEventSerializer` y `BicycleDockingSerializer` para la operación de PedalLibre. Conservé los campos reales del esquema y marqué como de solo lectura los identificadores y fechas generadas.
+
+![EVI-07-05 - Serializers creados para cliente, catálogo y alquileres; check sin problemas](./Trazabilidad/EVI-07-05-serializers-created-check.png)
+
+Ejecuté la comprobación:
+
+```bash
+python manage.py check
+```
+
+La salida fue `System check identified no issues (0 silenced)`.
+
+**Retroalimentación de la evidencia:** En el explorador observé los archivos `serializers.py` en las apps de cliente, catálogo y alquileres. La terminal confirmó que Django no detectó problemas después de crearlos.
+
+**Conclusión y aprendizaje:** Aprendí a traducir los modelos PedalLibre a serializers sin incorporar los campos StoreLab ni cambiar los nombres del esquema físico.
