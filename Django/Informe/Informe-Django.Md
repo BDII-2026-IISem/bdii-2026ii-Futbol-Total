@@ -749,4 +749,27 @@ La terminal mostró como aplicadas correctamente `security.0001_initial`, las mi
 
 **Conclusión y aprendizaje:** Aprendí a aplicar el plan de migraciones y comprobar su resultado en la terminal. La evidencia confirma que las migraciones pendientes finalizaron sin error.
 
+### Paso 10 - Pruebas posteriores a las migraciones
+
+Después de aplicar las migraciones, ejecuté la suite indicada en el ISS:
+
+```bash
+python manage.py test apps.security.tests.DatabaseSelectionTests
+```
+
+Las cuatro pruebas terminaron correctamente:
+
+```text
+Found 4 test(s).
+System check identified no issues (0 silenced).
+Ran 4 tests in 0.009s
+OK
+```
+
+![EVI-03-15 - Cuatro pruebas de selección de base de datos aprobadas después de migrar](./Trazabilidad/EVI-03-15-pruebas-despues-migrar.png)
+
+**Retroalimentación de la evidencia:** La captura muestra la ejecución de la suite después de las migraciones y confirma cuatro pruebas aprobadas, sin problemas en la comprobación del sistema.
+
+**Conclusión y aprendizaje:** Aprendí a volver a ejecutar las pruebas después de aplicar migraciones para confirmar que la configuración continúa funcionando. El resultado valida la selección de motores y sus errores configurados; no cubre todavía el flujo de autenticación de PedalLibre.
+
 **Conclusión y aprendizaje:** Aprendí a revisar el conjunto de migraciones pendientes antes de aplicarlas. El plan permite identificar las apps involucradas, pero no basta para conocer los cambios SQL concretos; por eso mantuve la base sin modificaciones hasta revisar el SQL generado.
