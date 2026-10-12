@@ -1636,6 +1636,14 @@ WHERE rental_id = (
 ORDER BY audit_id DESC;
 ```
 
+**Evidencia de ejecucion — UPDATE en SQL Server:**
+
+![Resultado de la auditoría UPDATE en SQL Server](trazabilidad/sqlserver_rentals_audit_update.png)
+
+**Retroalimentacion:** Observo el evento `UPDATE` del alquiler `1003`; `before_data` registra el estado anterior `active` y `after_data` el nuevo estado `completed`.
+
+**Lo que aprendi:** Aprendí que el trigger de SQL Server conserva ambas versiones de los datos, haciendo visible la transición que produjo la actualización.
+
 ```sql
 SELECT TOP (1) audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
 FROM dbo.rentals_audit
