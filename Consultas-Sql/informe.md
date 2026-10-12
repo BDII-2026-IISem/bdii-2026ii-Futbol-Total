@@ -1717,6 +1717,14 @@ ORDER BY audit_id DESC
 FETCH FIRST 1 ROW ONLY;
 ```
 
+**Evidencia de ejecucion — UPDATE en Oracle:**
+
+![Resultado de la auditoría UPDATE en Oracle](trazabilidad/oracle_rentals_audit_update.png)
+
+**Retroalimentacion:** Observo el evento `UPDATE` del alquiler `101`: `before_data` muestra el estado `active` y `after_data` refleja el estado `completed`.
+
+**Lo que aprendi:** Aprendí que la auditoría permite comparar el valor anterior y el nuevo incluso cuando el cambio modifica varios campos de la fila.
+
 ```sql
 SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
 FROM rentals_audit
