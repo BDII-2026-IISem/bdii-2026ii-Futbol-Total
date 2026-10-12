@@ -1484,6 +1484,14 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
+**Evidencia de ejecucion — UPDATE en MySQL:**
+
+![Resultado de la auditoría UPDATE en MySQL](trazabilidad/mysql_rentals_audit_update.png)
+
+**Retroalimentacion:** Observo el segundo registro de auditoría del alquiler `101`: `before_data` conserva el estado `active` y `after_data` muestra el estado `completed`.
+
+**Lo que aprendi:** Aprendí que el trigger UPDATE almacena los valores anteriores y posteriores, permitiendo rastrear con claridad qué cambió en el alquiler.
+
 ```sql
 SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
 FROM rentals_audit
