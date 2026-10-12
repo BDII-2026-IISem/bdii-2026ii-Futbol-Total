@@ -1544,3 +1544,21 @@ Probé el endpoint con datos temporales en SQLite en memoria. El registro válid
 **Retroalimentación de la evidencia:** Observé que los casos válidos e inválidos produjeron los resultados esperados y que las solicitudes rechazadas no dejaron alquileres, eventos ni modificaciones parciales.
 
 **Conclusión y aprendizaje:** Aprendí a verificar una operación transaccional completa con escenarios de éxito y de rechazo, aislando los datos de prueba para proteger la base MySQL del proyecto.
+
+### Paso 5 - Pruebas persistentes del registro
+
+Agregué pruebas automatizadas para el registro correcto y para los casos de bicicleta no disponible, tarifa inactiva, estación inactiva, usuario del cliente inactivo, estación que no coincide con el anclaje, punto de anclaje ocupado y bicicleta sin anclaje abierto. Ejecuté las ocho pruebas con una base temporal SQLite; todas pasaron y Django destruyó la base de pruebas al finalizar. MySQL no fue utilizado ni modificado.
+
+![EVI-11-06 - Resultado de las ocho pruebas y base de prueba temporal](./Trazabilidad/EVI-11-06-rental-tests-schema-and-results.png)
+
+![EVI-11-07 - Preparación del esquema aislado de pruebas](./Trazabilidad/EVI-11-07-rental-tests-fixture-setup.png)
+
+![EVI-11-08 - Datos de prueba y comprobación de cambios parciales](./Trazabilidad/EVI-11-08-rental-tests-fixtures-and-rollback.png)
+
+![EVI-11-09 - Pruebas del registro válido y estados de error](./Trazabilidad/EVI-11-09-rental-tests-success-and-validation.png)
+
+![EVI-11-10 - Pruebas de los casos negativos y rollback](./Trazabilidad/EVI-11-10-rental-tests-negative-cases.png)
+
+**Retroalimentación de las evidencias:** Observé el resultado de ocho pruebas exitosas, incluyendo el alta con evento y actualizaciones relacionadas, además de rechazos HTTP 400 sin cambios parciales.
+
+**Conclusión y aprendizaje:** Aprendí a dejar pruebas repetibles para la operación transaccional y sus reglas de negocio, usando una base aislada que no afecta los datos reales.
