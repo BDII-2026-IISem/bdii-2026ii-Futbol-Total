@@ -426,3 +426,100 @@ class RecordStatus(models.TextChoices):
 **Retroalimentación de la evidencia:** En la captura observé la creación del directorio `apps/common`, su `__init__.py` y el archivo `status.py` con los valores definidos. Revisé el archivo guardado y confirmé que coincide con la guía.
 
 **Conclusión y aprendizaje:** Aprendí que `TextChoices` centraliza los valores permitidos para reutilizarlos entre modelos. `common` funciona como paquete Python compartido; no es necesario registrarlo como aplicación Django.
+
+### Paso 3 - Adaptación del modelo de usuario a PedalLibre
+
+Adapté `apps/security/models.py` para representar la tabla `users` ya existente, en lugar de copiar el modelo genérico `AbstractUser` del ISS. El modelo hereda de `AbstractBaseUser`, relaciona sus atributos con las columnas físicas (`id` con `user_id` y `password` con `password_hash`) y declara `managed = False` para que Django no intente crear ni modificar esa tabla. También incorporé la comprobación de los hashes SHA-256 heredados de las semillas; cuando la clave coincide, se guarda en el formato de hash de Django.
+
+```python
+import hashlib
+import string
+
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.db import models
+from django.utils.crypto import constant_time_compare
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def create_user(self, username, password=None, role_id=None, **extra_fields):
+        if not username:
+            raise ValueError("El nombre de usuario es obligatorio.")
+        if role_id is None:
+            raise ValueError("role_id es obligatorio para los usuarios PedalLibre.")
+
+        email = extra_fields.get("email")
+        extra_fields["email"] = (
+            self.normalize_email(email).lower() if email else None
+        )
+
+        user = self.model(
+            username=username.strip(),
+            role_id=role_id,
+            **extra_fields,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+
+class User(AbstractBaseUser):
+    id = models.AutoField(primary_key=True, db_column="user_id")
+    role_id = models.IntegerField(db_column="role_id")
+    username = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=255, db_column="password_hash")
+    email = models.EmailField(
+        max_length=150,
+        unique=True,
+        null=True,
+        blank=True,
+    )
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(null=True, blank=True)
+
+    last_login = None
+
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["role_id"]
+
+    objects = UserManager()
+
+    class Meta:
+        db_table = "users"
+        managed = False
+        ordering = ["username"]
+
+    def check_password(self, raw_password):
+        encoded_password = self.password or ""
+
+        if len(encoded_password) == 64 and all(
+            character in string.hexdigits for character in encoded_password
+        ):
+            legacy_hash = hashlib.sha256(
+                raw_password.encode("utf-8")
+            ).hexdigest()
+
+            if not constant_time_compare(
+                legacy_hash,
+                encoded_password.lower(),
+            ):
+                return False
+
+            self.set_password(raw_password)
+            self.save(update_fields=["password"])
+            return True
+
+        return super().check_password(raw_password)
+
+    def __str__(self):
+        return self.username
+```
+
+![EVI-03-04 - Modelo de usuario PedalLibre, campos y manager](./Trazabilidad/EVI-03-04-modelo-usuario-pedalibre-01.png)
+
+![EVI-03-05 - Modelo de usuario PedalLibre, autenticación y hashes heredados](./Trazabilidad/EVI-03-05-modelo-usuario-pedalibre-02.png)
+
+**Retroalimentación de las evidencias:** Revisé el contenido mostrado y el archivo guardado. El mapeo mantiene los campos de la tabla PedalLibre y evita que Django administre su esquema. La verificación que aportan estas capturas es visual; todavía no ejecuté `check` ni pruebas de autenticación. Tampoco registré aún la app en `INSTALLED_APPS` ni definí `AUTH_USER_MODEL`.
+
+**Conclusión y aprendizaje:** Aprendí que un usuario personalizado debe reflejar las columnas reales de la base y que no se debe aplicar literalmente una guía cuyo esquema corresponde a otro proyecto. También aprendí que un hash SHA-256 heredado no es un hash de contraseña compatible con Django; el modelo compara el valor de manera segura y, tras una autenticación correcta, lo actualiza al formato de Django. Mantengo pendiente la integración con los ajustes y no ejecutaré migraciones sobre las tablas PedalLibre.
