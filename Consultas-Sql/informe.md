@@ -1194,6 +1194,84 @@ EXEC dbo.sp_duracion_alquiler_por_tipo @p_tipo_bicicleta = 'electric';
 
 **Lo que aprendí:** Aprendí a usar un parámetro opcional para alternar entre el resumen general y un tipo específico, y a calcular promedios de duración en minutos con `DATEDIFF` y una conversión decimal.
 
+### Oracle: último alquiler con `KEEP`
+
+<a id="sp-avanzada-oracle-keep"></a>
+
+Parametrizo el número de clientes y mantengo `KEEP (DENSE_RANK LAST ...)` para recuperar el importe de la última fecha de alquiler. Ejecuto la consulta original, creo el procedimiento y comparo la salida del cursor con las diez filas de la consulta.
+
+**Paso a paso:** 1. Selecciono la conexión Oracle y ejecuto la consulta con `KEEP`; 2. selecciono el bloque de creación completo y lo ejecuto con **Alt+X**; 3. ejecuto el bloque `DECLARE` de llamada para solicitar diez clientes y mostrar el `SYS_REFCURSOR`; 4. comparo las fechas e importes.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_ultimo_alquiler_keep(
+    p_cantidad IN PLS_INTEGER,
+    p_resultado OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    IF p_cantidad IS NULL OR p_cantidad < 1 THEN
+        RAISE_APPLICATION_ERROR(
+            -20001,
+            'La cantidad debe ser mayor que cero.'
+        );
+    END IF;
+
+    OPEN p_resultado FOR
+        SELECT client_id,
+               first_name,
+               last_name,
+               latest_rental_at,
+               latest_rental_amount
+        FROM (
+            SELECT c.client_id,
+                   c.first_name,
+                   c.last_name,
+                   MAX(r.started_at) AS latest_rental_at,
+                   MAX(r.total_amount)
+                       KEEP (DENSE_RANK LAST ORDER BY r.started_at)
+                       AS latest_rental_amount,
+                   ROW_NUMBER() OVER (
+                       ORDER BY MAX(r.started_at) DESC NULLS LAST,
+                                c.client_id
+                   ) AS row_num
+            FROM clients c
+            LEFT JOIN rentals r
+                ON r.client_id = c.client_id
+            GROUP BY c.client_id, c.first_name, c.last_name
+        )
+        WHERE row_num <= p_cantidad
+        ORDER BY latest_rental_at DESC NULLS LAST, client_id;
+END;
+/
+```
+
+El bloque de creación termina con `/` para que DBeaver lo ejecute como script con **Alt+X**. Después ejecuto por separado este bloque PL/SQL para invocar el procedimiento y mostrar el resultado:
+
+```sql
+DECLARE
+    v_resultado SYS_REFCURSOR;
+BEGIN
+    sp_ultimo_alquiler_keep(10, v_resultado);
+    DBMS_SQL.RETURN_RESULT(v_resultado);
+END;
+```
+
+**Evidencia de creación:**
+
+**Oracle: Crear `sp_ultimo_alquiler_keep`**
+
+![Oracle: Crear sp_ultimo_alquiler_keep](trazabilidad/oracle_sp_ultimo_alquiler_keep_creacion.png)
+
+**Evidencia de ejecución:**
+
+**Oracle: Recuperar los diez alquileres más recientes**
+
+![Oracle: Ejecutar sp_ultimo_alquiler_keep y recuperar diez filas](trazabilidad/oracle_sp_ultimo_alquiler_keep_ejecucion.png)
+
+**Retroalimentación:** Observé que `sp_ultimo_alquiler_keep` quedó creado bajo los procedimientos de la conexión Oracle. Al ejecutar el bloque `DECLARE`, el cursor devolvió diez filas con el identificador y nombre del cliente, la fecha del último alquiler y su importe. La cuadrícula muestra los resultados sin un mensaje de error visible.
+
+**Lo que aprendí:** Aprendí que puedo combinar `KEEP (DENSE_RANK LAST ...)` con `ROW_NUMBER()` para asociar al último alquiler su importe y limitar los clientes devueltos; el `SYS_REFCURSOR` me permite mostrar ese resultado desde un bloque PL/SQL.
+
 ## Procedimientos almacenados
 
 En esta sección creo un procedimiento de solo lectura para listar los alquileres completados dentro de un intervalo de fechas. Uso un límite final exclusivo (`started_at < fecha_fin`) para que pueda consultar periodos consecutivos sin contar dos veces los registros ubicados justo en el límite. Cada bloque es específico para un motor; creo y ejecuto únicamente el que corresponde a mi conexión. Las capturas de creación y ejecución quedan pendientes hasta que las tome en DBeaver.
