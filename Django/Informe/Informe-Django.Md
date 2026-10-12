@@ -850,3 +850,19 @@ Django informó `Create model Client` y generó `apps/client/migrations/0001_ini
 **Retroalimentación de la evidencia:** La terminal confirma la generación de `client.0001_initial`. El archivo refleja los campos de perfil; Django no incluyó en el estado de migración la relación con el usuario no administrado, aunque el modelo Python mantiene el campo `user` mapeado a la columna existente `user_id`.
 
 **Conclusión y aprendizaje:** Aprendí que `makemigrations` crea la representación del modelo para Django y que `managed = False` diferencia esa representación de la creación de la tabla física.
+
+### Paso 3 - Aplicación del estado de migraciones de Client
+
+Ejecuté el comando indicado por el ISS:
+
+```bash
+python manage.py migrate
+```
+
+Django informó que aplicó `client.0001_initial` correctamente.
+
+![EVI-04-03 - Aplicación de `client.0001_initial`](./Trazabilidad/EVI-04-03-migracion-client-aplicada.png)
+
+**Retroalimentación de la evidencia:** La salida muestra `Applying client.0001_initial... OK`. Como `Client` tiene `managed = False`, la migración registra su estado sin crear ni modificar la tabla física `clients`.
+
+**Conclusión y aprendizaje:** Aprendí a aplicar la migración de la app y a verificar su resultado en la salida de Django.
