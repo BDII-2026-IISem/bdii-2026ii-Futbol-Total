@@ -150,3 +150,70 @@ DB_ORACLE_CONNECT_STRING=[VALOR_CONFIGURADO]
 **Retroalimentación de la evidencia:** En la captura observé el bloque de configuración en la terminal y el archivo `.env` en el Explorador de VS Code. La clave de Django y las contraseñas aparecen censuradas en esta copia de la imagen. Confirmé además que `.env` está incluido en las reglas de `.gitignore`, por lo que no se incorpora al commit.
 
 **Conclusión y aprendizaje:** Aprendí que las variables de entorno permiten mantener la configuración fuera del código fuente y que los valores sensibles no deben publicarse en informes ni evidencias. Si alguna de las credenciales capturadas correspondiera a un servicio real, tendría que cambiarla, pues el original de la imagen la mostraba sin censura.
+
+### Paso 3 - Configuración del motor de base de datos
+
+Creé `config/database.py` para leer el selector `DB_DIALECT`, validar las variables requeridas para el motor seleccionado y producir únicamente la configuración `DATABASES["default"]`. La configuración admite MySQL, PostgreSQL, SQL Server y Oracle, según el contrato definido por el ISS-01.
+
+```python
+import os
+
+from django.core.exceptions import ImproperlyConfigured
+
+
+def _required(name: str) -> str:
+    value = os.getenv(name)
+    if value is None or not value.strip():
+        raise ImproperlyConfigured(f"Falta la variable de entorno requerida: {name}")
+    return value.strip()
+
+
+dialect = _required("DB_DIALECT").lower()
+
+if dialect == "mysql":
+    database = {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": _required("DB_MYSQL_NAME"),
+        "USER": _required("DB_MYSQL_USERNAME"),
+        "PASSWORD": _required("DB_MYSQL_PASSWORD"),
+        "HOST": _required("DB_MYSQL_HOST"),
+        "PORT": _required("DB_MYSQL_PORT"),
+    }
+elif dialect == "postgres":
+    database = {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": _required("DB_POSTGRES_NAME"),
+        "USER": _required("DB_POSTGRES_USERNAME"),
+        "PASSWORD": _required("DB_POSTGRES_PASSWORD"),
+        "HOST": _required("DB_POSTGRES_HOST"),
+        "PORT": _required("DB_POSTGRES_PORT"),
+    }
+elif dialect == "mssql":
+    database = {
+        "ENGINE": "mssql",
+        "NAME": _required("DB_MSSQL_NAME"),
+        "USER": _required("DB_MSSQL_USERNAME"),
+        "PASSWORD": _required("DB_MSSQL_PASSWORD"),
+        "HOST": _required("DB_MSSQL_HOST"),
+        "PORT": _required("DB_MSSQL_PORT"),
+    }
+elif dialect == "oracle":
+    database = {
+        "ENGINE": "django.db.backends.oracle",
+        "NAME": _required("DB_ORACLE_CONNECT_STRING"),
+        "USER": _required("DB_ORACLE_USERNAME"),
+        "PASSWORD": _required("DB_ORACLE_PASSWORD"),
+    }
+else:
+    raise ImproperlyConfigured(
+        "DB_DIALECT debe ser mysql, postgres, mssql u oracle"
+    )
+
+DATABASES = {"default": database}
+```
+
+![EVI-01-04 - Archivo `config/database.py` creado](./Trazabilidad/EVI-01-04-configuracion-database.png)
+
+**Retroalimentación de la evidencia:** En la captura observé `database.py` dentro de `config/` y el comando utilizado para crearlo. Revisé el archivo guardado y confirmé que contiene la configuración de los cuatro dialectos, que falla explícitamente si falta una variable requerida y que solo expone el alias `default`. La captura no incluye valores del archivo `.env`.
+
+**Conclusión y aprendizaje:** Aprendí a separar la selección del motor de la configuración general del proyecto. La validación de variables ayuda a identificar una configuración incompleta y evita crear conexiones para motores que no están seleccionados. La integración de este módulo con `settings.py` y la carga de `.env` se registra en el siguiente paso.
