@@ -1484,3 +1484,17 @@ Ejecuté `python manage.py check`; Django informó `System check identified no i
 **Retroalimentación de las evidencias:** Observé el filtro de disponibilidad y la ruta registrada antes del router del catálogo. La comprobación de Django terminó sin problemas.
 
 **Conclusión y aprendizaje:** Aprendí a publicar una lectura especializada con `ListAPIView`, separada del CRUD, adaptando los criterios a bicicletas, puntos de anclaje y estaciones reales de PedalLibre.
+
+### Paso 2 - Verificación del filtro de disponibilidad
+
+Probé `GET /api/bicycles/available/` con datos temporales en una base SQLite en memoria. La respuesta fue HTTP 200 y el filtro devolvió únicamente la bicicleta disponible acoplada a un punto disponible de una estación activa. También comprobé que se excluyeran una bicicleta en mantenimiento, otra acoplada a un punto ocupado y otra en una estación inactiva. La prueba utilizó SQLite en memoria; MySQL no fue utilizado ni modificado.
+
+![EVI-10-03 - Prueba del endpoint y configuración de la base temporal](./Trazabilidad/EVI-10-03-available-bicycles-filter-imports.png)
+
+![EVI-10-04 - Modelos y relaciones usados por la prueba](./Trazabilidad/EVI-10-04-available-bicycles-filter-relations.png)
+
+![EVI-10-05 - Modelo de acoplamiento empleado en el filtro](./Trazabilidad/EVI-10-05-available-bicycles-filter-model.png)
+
+**Retroalimentación de las evidencias:** Observé que el endpoint respondió correctamente y que solo incluyó la bicicleta que cumplía todas las condiciones de disponibilidad. Los casos con estado de bicicleta, punto o estación no elegibles quedaron excluidos.
+
+**Conclusión y aprendizaje:** Aprendí a comprobar los filtros relacionados entre bicicletas, puntos de anclaje y estaciones con datos aislados, evitando escrituras en la base MySQL del proyecto.
