@@ -1328,3 +1328,13 @@ Verifiqué las rutas del recurso con el cliente de API de Django. La colección 
 **Retroalimentación de la evidencia:** La terminal muestra las rutas de colección y detalle aprobadas y confirma `DELETE responde 405 Method Not Allowed: OK`.
 
 **Conclusión y aprendizaje:** Aprendí a verificar el comportamiento HTTP del ViewSet y a confirmar que no se pueden borrar perfiles de clientes mediante el endpoint.
+
+### Paso 6 - Lectura de la colección de clientes
+
+Consulté `GET /api/clients/` en modo de solo lectura. La respuesta fue HTTP 200, incluyó 100 registros y los campos camelCase esperados. No mostré ni registré los valores personales de los clientes.
+
+![EVI-08-06 - Respuesta HTTP 200 de la colección sin exponer datos personales](./Trazabilidad/EVI-08-06-client-list-readonly.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma `GET /api/clients/: HTTP 200`, una lista JSON válida de 100 registros y campos camelCase.
+
+**Conclusión y aprendizaje:** Aprendí a comprobar la respuesta del endpoint con una consulta de solo lectura y a validar la estructura sin divulgar datos personales de la colección.
