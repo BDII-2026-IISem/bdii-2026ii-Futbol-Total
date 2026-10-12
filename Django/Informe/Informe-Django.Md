@@ -793,3 +793,44 @@ System check identified no issues (0 silenced).
 **Retroalimentación de la evidencia:** La terminal muestra que la comprobación terminó sin errores.
 
 **Conclusión y aprendizaje:** Aprendí a comprobar la configuración de Django al cerrar este paso y confirmar que el proyecto sigue sin problemas reportados por el sistema.
+
+## ISS-04 - Modelo Client de PedalLibre
+
+### Paso 1 - Mapeo del modelo Client
+
+Definí `Client` para mapear la tabla física `clients` de PedalLibre. Relacioné el perfil con el usuario existente mediante `user_id` y declaré los campos físicos `first_name`, `last_name`, `document_number`, `phone` y `created_at`. Marqué el modelo como `managed = False` porque el esquema se mantiene con los scripts SQL del proyecto.
+
+```python
+from django.conf import settings
+from django.db import models
+
+
+class Client(models.Model):
+    id = models.AutoField(primary_key=True, db_column="client_id")
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.DO_NOTHING,
+        db_column="user_id",
+        null=True,
+        blank=True,
+        related_name="client_profile",
+    )
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    document_number = models.CharField(max_length=50, unique=True)
+    phone = models.CharField(max_length=30, null=True, blank=True)
+    created_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "clients"
+        managed = False
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+```
+
+![EVI-04-01 - Modelo Client PedalLibre y verificación `check`](./Trazabilidad/EVI-04-01-modelo-client-pedalibre.png)
+
+**Retroalimentación de la evidencia:** Revisé el modelo guardado y lo contrasté con la definición SQL de `clients`. Los nombres y longitudes corresponden a las columnas de PedalLibre; el modelo no agrega campos de StoreLab como `status`, `email` o `updated_at`, ni incluye una contraseña del cliente. La terminal muestra `System check identified no issues (0 silenced)`.
+
+**Conclusión y aprendizaje:** Aprendí a mapear el perfil de cliente a la tabla existente sin duplicar datos de autenticación ni modificar el esquema físico. El siguiente paso es generar la migración de estado para `client`; no ejecutaré migraciones que alteren `clients`.
