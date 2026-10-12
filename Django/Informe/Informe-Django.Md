@@ -1148,3 +1148,19 @@ Django creó `apps/rental/migrations/0001_initial.py` para `BicycleDocking`, `Re
 **Retroalimentación de la evidencia:** La terminal confirma la generación de `0001_initial.py` con los cuatro modelos. La migración registra su estado en Django, sin asumir la creación de las tablas físicas ya existentes en PedalLibre.
 
 **Conclusión y aprendizaje:** Aprendí a generar la migración de estado de la app y a verificar que conserva `managed = False` para proteger las tablas administradas por el esquema SQL.
+
+### Paso 4 - Aplicación de la migración de estado
+
+Registré la migración inicial de la app `rental`:
+
+```bash
+python manage.py migrate rental
+```
+
+Django informó `Applying rental.0001_initial... OK`.
+
+![EVI-06-06 - Migración inicial de rental aplicada](./Trazabilidad/EVI-06-06-migrate-rental.png)
+
+**Retroalimentación de la evidencia:** La salida confirma que Django registró la migración `rental.0001_initial` sin reportar errores. Los modelos se mantienen con `managed = False`, de modo que las tablas físicas siguen bajo el esquema SQL de PedalLibre.
+
+**Conclusión y aprendizaje:** Aprendí a aplicar y verificar la migración de estado de la app sin transferir a Django la administración de las tablas existentes.
