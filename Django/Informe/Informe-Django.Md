@@ -1498,3 +1498,19 @@ Probé `GET /api/bicycles/available/` con datos temporales en una base SQLite en
 **Retroalimentación de las evidencias:** Observé que el endpoint respondió correctamente y que solo incluyó la bicicleta que cumplía todas las condiciones de disponibilidad. Los casos con estado de bicicleta, punto o estación no elegibles quedaron excluidos.
 
 **Conclusión y aprendizaje:** Aprendí a comprobar los filtros relacionados entre bicicletas, puntos de anclaje y estaciones con datos aislados, evitando escrituras en la base MySQL del proyecto.
+
+## ISS-11 - Registro de alquiler con APIView
+
+### Paso 1 - Manager transaccional del alquiler
+
+Creé `RentalQuerySet.register()` y lo conecté al modelo `Rental` mediante `RentalManager`. El método reúne en una transacción la validación del cliente, la bicicleta, la tarifa, la estación y el punto de anclaje; después registra el alquiler y su evento, actualiza el anclaje y cambia el estado de la bicicleta. Conservé los modelos vinculados a las tablas existentes con `managed = False`.
+
+![EVI-11-01 - Manager de alquiler y verificaciones de Django](./Trazabilidad/EVI-11-01-rental-manager-validation.png)
+
+![EVI-11-02 - Operación transaccional y manager registrado](./Trazabilidad/EVI-11-02-rental-manager-registered.png)
+
+Ejecuté `python manage.py check` y comprobé desde el shell de Django que `Rental.objects` expone el método `register`; ambas verificaciones terminaron correctamente.
+
+**Retroalimentación de las evidencias:** Observé el manager con la operación de registro y las validaciones de disponibilidad. La terminal confirmó que Django no encontró problemas y que el manager quedó conectado al modelo.
+
+**Conclusión y aprendizaje:** Aprendí a centralizar las reglas del inicio de alquiler en un manager y a agrupar los cambios relacionados dentro de una transacción para mantener coherentes el alquiler, el evento, el anclaje y el estado de la bicicleta.

@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from apps.catalog.models import Bicycle, DockingPoint, Rate, Station
 from apps.client.models import Client
+from apps.rental.managers import RentalManager
 
 
 class Reservation(models.Model):
@@ -80,6 +81,8 @@ class Rental(models.Model):
         decimal_places=2,
         default=Decimal("0.00"),
     )
+
+    objects = RentalManager()
 
     class Meta:
         db_table = "rentals"
