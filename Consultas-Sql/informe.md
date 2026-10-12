@@ -1691,6 +1691,14 @@ ORDER BY audit_id DESC
 FETCH FIRST 1 ROW ONLY;
 ```
 
+**Evidencia de ejecucion — INSERT en Oracle:**
+
+![Resultado de la auditoría INSERT en Oracle](trazabilidad/oracle_rentals_audit_insert.png)
+
+**Retroalimentacion:** Observo que Oracle registró el evento `INSERT` del alquiler `101`, asociado al usuario `PEDALIBRETERMINALDBEAVER`; `before_data` es `NULL` y `after_data` contiene la fila inicial.
+
+**Lo que aprendi:** Aprendí que la auditoría en Oracle también conserva los valores posteriores y el usuario que realizó la inserción.
+
 ```sql
 SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
 FROM rentals_audit
