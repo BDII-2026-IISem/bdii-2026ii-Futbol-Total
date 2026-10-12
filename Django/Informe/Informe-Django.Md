@@ -407,3 +407,22 @@ class SecurityConfig(AppConfig):
 **Conclusión y aprendizaje:** Aprendí que la app de seguridad debe tener un `AppConfig` acorde con su ubicación en el paquete `apps`. Antes de declarar el modelo de usuario debo compatibilizarlo con la tabla `users` existente, en lugar de copiar sin cambios el ejemplo genérico del ISS.
 
 **Nota de revisión del ISS-03:** La tabla PedalLibre `users` tiene las columnas `user_id`, `role_id`, `username`, `password_hash`, `email`, `is_active` y `created_at`. El ejemplo `AbstractUser` del ISS incluye estructura y campos Django que no corresponden directamente a esa tabla. Por eso no lo registraré ni migraré de forma literal: primero adaptaré el mapeo y mantendré la tabla bajo administración del esquema SQL existente.
+
+### Paso 2 - Definición de estados compartidos
+
+Creé `apps/common/status.py` como módulo compartido, sin convertir `common` en una app Django ni agregarlo a `INSTALLED_APPS`. Definí los estados `active` e `inactive` con `TextChoices`, según el ISS-03.
+
+```python
+from django.db import models
+
+
+class RecordStatus(models.TextChoices):
+    ACTIVE = "active", "Active"
+    INACTIVE = "inactive", "Inactive"
+```
+
+![EVI-03-03 - Módulo compartido `apps/common/status.py`](./Trazabilidad/EVI-03-03-record-status.png)
+
+**Retroalimentación de la evidencia:** En la captura observé la creación del directorio `apps/common`, su `__init__.py` y el archivo `status.py` con los valores definidos. Revisé el archivo guardado y confirmé que coincide con la guía.
+
+**Conclusión y aprendizaje:** Aprendí que `TextChoices` centraliza los valores permitidos para reutilizarlos entre modelos. `common` funciona como paquete Python compartido; no es necesario registrarlo como aplicación Django.
