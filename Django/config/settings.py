@@ -48,8 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "apps.client.apps.ClientConfig",
-    "apps.client.apps.ClientConfig",
-    "apps.security.apps.SecurityConfig",
     "apps.security.apps.SecurityConfig",
 ]
 
@@ -86,7 +84,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-from config.database import DATABASES
 from config.database import DATABASES
 
 AUTH_USER_MODEL = "security.User"

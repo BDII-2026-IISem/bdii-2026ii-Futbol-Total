@@ -548,8 +548,26 @@ python manage.py check
 System check identified no issues (0 silenced).
 ```
 
-**Evidencia visual pendiente:** en esta sesión no recibí capturas de `config/settings.py` ni de la terminal. Por eso no incorporé imágenes para este paso. Cuando las comparta, las agregaré en este apartado y en `Informe/Trazabilidad`.
+![EVI-03-06 - Revisión inicial de `INSTALLED_APPS`, donde observé registros duplicados](./Trazabilidad/EVI-03-06-revision-settings-duplicados.png)
 
-**Retroalimentación:** La comprobación de Django terminó sin errores, por lo que el registro de la app y la referencia al modelo personalizado son reconocidos por el proyecto. Esta verificación no implica que se hayan probado consultas de autenticación contra la base de datos.
+![EVI-03-07 - Revisión inicial de `AUTH_USER_MODEL`, donde observé declaraciones duplicadas](./Trazabilidad/EVI-03-07-revision-settings-auth-duplicado.png)
+
+**Retroalimentación de las evidencias:** En las capturas observé que `ClientConfig`, `SecurityConfig`, la importación de `DATABASES` y `AUTH_USER_MODEL` aparecían duplicados. Corregí `config/settings.py` para dejar una sola entrada de cada uno. Las capturas registran el estado que revisé antes de la corrección; no representan la configuración final.
+
+Después de corregir las duplicaciones, volví a ejecutar:
+
+```bash
+python manage.py check
+```
+
+El comando terminó correctamente:
+
+```text
+System check identified no issues (0 silenced).
+```
+
+No recibí una captura del resultado de esa segunda ejecución, así que dejo el resultado de la terminal documentado como texto y no como imagen.
+
+La comprobación confirma que Django reconoce el registro de la app y la referencia al modelo personalizado. No implica que se hayan probado consultas de autenticación contra la base de datos.
 
 **Conclusión y aprendizaje:** Aprendí que la app que define el modelo de usuario y el ajuste `AUTH_USER_MODEL` deben estar alineados desde la configuración inicial. También confirmé que `manage.py check` valida la configuración de Django, pero no reemplaza las pruebas contra los datos reales. No ejecuté `makemigrations` ni `migrate` para conservar intacto el esquema PedalLibre.
