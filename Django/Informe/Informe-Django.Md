@@ -1514,3 +1514,13 @@ Ejecuté `python manage.py check` y comprobé desde el shell de Django que `Rent
 **Retroalimentación de las evidencias:** Observé el manager con la operación de registro y las validaciones de disponibilidad. La terminal confirmó que Django no encontró problemas y que el manager quedó conectado al modelo.
 
 **Conclusión y aprendizaje:** Aprendí a centralizar las reglas del inicio de alquiler en un manager y a agrupar los cambios relacionados dentro de una transacción para mantener coherentes el alquiler, el evento, el anclaje y el estado de la bicicleta.
+
+### Paso 2 - Serializer de registro del alquiler
+
+Agregué `RentalRegisterSerializer` sin reemplazar los serializers existentes. Definí los campos de cliente, bicicleta, tarifa y estación de salida, y conecté la creación con el método transaccional `Rental.objects.register()`. La captura muestra el serializer y la salida del shell con los cuatro campos disponibles.
+
+![EVI-11-03 - Serializer de entrada para registrar el alquiler](./Trazabilidad/EVI-11-03-rental-register-serializer.png)
+
+**Retroalimentación de la evidencia:** Observé que los cuatro campos de entrada se exponen con los nombres Python que el parser camelCase presenta en las solicitudes HTTP como `clientId`, `bicycleId`, `rateId` y `startStationId`.
+
+**Conclusión y aprendizaje:** Aprendí a separar la validación de estructura de los datos del procesamiento de las reglas transaccionales del alquiler.
