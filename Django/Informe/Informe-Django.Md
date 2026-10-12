@@ -957,3 +957,88 @@ En `config/settings.py` registré:
 **Retroalimentación de la evidencia:** En la captura observé la estructura generada por `startapp` y la actualización de `INSTALLED_APPS`. Revisé `apps/catalog/apps.py` y confirmé `name = "apps.catalog"` y `label = "catalog"`.
 
 **Conclusión y aprendizaje:** Aprendí a crear una app de catálogo bajo el paquete `apps` y a registrarla con su ruta Python completa para el dominio PedalLibre.
+
+### Paso 2 - Modelos del catálogo PedalLibre
+
+Definí los modelos `Station`, `Bicycle`, `Rate` y `DockingPoint` con las tablas y columnas físicas de PedalLibre. Declaré `managed = False` en cada modelo para mantener el esquema bajo control de los scripts SQL.
+
+```python
+from django.db import models
+
+
+class Station(models.Model):
+    id = models.AutoField(primary_key=True, db_column="station_id")
+    name = models.CharField(max_length=120)
+    address = models.CharField(max_length=255)
+    capacity = models.PositiveIntegerField(default=0)
+    status = models.CharField(max_length=30, default="active")
+    created_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "stations"
+        managed = False
+
+    def __str__(self):
+        return self.name
+
+
+class Bicycle(models.Model):
+    id = models.AutoField(primary_key=True, db_column="bicycle_id")
+    serial_number = models.CharField(max_length=80, unique=True)
+    bicycle_type = models.CharField(max_length=50, default="standard")
+    status = models.CharField(max_length=30, default="available")
+    created_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "bicycles"
+        managed = False
+
+    def __str__(self):
+        return self.serial_number
+
+
+class Rate(models.Model):
+    id = models.AutoField(primary_key=True, db_column="rate_id")
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    billing_unit = models.CharField(max_length=30)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "rates"
+        managed = False
+
+    def __str__(self):
+        return self.name
+
+
+class DockingPoint(models.Model):
+    id = models.AutoField(primary_key=True, db_column="docking_point_id")
+    station = models.ForeignKey(
+        Station,
+        on_delete=models.DO_NOTHING,
+        db_column="station_id",
+        related_name="docking_points",
+    )
+    code = models.CharField(max_length=30)
+    status = models.CharField(max_length=30, default="available")
+
+    class Meta:
+        db_table = "docking_points"
+        managed = False
+        constraints = [
+            models.UniqueConstraint(
+                fields=("station", "code"),
+                name="uq_docking_points_code",
+            ),
+        ]
+
+    def __str__(self):
+        return self.code
+```
+
+![EVI-05-02 - Modelos de estaciones, bicicletas, tarifas y puntos de anclaje](./Trazabilidad/EVI-05-02-modelos-catalogo-pedalibre.png)
+
+**Retroalimentación de la evidencia:** Revisé el archivo completo y lo contrasté con las definiciones SQL de las tablas. `manage.py check` terminó con `System check identified no issues (0 silenced)`. Los modelos describen el catálogo real, sin crear entidades de productos.
+
+**Conclusión y aprendizaje:** Aprendí a representar entidades de catálogo existentes con `db_table`, `db_column` y `managed = False`, conservando la relación de los puntos de anclaje con su estación.
