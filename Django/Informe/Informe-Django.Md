@@ -1338,3 +1338,18 @@ Consulté `GET /api/clients/` en modo de solo lectura. La respuesta fue HTTP 200
 **Retroalimentación de la evidencia:** La terminal confirma `GET /api/clients/: HTTP 200`, una lista JSON válida de 100 registros y campos camelCase.
 
 **Conclusión y aprendizaje:** Aprendí a comprobar la respuesta del endpoint con una consulta de solo lectura y a validar la estructura sin divulgar datos personales de la colección.
+
+### Paso 7 - Validación de una solicitud incompleta
+
+Envié una solicitud POST con el cuerpo vacío para comprobar la validación sin crear un cliente:
+
+```text
+POST /api/clients/ con cuerpo vacío: HTTP 400
+Validación del cuerpo sin crear registros: OK
+```
+
+![EVI-08-07 - Solicitud vacía rechazada con HTTP 400 sin crear registros](./Trazabilidad/EVI-08-07-client-invalid-post.png)
+
+**Retroalimentación de la evidencia:** La respuesta `400 Bad Request` confirma que el serializer rechaza un cuerpo que no contiene los campos requeridos. La prueba no insertó datos.
+
+**Conclusión y aprendizaje:** Aprendí a validar una solicitud incompleta de manera segura antes de probar una creación válida.
