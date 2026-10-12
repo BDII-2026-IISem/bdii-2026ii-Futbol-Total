@@ -1024,6 +1024,58 @@ CALL sp_alquileres_por_cliente(10);
 
 **Lo que aprendí:** Aprendí que en DBeaver debo declarar el parámetro en el editor de procedimientos y guardar allí el procedimiento; luego puedo invocarlo desde el editor SQL con `CALL`.
 
+### PostgreSQL: agregados `FILTER` para pagos
+
+<a id="sp-avanzada-postgresql-filter-pagos"></a>
+
+Parametrizo el método de pago, que puede quedar sin filtrar. Ejecuto la consulta original, creo el procedimiento y recupero el cursor dentro de la misma transacción; comparo los estados e importes agregados.
+
+**Paso a paso:** 1. Selecciono PostgreSQL y ejecuto la consulta con agregados `FILTER`; 2. ejecuto por separado la definición del procedimiento; 3. selecciono el bloque entero desde `BEGIN` hasta `COMMIT` y lo ejecuto con **Alt+X**; 4. comparo los conteos e importes. Mantengo `CALL` y `FETCH` dentro de la misma transacción.
+
+```sql
+CREATE OR REPLACE PROCEDURE public.sp_resumen_pagos_por_metodo(
+    IN p_metodo VARCHAR,
+    INOUT p_resultado REFCURSOR
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    OPEN p_resultado FOR
+        SELECT payment_method,
+               COUNT(*) FILTER (WHERE status = 'paid') AS paid_count,
+               COUNT(*) FILTER (WHERE status = 'pending') AS pending_count,
+               COUNT(*) FILTER (WHERE status = 'refunded') AS refunded_count,
+               COALESCE(SUM(amount) FILTER (WHERE status = 'paid'), 0) AS paid_total
+        FROM payments
+        WHERE p_metodo IS NULL OR payment_method = p_metodo
+        GROUP BY payment_method
+        ORDER BY payment_method;
+END;
+$$;
+```
+
+```sql
+BEGIN;
+CALL public.sp_resumen_pagos_por_metodo(NULL, 'r_pagos');
+FETCH ALL FROM r_pagos;
+COMMIT;
+```
+
+**Evidencia de creación:**
+
+**PostgreSQL: Crear `sp_resumen_pagos_por_metodo`**
+
+![PostgreSQL: Crear sp_resumen_pagos_por_metodo](trazabilidad/postgresql_sp_resumen_pagos_creacion.png)
+
+**Evidencia de ejecución:**
+
+**PostgreSQL: Resumir pagos por método y estado**
+
+![PostgreSQL: Ejecutar sp_resumen_pagos_por_metodo](trazabilidad/postgresql_sp_resumen_pagos_ejecucion.png)
+
+**Retroalimentación:** Observé que el procedimiento quedó creado en el esquema `public` y que la llamada con `p_metodo = NULL` devolvió cuatro filas, una por método de pago. En la cuadrícula aparecen los conteos de pagos pagados, pendientes y reembolsados, junto con el total pagado para cada método.
+
+**Lo que aprendí:** Aprendí que un parámetro nulo permite resumir todos los métodos y que los agregados `FILTER` calculan cada estado en columnas separadas dentro de una misma fila por método.
+
 ### PostgreSQL: último alquiler por cliente
 
 <a id="sp-avanzada-postgresql-ultimo-alquiler"></a>
