@@ -276,3 +276,49 @@ python manage.py runserver
 **Retroalimentación de las evidencias:** En la primera captura observé `System check identified no issues (0 silenced)`. En la segunda observé que Django inició en `http://127.0.0.1:8000/`, respondió con estado HTTP 200 y mostró la página de bienvenida. El servidor también informa que hay 18 migraciones pendientes de las aplicaciones integradas de Django.
 
 **Conclusión y aprendizaje:** Aprendí que `check` valida los ajustes del proyecto y que `runserver` permite confirmar visualmente que la aplicación responde. El aviso de migraciones pendientes no impidió el inicio ni la respuesta de la página. No ejecutaré `python manage.py migrate` en este proyecto porque el esquema de PedalLibre se administra con scripts SQL y el ISS indica no alterar las tablas desde migraciones de Django. Antes de continuar, debo detener el servidor con Ctrl+C si sigue activo.
+
+### Paso 6 - Verificación de las tablas existentes de PedalLibre
+
+Verifiqué en DBeaver, mediante una consulta de solo lectura al catálogo `INFORMATION_SCHEMA.TABLES`, que las 21 tablas requeridas para PedalLibre existen en la base MySQL `Pedalibre-Terminal-Dbeaver`. La consulta comparó la lista de tablas de la referencia del proyecto con las tablas físicas y no modificó el esquema.
+
+```sql
+SELECT esperada.table_name AS tabla,
+       CASE
+           WHEN existente.TABLE_NAME IS NULL THEN 'FALTA'
+           ELSE 'EXISTE'
+       END AS estado
+FROM (
+    SELECT 'roles' AS table_name
+    UNION ALL SELECT 'users'
+    UNION ALL SELECT 'clients'
+    UNION ALL SELECT 'stations'
+    UNION ALL SELECT 'station_locations'
+    UNION ALL SELECT 'station_schedules'
+    UNION ALL SELECT 'docking_points'
+    UNION ALL SELECT 'bicycles'
+    UNION ALL SELECT 'bicycle_dockings'
+    UNION ALL SELECT 'reservations'
+    UNION ALL SELECT 'rates'
+    UNION ALL SELECT 'rentals'
+    UNION ALL SELECT 'rental_events'
+    UNION ALL SELECT 'penalties'
+    UNION ALL SELECT 'maintenance'
+    UNION ALL SELECT 'payments'
+    UNION ALL SELECT 'incidents'
+    UNION ALL SELECT 'notifications'
+    UNION ALL SELECT 'bicycle_history'
+    UNION ALL SELECT 'reviews'
+    UNION ALL SELECT 'invoices'
+) AS esperada
+LEFT JOIN INFORMATION_SCHEMA.TABLES AS existente
+    ON existente.TABLE_SCHEMA = 'Pedalibre-Terminal-Dbeaver'
+   AND existente.TABLE_NAME = esperada.table_name
+   AND existente.TABLE_TYPE = 'BASE TABLE'
+ORDER BY esperada.table_name;
+```
+
+![EVI-01-11 - Las 21 tablas de PedalLibre existen en MySQL](./Trazabilidad/EVI-01-11-verificacion-21-tablas.png)
+
+**Retroalimentación de la evidencia:** En el resultado de DBeaver observé 21 filas y cada una muestra `EXISTE`. Con ello confirmé el requisito de esquema previo al ISS-01 sin ejecutar scripts de borrado o creación.
+
+**Conclusión y aprendizaje:** Aprendí a comprobar las tablas físicas desde `INFORMATION_SCHEMA` con una consulta que no altera la base. El requisito de las 21 tablas queda verificado para la conexión MySQL seleccionada.
