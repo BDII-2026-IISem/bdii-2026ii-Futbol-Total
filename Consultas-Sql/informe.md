@@ -1492,6 +1492,14 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
+**Evidencia de ejecucion — UPDATE en PostgreSQL:**
+
+![Resultado de la auditoría UPDATE en PostgreSQL](trazabilidad/postgresql_rentals_audit_update.png)
+
+**Retroalimentacion:** Observo el evento `UPDATE` del alquiler `101`: en `before_data` aparece el estado `active` y en `after_data`, el estado `completed`.
+
+**Lo que aprendi:** Aprendí que los valores previo y posterior permiten comparar el estado de la fila sin depender de que siga existiendo en la tabla principal.
+
 **Evidencia de ejecucion — UPDATE en MySQL:**
 
 ![Resultado de la auditoría UPDATE en MySQL](trazabilidad/mysql_rentals_audit_update.png)
