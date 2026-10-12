@@ -834,3 +834,19 @@ class Client(models.Model):
 **Retroalimentación de la evidencia:** Revisé el modelo guardado y lo contrasté con la definición SQL de `clients`. Los nombres y longitudes corresponden a las columnas de PedalLibre; el modelo no agrega campos de StoreLab como `status`, `email` o `updated_at`, ni incluye una contraseña del cliente. La terminal muestra `System check identified no issues (0 silenced)`.
 
 **Conclusión y aprendizaje:** Aprendí a mapear el perfil de cliente a la tabla existente sin duplicar datos de autenticación ni modificar el esquema físico. El siguiente paso es generar la migración de estado para `client`; no ejecutaré migraciones que alteren `clients`.
+
+### Paso 2 - Generación de la migración de estado de Client
+
+Generé la migración inicial con:
+
+```bash
+python manage.py makemigrations client
+```
+
+Django informó `Create model Client` y generó `apps/client/migrations/0001_initial.py`. Revisé el archivo y confirmé que declara `db_table = "clients"` y `managed = False`; por eso esta migración registra el estado del modelo sin crear ni administrar la tabla física.
+
+![EVI-04-02 - Generación de la migración inicial de Client](./Trazabilidad/EVI-04-02-migracion-inicial-client.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma la generación de `client.0001_initial`. El archivo refleja los campos de perfil; Django no incluyó en el estado de migración la relación con el usuario no administrado, aunque el modelo Python mantiene el campo `user` mapeado a la columna existente `user_id`.
+
+**Conclusión y aprendizaje:** Aprendí que `makemigrations` crea la representación del modelo para Django y que `managed = False` diferencia esa representación de la creación de la tabla física.
