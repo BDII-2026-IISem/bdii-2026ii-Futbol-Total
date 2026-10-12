@@ -1412,3 +1412,15 @@ Ejecuté `python manage.py check`; Django informó `System check identified no i
 **Retroalimentación de la evidencia:** La captura muestra los cuatro ViewSets basados en sus modelos reales y la comprobación de Django sin problemas.
 
 **Conclusión y aprendizaje:** Aprendí a publicar los recursos reales del catálogo de PedalLibre sin crear modelos de productos ajenos al esquema y a proteger las relaciones deshabilitando el borrado desde la API.
+
+### Paso 2 - Registro de las rutas del catálogo
+
+Registré las rutas de estaciones, bicicletas, tarifas y puntos de anclaje con `SimpleRouter`, y conecté el router bajo el prefijo `/api/`.
+
+![EVI-09-02 - Rutas del catálogo registradas bajo /api/](./Trazabilidad/EVI-09-02-catalog-api-routes.png)
+
+Ejecuté `python manage.py check`; Django informó `System check identified no issues (0 silenced)`.
+
+**Retroalimentación de la evidencia:** La captura muestra la inclusión de `apps.catalog.urls` en las rutas del proyecto y la comprobación final sin errores.
+
+**Conclusión y aprendizaje:** Aprendí a mantener las rutas específicas del catálogo en su aplicación y a incluirlas en el prefijo común de la API.
