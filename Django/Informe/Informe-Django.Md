@@ -1562,3 +1562,7 @@ Agregué pruebas automatizadas para el registro correcto y para los casos de bic
 **Retroalimentación de las evidencias:** Observé el resultado de ocho pruebas exitosas, incluyendo el alta con evento y actualizaciones relacionadas, además de rechazos HTTP 400 sin cambios parciales.
 
 **Conclusión y aprendizaje:** Aprendí a dejar pruebas repetibles para la operación transaccional y sus reglas de negocio, usando una base aislada que no afecta los datos reales.
+
+### Cierre del ISS-11
+
+Verifiqué los criterios de aceptación de la guía: el registro válido responde HTTP 201 con alquiler activo y monto inicial cero; se crea el evento `started`, la bicicleta cambia a `rented` y se libera su anclaje. Los casos no válidos responden HTTP 400 y no dejan cambios parciales. Las ocho pruebas automatizadas finalizaron correctamente. Los modelos continúan mapeados a las tablas existentes con `managed = False`. Las migraciones que aparecen durante la salida de pruebas se aplicaron en la base temporal SQLite del runner; esa base se destruyó al finalizar y MySQL no fue utilizado ni modificado.
