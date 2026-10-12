@@ -1436,3 +1436,19 @@ La verificación confirmó las rutas y que `DELETE` no está habilitado para los
 **Retroalimentación de la evidencia:** La terminal muestra las cuatro parejas de rutas comprobadas y confirma que no se accedió a MySQL.
 
 **Conclusión y aprendizaje:** Aprendí a validar la resolución y los métodos disponibles de cada recurso del catálogo antes de probar consultas contra la base de datos.
+
+### Paso 4 - Pruebas de resolución de las rutas del catálogo
+
+Agregué pruebas automatizadas para comprobar las rutas de colección y detalle de los cuatro recursos. Las pruebas validan las acciones HTTP configuradas y no acceden a MySQL.
+
+```bash
+python manage.py test apps.catalog
+```
+
+La ejecución encontró y aprobó dos pruebas.
+
+![EVI-09-04 - Dos pruebas de las rutas del catálogo aprobadas](./Trazabilidad/EVI-09-04-catalog-route-tests.png)
+
+**Retroalimentación de la evidencia:** La terminal muestra `Found 2 test(s)` y `OK`, con la comprobación del sistema sin problemas.
+
+**Conclusión y aprendizaje:** Aprendí a mantener pruebas rápidas y aisladas para confirmar el enrutamiento del catálogo sin depender de la base de datos.
