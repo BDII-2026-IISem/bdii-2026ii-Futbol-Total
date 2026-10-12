@@ -217,3 +217,45 @@ DATABASES = {"default": database}
 **Retroalimentación de la evidencia:** En la captura observé `database.py` dentro de `config/` y el comando utilizado para crearlo. Revisé el archivo guardado y confirmé que contiene la configuración de los cuatro dialectos, que falla explícitamente si falta una variable requerida y que solo expone el alias `default`. La captura no incluye valores del archivo `.env`.
 
 **Conclusión y aprendizaje:** Aprendí a separar la selección del motor de la configuración general del proyecto. La validación de variables ayuda a identificar una configuración incompleta y evita crear conexiones para motores que no están seleccionados. La integración de este módulo con `settings.py` y la carga de `.env` se registra en el siguiente paso.
+
+### Paso 4 - Integración de `.env` y configuración de Django
+
+Actualicé `config/settings.py` para cargar las variables desde `.env` al iniciar Django. Configuré `SECRET_KEY`, `DEBUG` y `ALLOWED_HOSTS` mediante sus variables de entorno, y reemplacé la base SQLite generada inicialmente por `DATABASES` importado desde `config.database`.
+
+```python
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
+
+secret_key = os.getenv("DJANGO_SECRET_KEY")
+if not secret_key:
+    raise ImproperlyConfigured("Falta la variable de entorno requerida: DJANGO_SECRET_KEY")
+
+SECRET_KEY = secret_key
+DEBUG = os.getenv("DJANGO_DEBUG", "False").strip().lower() in {"true", "1", "yes", "on"}
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+]
+
+# En la sección Database de settings.py:
+from config.database import DATABASES
+```
+
+![EVI-01-05 - Carga de `.env` y configuración de ajustes](./Trazabilidad/EVI-01-05-settings-entorno.png)
+
+![EVI-01-06 - Aplicaciones y middleware conservados](./Trazabilidad/EVI-01-06-settings-aplicaciones.png)
+
+![EVI-01-07 - Importación de la base de datos configurada](./Trazabilidad/EVI-01-07-settings-base-datos.png)
+
+![EVI-01-08 - Ajustes restantes del proyecto conservados](./Trazabilidad/EVI-01-08-settings-final.png)
+
+**Retroalimentación de las evidencias:** Revisé el archivo `settings.py` guardado y observé que `load_dotenv(BASE_DIR / ".env")` aparece antes de importar `DATABASES`; esto permite que `config.database` lea las variables al importarse. La clave se valida y genera un error explícito si falta, `DEBUG` se interpreta como booleano y `ALLOWED_HOSTS` se separa por comas. La importación de `DATABASES` reemplaza la configuración inicial SQLite. En las capturas no se muestra el contenido de `.env`.
+
+**Conclusión y aprendizaje:** Aprendí que el orden de carga es importante: primero se leen las variables de entorno y después se importa el módulo que construye la conexión. También comprendí cómo evitar dejar la clave secreta directamente en `settings.py`. Esta revisión confirma el código guardado; la comprobación del sistema Django y el inicio del servidor se validarán en el siguiente paso.
