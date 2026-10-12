@@ -107,3 +107,46 @@ python -m pip freeze > requirements.txt
 **Retroalimentación de las evidencias:** En la primera captura observé que `apt update` finalizó correctamente y que las herramientas de compilación y desarrollo requeridas ya estaban instaladas o actualizadas. En la segunda observé la instalación completada de las dependencias de Python y el regreso al prompt con el entorno `(.venv)` activo. El archivo `requirements.txt` registra Django 5.2.17, python-dotenv 1.2.3, mysqlclient 2.3.0, psycopg 3.3.6, mssql-django 2.0.0 y oracledb 26.0.1, además de sus dependencias.
 
 **Conclusión y aprendizaje:** Aprendí que algunos controladores requieren herramientas del sistema además de paquetes de Python. También aprendí que actualizar `requirements.txt` después de instalar las dependencias deja constancia reproducible de las versiones incorporadas al entorno.
+
+### Paso 2 - Creación del archivo `.env`
+
+Creé `.env` en la raíz del proyecto con la configuración de Django y las variables de conexión para los motores indicados en el ISS-01. Seleccioné MySQL mediante `DB_DIALECT`. El archivo está excluido del control de versiones por `.gitignore`.
+
+Por seguridad, en este informe no reproduzco las claves ni contraseñas. La siguiente estructura identifica las variables configuradas; los valores sensibles se reemplazan por marcadores:
+
+```dotenv
+DJANGO_SECRET_KEY=[REDACTADO]
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=[VALORES_CONFIGURADOS]
+
+DB_DIALECT=mysql
+DB_MYSQL_HOST=[VALOR_CONFIGURADO]
+DB_MYSQL_PORT=[VALOR_CONFIGURADO]
+DB_MYSQL_USERNAME=[REDACTADO]
+DB_MYSQL_PASSWORD=[REDACTADO]
+DB_MYSQL_NAME=[VALOR_CONFIGURADO]
+
+DB_POSTGRES_HOST=[VALOR_CONFIGURADO]
+DB_POSTGRES_PORT=[VALOR_CONFIGURADO]
+DB_POSTGRES_USERNAME=[REDACTADO]
+DB_POSTGRES_PASSWORD=[REDACTADO]
+DB_POSTGRES_NAME=[VALOR_CONFIGURADO]
+
+DB_MSSQL_HOST=[VALOR_CONFIGURADO]
+DB_MSSQL_PORT=[VALOR_CONFIGURADO]
+DB_MSSQL_USERNAME=[REDACTADO]
+DB_MSSQL_PASSWORD=[REDACTADO]
+DB_MSSQL_NAME=[VALOR_CONFIGURADO]
+
+DB_ORACLE_HOST=[VALOR_CONFIGURADO]
+DB_ORACLE_PORT=[VALOR_CONFIGURADO]
+DB_ORACLE_USERNAME=[REDACTADO]
+DB_ORACLE_PASSWORD=[REDACTADO]
+DB_ORACLE_CONNECT_STRING=[VALOR_CONFIGURADO]
+```
+
+![EVI-01-03 - Archivo `.env` creado con las claves y contraseñas censuradas](./Trazabilidad/EVI-01-03-env-claves-redactadas.png)
+
+**Retroalimentación de la evidencia:** En la captura observé el bloque de configuración en la terminal y el archivo `.env` en el Explorador de VS Code. La clave de Django y las contraseñas aparecen censuradas en esta copia de la imagen. Confirmé además que `.env` está incluido en las reglas de `.gitignore`, por lo que no se incorpora al commit.
+
+**Conclusión y aprendizaje:** Aprendí que las variables de entorno permiten mantener la configuración fuera del código fuente y que los valores sensibles no deben publicarse en informes ni evidencias. Si alguna de las credenciales capturadas correspondiera a un servicio real, tendría que cambiarla, pues el original de la imagen la mostraba sin censura.
