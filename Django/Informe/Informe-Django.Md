@@ -686,3 +686,19 @@ OK
 **Retroalimentación de las evidencias:** Revisé el archivo guardado y confirmé las cuatro pruebas. La salida de la terminal muestra que todas finalizaron correctamente y que Django no identificó problemas de configuración. Las pruebas utilizan valores ficticios y no requieren disponibilidad de los servidores de base de datos.
 
 **Conclusión y aprendizaje:** Aprendí a comprobar cada rama del selector y sus errores de configuración aislando las variables de entorno para cada caso. Esto permite detectar problemas del selector sin alterar ni conectarse a las tablas existentes. No ejecuté migraciones.
+
+### Paso 6 - Inspección previa de la migración del usuario
+
+Antes de generar o aplicar migraciones, ejecuté el modo de simulación:
+
+```bash
+python manage.py makemigrations security --dry-run --verbosity 3
+```
+
+La salida mostró una operación `CreateModel` para `User`, y el estado del modelo incluye `managed = False` para la tabla `users`. Al usar `--dry-run`, Django solo mostró la migración que produciría: no escribió el archivo `0001_initial.py` y no modificó la base de datos.
+
+![EVI-03-11 - Salida de simulación de la migración inicial del usuario](./Trazabilidad/EVI-03-11-dry-run-migracion-usuario.png)
+
+**Retroalimentación de la evidencia:** La simulación confirma que Django prepara el estado del modelo personalizado y conserva la indicación de que `users` no es administrada por Django. Esto no demuestra que el conjunto de migraciones de Django sea inocuo: las migraciones de `auth`, `contenttypes`, `admin` y `sessions` pueden crear sus propias tablas si se aplican. Por esa razón, todavía no ejecutaré `migrate`.
+
+**Conclusión y aprendizaje:** Aprendí que `makemigrations --dry-run` permite revisar el archivo propuesto sin guardarlo ni tocar la base de datos. También confirmé que una migración de estado para un modelo `managed = False` no equivale a una autorización para aplicar todas las migraciones del proyecto.
