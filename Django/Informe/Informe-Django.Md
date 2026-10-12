@@ -1381,3 +1381,20 @@ MySQL no fue utilizado ni modificado.
 **Retroalimentación de la evidencia:** La terminal confirma la creación y actualización en la base temporal, la lectura del detalle y el rechazo de DELETE. La conexión MySQL no se utilizó.
 
 **Conclusión y aprendizaje:** Aprendí a probar las operaciones de escritura en una base aislada y desechable para mantener intactos los datos reales de PedalLibre.
+
+### Paso 10 - Verificación final del ISS-08
+
+Ejecuté la comprobación general y las pruebas de rutas de clientes:
+
+```bash
+python manage.py check
+python manage.py test apps.client
+```
+
+Django no encontró problemas y las dos pruebas terminaron en `OK`.
+
+![EVI-08-10 - Check del proyecto y dos pruebas de clientes aprobadas](./Trazabilidad/EVI-08-10-check-tests-client.png)
+
+**Retroalimentación de la evidencia:** La salida confirma `System check identified no issues (0 silenced)` y `Ran 2 tests` con resultado `OK`.
+
+**Conclusión y aprendizaje:** Aprendí a cerrar la unidad con la revisión general del proyecto y las pruebas automatizadas de rutas, manteniendo separadas las pruebas de escritura aisladas de la base MySQL.
