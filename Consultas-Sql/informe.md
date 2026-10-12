@@ -4,22 +4,22 @@
 
 En este informe documento las consultas que voy a ejecutar en DBeaver sobre las bases de datos de PedalLibre. Tomo como referencia los ejemplos de consulta de las guías docentes de [MySQL](https://tecnogua.com/academic/site/bd/gestion/mysql/mysql/), [PostgreSQL](https://tecnogua.com/academic/site/bd/gestion/postgresql/postgresql/), [Microsoft SQL Server](https://tecnogua.com/academic/site/bd/gestion/mssql/mssql/) y [Oracle](https://tecnogua.com/academic/site/bd/gestion/oracle/oracle/), y adapto esos ejemplos a las tablas reales del proyecto.
 
-Me concentro en consultas de lectura para revisar registros, filtrar resultados, relacionar tablas y resumir información. No vuelvo a crear ni modificar tablas o registros, y no incluyo triggers. Presento las consultas principales con sintaxis común a los cuatro motores y separo los límites de resultados cuando cambia la sintaxis.
+Me concentro en consultas de lectura para revisar registros, filtrar resultados, relacionar tablas y resumir información. No creo ni modifico tablas ni defino triggers en este informe. Para los triggers de auditoría ya instalados, incluyo únicamente referencias a su proceso de creación, scripts separados de datos de prueba y consultas para revisar cada acción. Presento las consultas principales con sintaxis común a los cuatro motores y separo los límites de resultados cuando cambia la sintaxis.
 
 ## Base de datos y tablas
 
-En la carpeta [Creacion de Tablas y Reguistros](./Creacion%20de%20Tablas%20y%20Reguistros/) consulté la guía del esquema y los scripts de datos de prueba. Identifiqué 21 tablas del dominio PedalLibre: `roles`, `users`, `clients`, `stations`, `station_locations`, `station_schedules`, `docking_points`, `bicycles`, `bicycle_dockings`, `reservations`, `rates`, `rentals`, `rental_events`, `penalties`, `maintenance`, `payments`, `incidents`, `notifications`, `bicycle_history`, `reviews` e `invoices`. Verifiqué en la guía de inserción y en la semilla MySQL la expectativa de 100 registros por tabla; tomo como base que los datos ya están cargados en los cuatro motores. En DBeaver validaré la base seleccionada y los conteos antes de empezar con las consultas.
+En la carpeta [Creacion de Tablas y Reguistros](<./Creacion%20de%20Tablas%20y%20Reguistros/>) consulté la guía del esquema y los scripts de datos de prueba. Identifiqué 21 tablas del dominio PedalLibre: `roles`, `users`, `clients`, `stations`, `station_locations`, `station_schedules`, `docking_points`, `bicycles`, `bicycle_dockings`, `reservations`, `rates`, `rentals`, `rental_events`, `penalties`, `maintenance`, `payments`, `incidents`, `notifications`, `bicycle_history`, `reviews` e `invoices`. Verifiqué en la guía de inserción y en la semilla MySQL la expectativa de 100 registros por tabla; tomo como base que los datos ya están cargados en los cuatro motores. En DBeaver validaré la base seleccionada y los conteos antes de empezar con las consultas.
 
 Por tanto, consultaré las tablas adicionales del proyecto que identifiqué en sus archivos SQL, creadas sobre cada motor y no automáticamente al instalar MySQL, PostgreSQL, SQL Server u Oracle. Todavía no he abierto las conexiones locales para comprobar en vivo el estado actual de cada servidor.
 
 ### Conexiones que usaré
 
-| Motor | Base de datos o esquema indicado |
-|---|---|
-| MySQL | `Pedalibre-Terminal-Dbeaver` |
-| Microsoft SQL Server | `Pedalibre-Terminal-Dbeaver` |
-| PostgreSQL | `Pedalibre-Terminal-Dbeaver` |
-| Oracle | Esquema `PEDALIBRETERMINALDBEAVER` |
+| Motor                | Base de datos o esquema indicado    |
+| -------------------- | ----------------------------------- |
+| MySQL                | `Pedalibre-Terminal-Dbeaver`      |
+| Microsoft SQL Server | `Pedalibre-Terminal-Dbeaver`      |
+| PostgreSQL           | `Pedalibre-Terminal-Dbeaver`      |
+| Oracle               | Esquema`PEDALIBRETERMINALDBEAVER` |
 
 **MySQL:** Tomo de la guía del esquema y del script de datos de prueba el nombre de la base `Pedalibre-Terminal-Dbeaver`. Antes de ejecutar, confirmo con `SELECT DATABASE()` que esa sea la base seleccionada en DBeaver.
 
@@ -437,6 +437,8 @@ En esta sección presento análisis propios de cada motor. Ya ejecuté las consu
 
 ### MySQL
 
+**Ejecución en DBeaver:** no envío `DELIMITER` al servidor ni ejecuto todo el bloque como una sola sentencia. Ejecuto primero el `DROP PROCEDURE` (si aparece); después selecciono únicamente desde `CREATE PROCEDURE` hasta su `END;` y uso **Ejecutar SQL (Ctrl+Enter)**; por último ejecuto el `CALL`. Si selecciono el bloque entero, los puntos y coma internos del cuerpo pueden separarlo y provocar errores de sintaxis.
+
 #### Clientes con más alquileres
 
 ```sql
@@ -460,6 +462,8 @@ LIMIT 5;
 
 **Lo que aprendi:** Aprendi a combinar `LEFT JOIN`, `COUNT` y orden descendente para encontrar los clientes con mas alquileres, incluidos quienes aun no tienen uno.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de clientes con más alquileres](#sp-mysql-clientes-mas-alquileres).
+
 #### Puntos de anclaje disponibles por estación
 
 ```sql
@@ -481,6 +485,8 @@ ORDER BY s.station_id;
 **Retroalimentacion:** Agrupo los puntos de anclaje por estación, cuento los puntos asociados y sumo los disponibles con `CASE`. En la captura observo 100 filas; en las estaciones visibles identifico un punto asociado por estación y `available_points` vale 0 o 1 según su estado.
 
 **Lo que aprendi:** Aprendi a contar los puntos de anclaje de cada estacion y a usar `CASE` para contar los disponibles.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de anclajes por estación](#sp-mysql-anclajes-estacion).
 
 #### Incidentes abiertos
 
@@ -508,6 +514,8 @@ ORDER BY i.reported_at DESC;
 
 **Lo que aprendi:** Aprendi a filtrar incidentes abiertos y anadir datos opcionales de la bicicleta y del cliente con `LEFT JOIN`.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de incidentes abiertos](#sp-mysql-incidentes-abiertos).
+
 #### Ingresos pagados por mes
 
 ```sql
@@ -529,6 +537,8 @@ ORDER BY payment_month;
 **Retroalimentacion:** Selecciono los pagos con estado `paid` y fecha registrada, los agrupo por mes con `DATE_FORMAT` y sumo sus importes. Observo 71 pagos de octubre de 2026 y un total mensual de 568.145.
 
 **Lo que aprendi:** Aprendi a agrupar los pagos completados por mes; la funcion para expresar ano y mes depende del motor.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de ingresos mensuales](#sp-mysql-ingresos-mensuales).
 
 ### PostgreSQL
 
@@ -552,6 +562,8 @@ ORDER BY week_start;
 **Retroalimentacion:** Uso `date_trunc('week', ...)` para agrupar las fechas por semana y agregados con `FILTER` para separar el total de alquileres de los completados y sumar el importe completado. Observo una semana que inicia el 5 de octubre de 2026, con 100 alquileres, 67 completados y un importe de 528.213.
 
 **Lo que aprendi:** Aprendere a usar `date_trunc` y agregados filtrados para analizar la actividad semanal en PostgreSQL.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de volumen semanal](#sp-postgresql-volumen-semanal).
 
 #### Tiempo promedio de uso de anclajes por estación
 
@@ -580,6 +592,8 @@ ORDER BY average_docking_minutes DESC, s.station_id;
 
 **Lo que aprendi:** Aprendere a restar marcas de tiempo en PostgreSQL y convertir el intervalo a minutos para comparar el uso de estaciones.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de uso de anclajes](#sp-postgresql-uso-anclajes).
+
 #### Buscar reportes de revisión con `ILIKE`
 
 ```sql
@@ -600,6 +614,8 @@ ORDER BY i.reported_at DESC;
 **Retroalimentacion:** Uso `ILIKE` para buscar el texto `revision` sin distinguir entre mayúsculas y minúsculas. Observo 25 incidentes en la cuadrícula, con severidades `low`, `medium` y `high`, y descripciones que mencionan revisiones de bicicletas.
 
 **Lo que aprendi:** Aprendere a usar `ILIKE` de PostgreSQL para realizar una busqueda de texto sin sensibilidad a mayusculas.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de búsqueda de incidentes](#sp-postgresql-buscar-incidentes).
 
 #### Evolución mensual de las calificaciones
 
@@ -622,6 +638,8 @@ ORDER BY review_month;
 **Retroalimentacion:** Agrupo las reseñas por mes con `date_trunc` y calculo su cantidad, promedio, calificación mínima y máxima. Observo 100 reseñas para octubre de 2026, promedio de 3, calificación mínima de 1 y máxima de 5.
 
 **Lo que aprendi:** Aprendere a resumir la evolucion de las calificaciones usando agrupacion temporal nativa de PostgreSQL.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de calificaciones mensuales](#sp-postgresql-calificaciones-mensuales).
 
 ### Microsoft SQL Server
 
@@ -647,6 +665,8 @@ ORDER BY bicycle_type;
 **Retroalimentacion:** Uso `PIVOT` para convertir los estados seleccionados en columnas y contar las bicicletas de cada tipo en cada estado. Observo 20 bicicletas disponibles por cada tipo; `electric` y `mountain` tienen 5 en mantenimiento, mientras `standard` y `urban` tienen 5 reservadas.
 
 **Lo que aprendi:** Aprendere a usar `PIVOT` en SQL Server para convertir valores de filas en columnas de resumen.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de bicicletas con `PIVOT`](#sp-sqlserver-bicicletas-pivot).
 
 #### Inventario de estaciones en JSON
 
@@ -674,6 +694,8 @@ FOR JSON PATH;
 
 **Lo que aprendi:** Aprendere a usar `FOR JSON PATH` de SQL Server para representar registros relacionados como JSON anidado.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de estaciones en JSON](#sp-sqlserver-estaciones-json).
+
 #### Clasificar facturas y validar el impuesto
 
 ```sql
@@ -696,6 +718,8 @@ ORDER BY invoice_id;
 **Retroalimentacion:** Calculo el porcentaje de impuesto y compruebo la diferencia entre total, subtotal e impuesto. En las 100 facturas observo un impuesto de 19 % y un valor de 0 en `difference`, por lo que confirmo que los importes coinciden con la suma de subtotal e impuesto.
 
 **Lo que aprendi:** Aprendere a validar importes calculados y a evitar division entre cero con `NULLIF` en SQL Server.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de validación de facturas](#sp-sqlserver-validar-facturas).
 
 #### Comparar el importe de alquileres consecutivos
 
@@ -733,6 +757,8 @@ ORDER BY client_id, started_at, rental_id;
 
 **Lo que aprendi:** Aprendere a comparar registros consecutivos por cliente con la funcion de ventana `LAG`.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de comparación con `LAG`](#sp-sqlserver-comparar-alquileres).
+
 ### Oracle
 
 #### Rendimiento de las tarifas utilizadas
@@ -758,6 +784,8 @@ ORDER BY completed_revenue DESC, rt.rate_id;
 **Retroalimentacion:** Relaciono cada tarifa con sus alquileres, cuento los completados y sumo sus importes. Observo 100 tarifas; en las filas visibles cada tarifa tiene un alquiler completado, y los ingresos varían según el plan.
 
 **Lo que aprendi:** Aprendere a usar `NVL` y agregados condicionales de Oracle para comparar el uso y los ingresos de cada tarifa.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de rendimiento de tarifas](#sp-oracle-rendimiento-tarifas).
 
 #### Generar calendario diario de alquileres con `CONNECT BY`
 
@@ -789,6 +817,8 @@ ORDER BY c.rental_day;
 
 **Lo que aprendi:** Aprendere a generar una secuencia de fechas en Oracle mediante la jerarquia `CONNECT BY`.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de calendario diario](#sp-oracle-calendario-diario).
+
 #### Resumen de incidentes por severidad con `ROLLUP`
 
 ```sql
@@ -810,6 +840,8 @@ ORDER BY GROUPING(severity), severity_group;
 **Retroalimentacion:** Uso `ROLLUP` para calcular el conteo por severidad y añadir el total general; con `GROUPING` identifico esa última fila como `TOTAL`. Observo 33 incidentes `high`, 33 `low`, 34 `medium` y 100 en total.
 
 **Lo que aprendi:** Aprendere a usar `ROLLUP` y `GROUPING` en Oracle para obtener subtotales y un total general.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de incidentes con `ROLLUP`](#sp-oracle-incidentes-rollup).
 
 #### Participación de ingresos por tipo de bicicleta con `RATIO_TO_REPORT`
 
@@ -833,6 +865,563 @@ ORDER BY total_revenue DESC, b.bicycle_type;
 **Retroalimentacion:** Uso `RATIO_TO_REPORT` para calcular la participación de cada tipo en los ingresos de alquileres completados. Observo 17 alquileres `standard` con 145.779 (27,60 %), 17 `mountain` con 138.758 (26,27 %), 17 `electric` con 124.084 (23,49 %) y 16 `urban` con 119.592 (22,64 %).
 
 **Lo que aprendi:** Aprendere a calcular participaciones porcentuales de grupos con la funcion analitica `RATIO_TO_REPORT` de Oracle.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de participación de ingresos](#sp-oracle-ingresos-tipo-bicicleta).
+
+## Procedimientos parametrizados de las consultas adicionales
+
+En cada apartado retomo la consulta y la narrativa que documenté arriba en **Consultas adicionales por motor**. Para reproducirla, confirmo la conexión, ejecuto la consulta original, creo el procedimiento del mismo motor, lo llamo con los parámetros indicados y comparo las columnas devueltas. Las capturas de los procedimientos quedan pendientes hasta que ejecute cada bloque; no presento resultados de ejecuciones que aún no he realizado.
+
+### MySQL
+
+#### Clientes con más alquileres
+
+<a id="sp-mysql-clientes-mas-alquileres"></a>
+
+**Narrativa:** cuento los alquileres por cliente, conservo quienes no tienen uno y parametrizo el límite.
+
+**Paso a paso:** 1. Selecciono la conexión MySQL y ejecuto la consulta original; 2. creo el procedimiento como script; 3. lo llamo con límite cinco; 4. comparo el orden y los conteos.
+
+```sql
+DROP PROCEDURE IF EXISTS sp_clientes_mas_alquileres;
+CREATE PROCEDURE sp_clientes_mas_alquileres(IN p_limite INT)
+BEGIN
+    IF p_limite IS NULL OR p_limite < 1 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El limite debe ser mayor que cero.';
+    END IF;
+    SELECT c.client_id, c.first_name, c.last_name,
+           COUNT(r.rental_id) AS rental_count
+    FROM clients c
+    LEFT JOIN rentals r ON r.client_id = c.client_id
+    GROUP BY c.client_id, c.first_name, c.last_name
+    ORDER BY rental_count DESC, c.client_id
+    LIMIT p_limite;
+END;
+CALL sp_clientes_mas_alquileres(5);
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/mysql_sp_clientes_mas_alquileres.png`.*
+
+#### Puntos de anclaje disponibles por estación
+
+<a id="sp-mysql-anclajes-estacion"></a>
+
+**Narrativa:** cuento anclajes por estación y los disponibles con `CASE`; el parámetro permite limitar el resultado a una estación.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo con `NULL` y con una estación existente; 4. comparo ambos conteos.
+
+```sql
+DROP PROCEDURE IF EXISTS sp_anclajes_por_estacion;
+CREATE PROCEDURE sp_anclajes_por_estacion(IN p_station_id INT)
+BEGIN
+    SELECT s.station_id, s.name AS station_name,
+           COUNT(dp.docking_point_id) AS docking_point_count,
+           SUM(CASE WHEN dp.status = 'available' THEN 1 ELSE 0 END) AS available_points
+    FROM stations s
+    LEFT JOIN docking_points dp ON dp.station_id = s.station_id
+    WHERE p_station_id IS NULL OR s.station_id = p_station_id
+    GROUP BY s.station_id, s.name
+    ORDER BY s.station_id;
+END;
+CALL sp_anclajes_por_estacion(NULL);
+CALL sp_anclajes_por_estacion(1);
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/mysql_sp_anclajes_por_estacion.png`.*
+
+#### Incidentes abiertos
+
+<a id="sp-mysql-incidentes-abiertos"></a>
+
+**Narrativa:** filtro los incidentes abiertos, agrego los datos asociados y permito filtrar por severidad.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo con `NULL` y con una severidad existente; 4. comparo las filas.
+
+```sql
+DROP PROCEDURE IF EXISTS sp_incidentes_abiertos;
+CREATE PROCEDURE sp_incidentes_abiertos(IN p_severity VARCHAR(30))
+BEGIN
+    SELECT i.incident_id, i.severity, i.description, i.reported_at,
+           b.serial_number, c.first_name, c.last_name
+    FROM incidents i
+    LEFT JOIN bicycles b ON b.bicycle_id = i.bicycle_id
+    LEFT JOIN clients c ON c.client_id = i.client_id
+    WHERE i.status = 'open'
+      AND (p_severity IS NULL OR i.severity = p_severity)
+    ORDER BY i.reported_at DESC;
+END;
+CALL sp_incidentes_abiertos(NULL);
+CALL sp_incidentes_abiertos('high');
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/mysql_sp_incidentes_abiertos.png`.*
+
+#### Ingresos pagados por mes
+
+<a id="sp-mysql-ingresos-mensuales"></a>
+
+**Narrativa:** agrupo los pagos pagados por mes dentro de un intervalo de fechas.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo para octubre de 2026; 4. comparo cantidad e importe.
+
+```sql
+DROP PROCEDURE IF EXISTS sp_ingresos_pagados_por_mes;
+CREATE PROCEDURE sp_ingresos_pagados_por_mes(IN p_inicio DATETIME, IN p_fin DATETIME)
+BEGIN
+    IF p_inicio IS NULL OR p_fin IS NULL OR p_inicio >= p_fin THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Indique un intervalo de fechas valido.';
+    END IF;
+    SELECT DATE_FORMAT(paid_at, '%Y-%m') AS payment_month,
+           COUNT(*) AS payment_count, SUM(amount) AS monthly_total
+    FROM payments
+    WHERE status = 'paid' AND paid_at IS NOT NULL
+      AND paid_at >= p_inicio AND paid_at < p_fin
+    GROUP BY DATE_FORMAT(paid_at, '%Y-%m')
+    ORDER BY payment_month;
+END;
+CALL sp_ingresos_pagados_por_mes('2026-10-01 00:00:00', '2026-11-01 00:00:00');
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/mysql_sp_ingresos_por_mes.png`.*
+
+### PostgreSQL
+
+Para recuperar las filas mantengo abierta la transacción hasta terminar cada `FETCH ALL` del cursor.
+
+#### Volumen semanal de alquileres
+
+<a id="sp-postgresql-volumen-semanal"></a>
+
+**Narrativa:** agrupo alquileres por semana, separo los completados con `FILTER` y sumo sus importes dentro de un intervalo.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo con un rango de octubre; 4. recupero el cursor dentro de la transacción y comparo los agregados.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_volumen_semanal_alquileres(
+    IN p_inicio TIMESTAMP, IN p_fin TIMESTAMP, INOUT p_resultado REFCURSOR
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    IF p_inicio IS NULL OR p_fin IS NULL OR p_inicio >= p_fin THEN
+        RAISE EXCEPTION 'Indique un intervalo de fechas valido.';
+    END IF;
+    OPEN p_resultado FOR
+        SELECT date_trunc('week', started_at)::date AS week_start,
+               COUNT(*) AS rental_count,
+               COUNT(*) FILTER (WHERE status = 'completed') AS completed_count,
+               COALESCE(SUM(total_amount) FILTER (WHERE status = 'completed'), 0)
+                   AS completed_amount
+        FROM rentals
+        WHERE started_at >= p_inicio AND started_at < p_fin
+        GROUP BY date_trunc('week', started_at)::date
+        ORDER BY week_start;
+END;
+$$;
+BEGIN;
+CALL sp_volumen_semanal_alquileres(
+    TIMESTAMP '2026-10-01', TIMESTAMP '2026-11-01', 'r_semanal'
+);
+FETCH ALL FROM r_semanal;
+COMMIT;
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/postgresql_sp_volumen_semanal.png`.*
+
+#### Tiempo promedio de uso de anclajes por estación
+
+<a id="sp-postgresql-uso-anclajes"></a>
+
+**Narrativa:** calculo en minutos la duración de los acoplamientos terminados y promedio por estación; el filtro de estación es opcional.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo sin filtro y con una estación; 4. recupero el cursor y comparo los promedios.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_uso_anclajes_por_estacion(
+    IN p_station_id INTEGER, INOUT p_resultado REFCURSOR
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    OPEN p_resultado FOR
+        SELECT s.station_id, s.name AS station_name,
+               COUNT(bd.bicycle_docking_id) AS completed_dockings,
+               ROUND(AVG(EXTRACT(EPOCH FROM (bd.undocked_at - bd.docked_at)) / 60)::numeric, 2)
+                   AS average_docking_minutes
+        FROM stations s
+        JOIN docking_points dp ON dp.station_id = s.station_id
+        JOIN bicycle_dockings bd ON bd.docking_point_id = dp.docking_point_id
+        WHERE bd.undocked_at IS NOT NULL
+          AND (p_station_id IS NULL OR s.station_id = p_station_id)
+        GROUP BY s.station_id, s.name
+        ORDER BY average_docking_minutes DESC, s.station_id;
+END;
+$$;
+BEGIN;
+CALL sp_uso_anclajes_por_estacion(NULL, 'r_anclajes');
+FETCH ALL FROM r_anclajes;
+COMMIT;
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/postgresql_sp_uso_anclajes.png`.*
+
+#### Buscar reportes de revisión con `ILIKE`
+
+<a id="sp-postgresql-buscar-incidentes"></a>
+
+**Narrativa:** busco en las descripciones de incidentes el texto recibido sin distinguir mayúsculas de minúsculas.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo con `revision`; 4. recupero el cursor y comparo descripción, severidad y fecha.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_buscar_incidentes_texto(
+    IN p_texto TEXT, INOUT p_resultado REFCURSOR
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    IF p_texto IS NULL OR btrim(p_texto) = '' THEN
+        RAISE EXCEPTION 'El texto de busqueda no puede estar vacio.';
+    END IF;
+    OPEN p_resultado FOR
+        SELECT incident_id, severity, description, reported_at
+        FROM incidents
+        WHERE description ILIKE '%' || p_texto || '%'
+        ORDER BY reported_at DESC;
+END;
+$$;
+BEGIN;
+CALL sp_buscar_incidentes_texto('revision', 'r_incidentes');
+FETCH ALL FROM r_incidentes;
+COMMIT;
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/postgresql_sp_buscar_incidentes.png`.*
+
+#### Evolución mensual de las calificaciones
+
+<a id="sp-postgresql-calificaciones-mensuales"></a>
+
+**Narrativa:** agrupo las reseñas por mes y calculo cantidad, promedio, mínimo y máximo dentro de un intervalo.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo para octubre; 4. recupero el cursor y comparo las medidas.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_calificaciones_por_mes(
+    IN p_inicio TIMESTAMP, IN p_fin TIMESTAMP, INOUT p_resultado REFCURSOR
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    IF p_inicio IS NULL OR p_fin IS NULL OR p_inicio >= p_fin THEN
+        RAISE EXCEPTION 'Indique un intervalo de fechas valido.';
+    END IF;
+    OPEN p_resultado FOR
+        SELECT date_trunc('month', created_at)::date AS review_month,
+               COUNT(*) AS review_count, ROUND(AVG(rating)::numeric, 2) AS average_rating,
+               MIN(rating) AS lowest_rating, MAX(rating) AS highest_rating
+        FROM reviews
+        WHERE created_at >= p_inicio AND created_at < p_fin
+        GROUP BY date_trunc('month', created_at)::date
+        ORDER BY review_month;
+END;
+$$;
+BEGIN;
+CALL sp_calificaciones_por_mes(
+    TIMESTAMP '2026-10-01', TIMESTAMP '2026-11-01', 'r_calificaciones'
+);
+FETCH ALL FROM r_calificaciones;
+COMMIT;
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/postgresql_sp_calificaciones_por_mes.png`.*
+
+### Microsoft SQL Server
+
+#### Distribución de bicicletas con `PIVOT`
+
+<a id="sp-sqlserver-bicicletas-pivot"></a>
+
+**Narrativa:** convierto estados en columnas de conteo y parametrizo el tipo de bicicleta.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. ejecuto con `NULL` y con `electric`; 4. comparo los conteos de cada estado.
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.sp_bicicletas_por_estado
+    @p_tipo_bicicleta VARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT bicycle_type, [available], [reserved], [maintenance]
+    FROM (
+        SELECT bicycle_type, status, bicycle_id
+        FROM dbo.bicycles
+        WHERE @p_tipo_bicicleta IS NULL OR bicycle_type = @p_tipo_bicicleta
+    ) AS bicycle_statuses
+    PIVOT (
+        COUNT(bicycle_id) FOR status IN ([available], [reserved], [maintenance])
+    ) AS bicycle_summary
+    ORDER BY bicycle_type;
+END;
+GO
+EXEC dbo.sp_bicicletas_por_estado @p_tipo_bicicleta = NULL;
+EXEC dbo.sp_bicicletas_por_estado @p_tipo_bicicleta = 'electric';
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/sqlserver_sp_bicicletas_por_estado.png`.*
+
+#### Inventario de estaciones en JSON
+
+<a id="sp-sqlserver-estaciones-json"></a>
+
+**Narrativa:** represento estaciones y anclajes relacionados como JSON anidado y agrego un filtro opcional por estación.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo sin filtro y con una estación; 4. reviso que el arreglo conserve el formato JSON anidado.
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.sp_estaciones_en_json
+    @p_station_id INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT s.station_id, s.name AS station_name,
+           JSON_QUERY((
+               SELECT dp.docking_point_id, dp.code, dp.status
+               FROM dbo.docking_points AS dp
+               WHERE dp.station_id = s.station_id
+               ORDER BY dp.docking_point_id
+               FOR JSON PATH
+           )) AS docking_points_json
+    FROM dbo.stations AS s
+    WHERE @p_station_id IS NULL OR s.station_id = @p_station_id
+    ORDER BY s.station_id
+    FOR JSON PATH;
+END;
+GO
+EXEC dbo.sp_estaciones_en_json @p_station_id = NULL;
+EXEC dbo.sp_estaciones_en_json @p_station_id = 1;
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/sqlserver_sp_estaciones_json.png`.*
+
+#### Clasificar facturas y validar el impuesto
+
+<a id="sp-sqlserver-validar-facturas"></a>
+
+**Narrativa:** calculo el porcentaje de impuesto y la diferencia entre total, subtotal e impuesto; permito filtrar por factura.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo sin filtro y con un identificador; 4. comparo los valores obtenidos.
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.sp_validar_impuesto_facturas
+    @p_invoice_id INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT invoice_id, invoice_number, subtotal, tax, total,
+           CAST(100.0 * tax / NULLIF(subtotal, 0) AS DECIMAL(6, 2)) AS tax_percent,
+           total - subtotal - tax AS difference
+    FROM dbo.invoices
+    WHERE @p_invoice_id IS NULL OR invoice_id = @p_invoice_id
+    ORDER BY invoice_id;
+END;
+GO
+EXEC dbo.sp_validar_impuesto_facturas @p_invoice_id = NULL;
+EXEC dbo.sp_validar_impuesto_facturas @p_invoice_id = 1;
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/sqlserver_sp_validar_facturas.png`.*
+
+#### Comparar importes de alquileres consecutivos
+
+<a id="sp-sqlserver-comparar-alquileres"></a>
+
+**Narrativa:** uso `LAG` para comparar alquileres completados consecutivos del mismo cliente y parametrizo el máximo de filas.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo ejecuto con límite 20; 4. comparo importes y diferencia. Si no hay filas, registro el resultado vacío.
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.sp_comparar_importes_alquileres
+    @p_limite INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF @p_limite IS NULL OR @p_limite < 1
+        THROW 50010, 'El limite debe ser mayor que cero.', 1;
+    WITH rental_comparison AS (
+        SELECT rental_id, client_id, started_at, total_amount,
+               LAG(total_amount) OVER (
+                   PARTITION BY client_id ORDER BY started_at, rental_id
+               ) AS previous_amount
+        FROM dbo.rentals
+        WHERE status = 'completed'
+    )
+    SELECT TOP (@p_limite)
+           client_id, rental_id, started_at, previous_amount, total_amount,
+           total_amount - previous_amount AS amount_difference
+    FROM rental_comparison
+    WHERE previous_amount IS NOT NULL
+    ORDER BY client_id, started_at, rental_id;
+END;
+GO
+EXEC dbo.sp_comparar_importes_alquileres @p_limite = 20;
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/sqlserver_sp_comparar_importes_lag.png`.*
+
+### Oracle
+
+Ejecuto cada llamada como script en DBeaver para recuperar el cursor `SYS_REFCURSOR`.
+
+#### Rendimiento de las tarifas utilizadas
+
+<a id="sp-oracle-rendimiento-tarifas"></a>
+
+**Narrativa:** resumo cantidad de alquileres e ingresos completados por tarifa, con filtro opcional por unidad de cobro.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo con `NULL`; 4. recupero y reviso los datos del cursor.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_rendimiento_tarifas(
+    p_unidad IN VARCHAR2, p_resultado OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_resultado FOR
+        SELECT rt.rate_id, rt.name AS rate_name, rt.billing_unit,
+               COUNT(r.rental_id) AS rental_count,
+               COUNT(CASE WHEN r.status = 'completed' THEN 1 END) AS completed_count,
+               NVL(SUM(CASE WHEN r.status = 'completed' THEN r.total_amount END), 0)
+                   AS completed_revenue
+        FROM rates rt
+        LEFT JOIN rentals r ON r.rate_id = rt.rate_id
+        WHERE p_unidad IS NULL OR rt.billing_unit = p_unidad
+        GROUP BY rt.rate_id, rt.name, rt.billing_unit
+        ORDER BY completed_revenue DESC, rt.rate_id;
+END;
+/
+DECLARE
+    v_resultado SYS_REFCURSOR;
+BEGIN
+    sp_rendimiento_tarifas(NULL, v_resultado);
+    DBMS_SQL.RETURN_RESULT(v_resultado);
+END;
+/
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/oracle_sp_rendimiento_tarifas.png`.*
+
+#### Generar calendario diario de alquileres
+
+<a id="sp-oracle-calendario-diario"></a>
+
+**Narrativa:** genero fechas entre dos parámetros y cuento alquileres iniciados en cada día, incluso cuando el conteo es cero.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. indico el intervalo; 4. recupero el cursor y reviso que incluya todas las fechas solicitadas.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_calendario_diario_alquileres(
+    p_inicio IN DATE, p_fin IN DATE, p_resultado OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    IF p_inicio IS NULL OR p_fin IS NULL OR TRUNC(p_inicio) > TRUNC(p_fin) THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Indique un intervalo de fechas valido.');
+    END IF;
+    OPEN p_resultado FOR
+        WITH calendar AS (
+            SELECT TRUNC(p_inicio) + LEVEL - 1 AS rental_day
+            FROM dual
+            CONNECT BY LEVEL <= TRUNC(p_fin) - TRUNC(p_inicio) + 1
+        )
+        SELECT c.rental_day, COUNT(r.rental_id) AS rental_count
+        FROM calendar c
+        LEFT JOIN rentals r ON TRUNC(r.started_at) = c.rental_day
+        GROUP BY c.rental_day
+        ORDER BY c.rental_day;
+END;
+/
+DECLARE
+    v_resultado SYS_REFCURSOR;
+BEGIN
+    sp_calendario_diario_alquileres(
+        DATE '2026-10-09', DATE '2026-10-11', v_resultado
+    );
+    DBMS_SQL.RETURN_RESULT(v_resultado);
+END;
+/
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/oracle_sp_calendario_diario.png`.*
+
+#### Resumen de incidentes por severidad con `ROLLUP`
+
+<a id="sp-oracle-incidentes-rollup"></a>
+
+**Narrativa:** agrupo incidentes por severidad y mantengo el total general; el filtro por severidad es opcional.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo sin filtro; 4. recupero el cursor y reviso los grupos y el total.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_incidentes_rollup(
+    p_severidad IN VARCHAR2, p_resultado OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_resultado FOR
+        SELECT CASE WHEN GROUPING(severity) = 1 THEN 'TOTAL'
+                    ELSE severity END AS severity_group,
+               COUNT(*) AS incident_count
+        FROM incidents
+        WHERE p_severidad IS NULL OR severity = p_severidad
+        GROUP BY ROLLUP(severity)
+        ORDER BY GROUPING(severity), severity_group;
+END;
+/
+DECLARE
+    v_resultado SYS_REFCURSOR;
+BEGIN
+    sp_incidentes_rollup(NULL, v_resultado);
+    DBMS_SQL.RETURN_RESULT(v_resultado);
+END;
+/
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/oracle_sp_incidentes_rollup.png`.*
+
+#### Participación de ingresos por tipo de bicicleta
+
+<a id="sp-oracle-ingresos-tipo-bicicleta"></a>
+
+**Narrativa:** calculo el porcentaje de ingresos completados por tipo con `RATIO_TO_REPORT`; puedo filtrar la categoría.
+
+**Paso a paso:** 1. Ejecuto la consulta original; 2. creo el procedimiento; 3. lo llamo sin filtro; 4. recupero el cursor y verifico la suma porcentual del conjunto.
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_ingresos_por_tipo_bicicleta(
+    p_tipo IN VARCHAR2, p_resultado OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_resultado FOR
+        SELECT b.bicycle_type, COUNT(*) AS completed_rentals,
+               SUM(r.total_amount) AS total_revenue,
+               ROUND(RATIO_TO_REPORT(SUM(r.total_amount)) OVER () * 100, 2)
+                   AS revenue_percentage
+        FROM rentals r
+        JOIN bicycles b ON b.bicycle_id = r.bicycle_id
+        WHERE r.status = 'completed'
+          AND (p_tipo IS NULL OR b.bicycle_type = p_tipo)
+        GROUP BY b.bicycle_type
+        ORDER BY total_revenue DESC, b.bicycle_type;
+END;
+/
+DECLARE
+    v_resultado SYS_REFCURSOR;
+BEGIN
+    sp_ingresos_por_tipo_bicicleta(NULL, v_resultado);
+    DBMS_SQL.RETURN_RESULT(v_resultado);
+END;
+/
+```
+
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/oracle_sp_ingresos_por_tipo.png`.*
 
 ## Consultas avanzadas por motor
 
@@ -863,6 +1452,8 @@ LIMIT 10;
 
 **Lo que aprendi:** Aprendere a usar `GROUP_CONCAT` de MySQL para resumir varios registros relacionados en una sola fila.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de `GROUP_CONCAT`](#sp-avanzada-mysql-group-concat).
+
 ### PostgreSQL: comparar estados de pago con `FILTER`
 
 Con esta consulta comparo, en una fila por método, el número de pagos pagados, pendientes y reembolsados, y sumo el importe pagado.
@@ -886,6 +1477,8 @@ ORDER BY payment_method;
 **Retroalimentacion:** Uso `FILTER` para calcular conteos e importes por estado en una sola agrupación. Observo cuatro métodos: tarjeta de crédito con 18 pagos, 3 pendientes, 4 reembolsados y total pagado 135.816; débito con 18, 3, 4 y 156.078; billetera digital con 17, 4, 4 y 132.563; PSE con 18, 4, 3 y 143.688.
 
 **Lo que aprendi:** Aprendere a filtrar cada agregado de PostgreSQL sin separar el resultado en varias consultas.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de agregados `FILTER`](#sp-avanzada-postgresql-filter-pagos).
 
 ### PostgreSQL: obtener el último alquiler de cada cliente
 
@@ -919,6 +1512,8 @@ FETCH FIRST 10 ROWS ONLY;
 
 **Lo que aprendi:** Aprendi a combinar una agregacion por cliente con una subconsulta correlacionada y `LIMIT 1` para recuperar un valor de su registro mas reciente.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento del último alquiler por cliente](#sp-avanzada-postgresql-ultimo-alquiler).
+
 ### SQL Server: duración media de alquiler por tipo de bicicleta
 
 Con esta consulta uso `DATEDIFF` para calcular la duración en minutos de los alquileres completados y promedio el resultado por tipo de bicicleta.
@@ -943,6 +1538,8 @@ ORDER BY average_duration_minutes DESC, b.bicycle_type;
 **Retroalimentacion:** Uso `DATEDIFF(MINUTE, ...)` para medir los minutos entre el inicio y el fin. Observo 17 alquileres completados para `electric`, `mountain` y `standard`, y 16 para `urban`; calculo un promedio de duración de 60 minutos para cada tipo.
 
 **Lo que aprendi:** Aprendere a calcular intervalos de tiempo con `DATEDIFF` de SQL Server y a resumirlos por categoria.
+
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de duración con `DATEDIFF`](#sp-avanzada-sqlserver-datediff).
 
 ### Oracle: obtener el importe del alquiler más reciente con `KEEP`
 
@@ -970,7 +1567,13 @@ FETCH FIRST 10 ROWS ONLY;
 
 **Lo que aprendi:** Aprendere a usar `KEEP` y `DENSE_RANK` en Oracle para recuperar una medida de la fila que ocupa la posicion mas reciente dentro de cada grupo.
 
+**Proceso y procedimiento parametrizado:** [Consultar pasos y procedimiento de `KEEP`](#sp-avanzada-oracle-keep).
+
 ## Procedimientos parametrizados de las consultas avanzadas
+
+Desarrollo aquí, dentro del mismo informe, los pasos de ejecución y la versión parametrizada de cada consulta avanzada anterior. Primero ejecuto la consulta original, después creo el procedimiento correspondiente en el motor de DBeaver, ejecuto la llamada de ejemplo y comparo sus columnas y resultados. Incorporo las capturas de cada procedimiento conforme verifico cada consulta.
+
+**Ejecución en DBeaver:** en MySQL creo el procedimiento desde el editor de procedimientos de DBeaver y defino `p_cantidad_clientes` en la sección de parámetros; luego ejecuto su `CALL` en el editor SQL. En PostgreSQL creo cada procedimiento por separado y ejecuto seleccionado el bloque completo de transacción desde `BEGIN` hasta `COMMIT` con **Alt+X**, para mantener abierto el cursor `REFCURSOR` durante `CALL` y `FETCH`. En SQL Server selecciono la definición completa desde `CREATE OR ALTER` hasta `END;` y la ejecuto con **Alt+X**; después ejecuto cada `EXEC` por separado. En Oracle ejecuto el bloque de creación completo con **Alt+X** y luego ejecuto por separado el bloque `DECLARE ... BEGIN ... END;` que muestra el cursor; no envío `/` como sentencia independiente.
 
 ### MySQL: `GROUP_CONCAT`
 
@@ -1060,21 +1663,7 @@ FETCH ALL FROM r_pagos;
 COMMIT;
 ```
 
-**Evidencia de creación:**
-
-**PostgreSQL: Crear `sp_resumen_pagos_por_metodo`**
-
-![PostgreSQL: Crear sp_resumen_pagos_por_metodo](trazabilidad/postgresql_sp_resumen_pagos_creacion.png)
-
-**Evidencia de ejecución:**
-
-**PostgreSQL: Resumir pagos por método y estado**
-
-![PostgreSQL: Ejecutar sp_resumen_pagos_por_metodo](trazabilidad/postgresql_sp_resumen_pagos_ejecucion.png)
-
-**Retroalimentación:** Observé que el procedimiento quedó creado en el esquema `public` y que la llamada con `p_metodo = NULL` devolvió cuatro filas, una por método de pago. En la cuadrícula aparecen los conteos de pagos pagados, pendientes y reembolsados, junto con el total pagado para cada método.
-
-**Lo que aprendí:** Aprendí que un parámetro nulo permite resumir todos los métodos y que los agregados `FILTER` calculan cada estado en columnas separadas dentro de una misma fila por método.
+**Evidencia del procedimiento:** *Pendiente: `trazabilidad/postgresql_sp_resumen_pagos.png`.*
 
 ### PostgreSQL: último alquiler por cliente
 
@@ -1190,7 +1779,7 @@ EXEC dbo.sp_duracion_alquiler_por_tipo @p_tipo_bicicleta = 'electric';
 
 ![SQL Server: Ejecutar sp_duracion_alquiler_por_tipo para electric](trazabilidad/sqlserver_sp_duracion_alquiler_tipo_electric.png)
 
-**Retroalimentación:** Observé que el procedimiento quedó creado en el esquema `dbo`. La llamada con el parámetro `NULL` devolvió cuatro tipos de bicicleta; la llamada con `electric` devolvió solo ese tipo. En ambas capturas el resultado muestra 17 alquileres completados y un promedio de 60 minutos para los tipos incluidos.
+**Retroalimentación:** Observé que el procedimiento quedó creado en el esquema `dbo`. La llamada con el parámetro `NULL` devolvió cuatro tipos de bicicleta; la llamada con `electric` devolvió solo ese tipo. En ambas capturas observo 17 alquileres completados y un promedio de 60 minutos para los tipos incluidos.
 
 **Lo que aprendí:** Aprendí a usar un parámetro opcional para alternar entre el resumen general y un tipo específico, y a calcular promedios de duración en minutos con `DATEDIFF` y una conversión decimal.
 
@@ -1268,7 +1857,7 @@ END;
 
 ![Oracle: Ejecutar sp_ultimo_alquiler_keep y recuperar diez filas](trazabilidad/oracle_sp_ultimo_alquiler_keep_ejecucion.png)
 
-**Retroalimentación:** Observé que `sp_ultimo_alquiler_keep` quedó creado bajo los procedimientos de la conexión Oracle. Al ejecutar el bloque `DECLARE`, el cursor devolvió diez filas con el identificador y nombre del cliente, la fecha del último alquiler y su importe. La cuadrícula muestra los resultados sin un mensaje de error visible.
+**Retroalimentación:** Observé que `sp_ultimo_alquiler_keep` quedó creado bajo los procedimientos de la conexión Oracle. Al ejecutar el bloque `DECLARE`, el cursor devolvió diez filas con el identificador y nombre del cliente, la fecha del último alquiler y su importe. En la cuadrícula observo las diez filas y no veo un mensaje de error.
 
 **Lo que aprendí:** Aprendí que puedo combinar `KEEP (DENSE_RANK LAST ...)` con `ROW_NUMBER()` para asociar al último alquiler su importe y limitar los clientes devueltos; el `SYS_REFCURSOR` me permite mostrar ese resultado desde un bloque PL/SQL.
 
@@ -1279,7 +1868,6 @@ En esta sección creo un procedimiento de solo lectura para listar los alquilere
 ### MySQL
 
 ```sql
-DELIMITER //
 CREATE PROCEDURE sp_listar_alquileres_completados(
     IN p_inicio DATETIME,
     IN p_fin DATETIME
@@ -1291,8 +1879,7 @@ BEGIN
       AND started_at >= p_inicio
       AND started_at < p_fin
     ORDER BY started_at;
-END//
-DELIMITER ;
+END;
 
 CALL sp_listar_alquileres_completados(
     '2026-10-01 00:00:00',
@@ -1434,13 +2021,13 @@ Ejecuto este bloque como script en una versión de Oracle que admita `DBMS_SQL.R
 
 ## Triggers
 
-Los triggers de auditoría para INSERT, UPDATE y DELETE ya se crearon. Aquí conservo su evidencia visual y las consultas para comprobar los registros de auditoría; no incluyo SQL para crear ni modificar triggers.
+En las capturas de MySQL, SQL Server y Oracle verifico los triggers de auditoría para INSERT, UPDATE y DELETE. En PostgreSQL documento el error que observé y no presento la instalación como funcional. Aquí reúno las evidencias y las consultas para revisar `rentals_audit`; no incluyo SQL para crear ni modificar triggers.
 
-Para probarlos, primero cargo los datos base y luego ejecuto el seed DML de prueba que corresponde al motor, siguiendo el apartado [Pruebas DML para los triggers de auditoría existentes](./Creacion%20de%20Tablas%20y%20Reguistros/guia_insert_datos.md#pruebas-dml-triggers-auditoria). Cada seed agrega, actualiza y elimina un alquiler de prueba; los triggers ya instalados registran esas operaciones en `rentals_audit`. Después ejecuto las consultas de este apartado para revisar INSERT, UPDATE y DELETE del alquiler de prueba, identificado mediante su evento DELETE más reciente.
+Para probarlos, primero cargo los datos base y luego ejecuto el seed DML de prueba que corresponde al motor, siguiendo el apartado [Pruebas DML para los triggers de auditoría existentes](<./Creacion%20de%20Tablas%20y%20Reguistros/guia_insert_datos.md#pruebas-dml-triggers-auditoria>). Cada seed agrega, actualiza y elimina un alquiler de prueba; los triggers ya instalados registran esas operaciones en `rentals_audit`. Después ejecuto las consultas de este apartado para revisar INSERT, UPDATE y DELETE del alquiler de prueba, identificado mediante su evento DELETE más reciente.
 
 ### MySQL
 
-**Datos de prueba (solo DML):** [seed_rentals_audit_mysql.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Mysql/seed_rentals_audit_mysql.sql)
+**Datos de prueba (solo DML):** [seed_rentals_audit_mysql.sql](<./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Mysql/seed_rentals_audit_mysql.sql>)
 
 **Evidencia de los triggers existentes en MySQL:**
 
@@ -1460,14 +2047,6 @@ WHERE rental_id = (
 ORDER BY audit_id DESC
 LIMIT 1;
 ```
-
-**Evidencia de ejecucion — INSERT en PostgreSQL:**
-
-![Resultado de la auditoría INSERT en PostgreSQL](trazabilidad/postgresql_rentals_audit_insert.png)
-
-**Retroalimentacion:** Observo el registro `INSERT` del alquiler de prueba `101`, generado por la conexión `postgres`; `before_data` es `NULL` y `after_data` contiene los valores iniciales.
-
-**Lo que aprendi:** Aprendí que PostgreSQL también registra la fila creada como estado posterior, junto con el usuario que originó el cambio.
 
 **Evidencia de ejecucion — INSERT en MySQL:**
 
@@ -1492,14 +2071,6 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
-**Evidencia de ejecucion — UPDATE en PostgreSQL:**
-
-![Resultado de la auditoría UPDATE en PostgreSQL](trazabilidad/postgresql_rentals_audit_update.png)
-
-**Retroalimentacion:** Observo el evento `UPDATE` del alquiler `101`: en `before_data` aparece el estado `active` y en `after_data`, el estado `completed`.
-
-**Lo que aprendi:** Aprendí que los valores previo y posterior permiten comparar el estado de la fila sin depender de que siga existiendo en la tabla principal.
-
 **Evidencia de ejecucion — UPDATE en MySQL:**
 
 ![Resultado de la auditoría UPDATE en MySQL](trazabilidad/mysql_rentals_audit_update.png)
@@ -1523,14 +2094,6 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
-**Evidencia de ejecucion — DELETE en PostgreSQL:**
-
-![Resultado de la auditoría DELETE en PostgreSQL](trazabilidad/postgresql_rentals_audit_delete.png)
-
-**Retroalimentacion:** Observo que el evento `DELETE` del alquiler `101` conserva en `before_data` el estado `completed`, mientras que `after_data` es `NULL`.
-
-**Lo que aprendi:** Aprendí que el trigger registra la eliminación conservando los datos anteriores a ella, lo que permite auditar la operación después del borrado.
-
 **Evidencia de ejecucion — DELETE en MySQL:**
 
 ![Resultado de la auditoría DELETE en MySQL](trazabilidad/mysql_rentals_audit_delete.png)
@@ -1541,13 +2104,13 @@ LIMIT 1;
 
 ### PostgreSQL
 
-**Datos de prueba (solo DML):** [seed_rentals_audit_postgres.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Postgres/seed_rentals_audit_postgres.sql)
+**Datos de prueba (solo DML):** [seed_rentals_audit_postgres.sql](<./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Postgres/seed_rentals_audit_postgres.sql>)
 
 **Evidencia del estado en PostgreSQL:**
 
 ![Estado de los triggers PostgreSQL y errores de relación rentals no existente](trazabilidad/postgresql_triggers_audit_estado.png)
 
-La captura muestra errores indicando que la relación `rentals` no existe durante la creación del trigger. Por ello, no la presento como una instalación funcional: primero debe verificarse la tabla/esquema de la conexión PostgreSQL; las consultas siguientes sirven para revisar la auditoría después de corregir el estado y ejecutar el seed DML.
+En la captura observo errores que indican que la relación `rentals` no existe al intentar crear el trigger. Por ello, no presento esa captura como evidencia de una instalación funcional. Primero debo verificar la tabla y el esquema de la conexión PostgreSQL; después de corregir el estado, usaré las consultas siguientes para revisar la auditoría tras ejecutar el seed DML.
 
 ```sql
 SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
@@ -1564,6 +2127,14 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
+**Evidencia de ejecucion — INSERT en PostgreSQL:**
+
+![Resultado de la auditoría INSERT en PostgreSQL](trazabilidad/postgresql_rentals_audit_insert.png)
+
+**Retroalimentacion:** Observo el registro `INSERT` del alquiler de prueba `101`, generado por la conexión `postgres`; `before_data` es `NULL` y `after_data` contiene los valores iniciales.
+
+**Lo que aprendi:** Aprendí que PostgreSQL también registra la fila creada como estado posterior, junto con el usuario que originó el cambio.
+
 ```sql
 SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
 FROM public.rentals_audit
@@ -1578,6 +2149,14 @@ WHERE rental_id = (
 ORDER BY audit_id DESC
 LIMIT 1;
 ```
+
+**Evidencia de ejecucion — UPDATE en PostgreSQL:**
+
+![Resultado de la auditoría UPDATE en PostgreSQL](trazabilidad/postgresql_rentals_audit_update.png)
+
+**Retroalimentacion:** Observo el evento `UPDATE` del alquiler `101`: en `before_data` aparece el estado `active` y en `after_data`, el estado `completed`.
+
+**Lo que aprendi:** Aprendí que los valores previo y posterior permiten comparar el estado de la fila sin depender de que siga existiendo en la tabla principal.
 
 ```sql
 SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
@@ -1594,9 +2173,17 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
+**Evidencia de ejecucion — DELETE en PostgreSQL:**
+
+![Resultado de la auditoría DELETE en PostgreSQL](trazabilidad/postgresql_rentals_audit_delete.png)
+
+**Retroalimentacion:** Observo que el evento `DELETE` del alquiler `101` conserva en `before_data` el estado `completed`, mientras que `after_data` es `NULL`.
+
+**Lo que aprendi:** Aprendí que el trigger registra la eliminación conservando los datos anteriores a ella, lo que permite auditar la operación después del borrado.
+
 ### Microsoft SQL Server
 
-**Datos de prueba (solo DML):** [seed_rentals_audit_mssql.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Mssql/seed_rentals_audit_mssql.sql)
+**Datos de prueba (solo DML):** [seed_rentals_audit_mssql.sql](<./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Mssql/seed_rentals_audit_mssql.sql>)
 
 **Evidencia de los triggers existentes en SQL Server:**
 
@@ -1667,7 +2254,7 @@ ORDER BY audit_id DESC;
 
 ### Oracle
 
-**Datos de prueba (solo DML):** [seed_rentals_audit_oracle.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Oracle/seed_rentals_audit_oracle.sql)
+**Datos de prueba (solo DML):** [seed_rentals_audit_oracle.sql](<./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Oracle/seed_rentals_audit_oracle.sql>)
 
 **Evidencia de los triggers existentes en Oracle:**
 
@@ -1793,5 +2380,5 @@ Agregué a [trazabilidad/](./trazabilidad/) las siguientes capturas:
 - [Guía docente de consultas PostgreSQL](https://tecnogua.com/academic/site/bd/gestion/postgresql/postgresql/)
 - [Guía docente de consultas Microsoft SQL Server](https://tecnogua.com/academic/site/bd/gestion/mssql/mssql/)
 - [Guía docente de consultas Oracle](https://tecnogua.com/academic/site/bd/gestion/oracle/oracle/)
-- [Guía del esquema PedalLibre](./Creacion%20de%20Tablas%20y%20Reguistros/guia.md)
-- [Guia de insercion de datos](./Creacion%20de%20Tablas%20y%20Reguistros/guia_insert_datos.md)
+- [Guía del esquema PedalLibre](<./Creacion%20de%20Tablas%20y%20Reguistros/guia.md>)
+- [Guia de insercion de datos](<./Creacion%20de%20Tablas%20y%20Reguistros/guia_insert_datos.md>)

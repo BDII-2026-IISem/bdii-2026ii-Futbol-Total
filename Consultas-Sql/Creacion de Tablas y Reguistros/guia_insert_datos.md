@@ -68,19 +68,54 @@ Cada script muestra el conteo de filas por tabla al terminar.
 
 Los nombres, documentos, teléfonos, correos, referencias de pago y demás valores son datos ficticios de prueba; no representan personas ni transacciones reales.
 
-## Pruebas DML para los triggers de auditoría existentes
+## Carga de datos de prueba en `rentals_audit`
 
 <a id="pruebas-dml-triggers-auditoria"></a>
 
-Después de cargar los registros base, ejecuta únicamente el seed de prueba del motor que vas a validar, y solo si la tabla `rentals_audit` y sus triggers ya fueron creados previamente. Estos archivos no crean ni modifican triggers o tablas permanentes: insertan un alquiler aislado, lo actualizan y lo eliminan. Los triggers existentes guardan las tres acciones en `rentals_audit`. En PostgreSQL, el SQL usa una tabla temporal para conservar el identificador generado durante la transacción.
+Después de cargar los registros base, ejecuta en WSL únicamente el comando del motor que vas a validar, y solo si la tabla `rentals_audit` y sus triggers ya fueron creados previamente. Cada seed inserta un alquiler aislado, lo actualiza y lo elimina; los triggers existentes guardan las tres acciones en `rentals_audit`. Los seeds no crean ni modifican objetos permanentes. En PostgreSQL, el SQL usa una tabla temporal para conservar el identificador generado durante la transacción. En SQL Server, si aparece `Invalid object name 'dbo.rentals_audit'`, crea primero la tabla con el script de preparación indicado abajo y luego vuelve a ejecutar el seed.
 
-Ejecuta cada archivo completo como script en DBeaver, conectado a la base Pedalibre correspondiente:
+Los comandos copian el archivo de prueba al contenedor del motor y lo ejecutan en la base Pedalibre. Abre WSL y ejecuta el bloque correspondiente:
 
-| Motor | Seed DML para activar INSERT, UPDATE y DELETE |
-|---|---|
-| MySQL | [seed_rentals_audit_mysql.sql](./Scrips/Mysql/seed_rentals_audit_mysql.sql) |
-| PostgreSQL | [seed_rentals_audit_postgres.sql](./Scrips/Postgres/seed_rentals_audit_postgres.sql) |
-| Microsoft SQL Server | [seed_rentals_audit_mssql.sql](./Scrips/Mssql/seed_rentals_audit_mssql.sql) |
-| Oracle | [seed_rentals_audit_oracle.sql](./Scrips/Oracle/seed_rentals_audit_oracle.sql) |
+### MySQL
 
-Al terminar, toma el identificador de prueba que muestra el script y ejecuta las consultas de verificación por motor en la sección de triggers de [informe.md](../informe.md). Si el DDL de auditoría no está instalado o sus triggers no están asociados a `rentals`, el seed no los crea: primero completa el procedimiento de creación ya documentado para ese motor.
+```bash
+cd "$HOME/ia-lab/services/motores-bd/mysql"
+docker cp "$HOME/ia-lab/projecs/base de datos 2/Consultas-Sql/Creacion de Tablas y Reguistros/Scrips/Mysql/seed_rentals_audit_mysql.sql" mysql-server:/tmp/seed_rentals_audit_mysql.sql
+docker compose exec -it mysql sh -c 'mysql -u root -p Pedalibre-Terminal-Dbeaver < /tmp/seed_rentals_audit_mysql.sql'
+```
+
+### PostgreSQL
+
+```bash
+cd "$HOME/ia-lab/services/motores-bd/postgres"
+docker cp "$HOME/ia-lab/projecs/base de datos 2/Consultas-Sql/Creacion de Tablas y Reguistros/Scrips/Postgres/seed_rentals_audit_postgres.sql" postgres-server:/tmp/seed_rentals_audit_postgres.sql
+docker compose exec -it postgres psql -h localhost -W -U postgres -d Pedalibre-Terminal-Dbeaver -v ON_ERROR_STOP=1 -f /tmp/seed_rentals_audit_postgres.sql
+```
+
+### Microsoft SQL Server
+
+Si todavía no existe `dbo.rentals_audit`, ejecuta primero este script idempotente para crearla; no reemplaza ni modifica los triggers existentes:
+
+```bash
+cd "$HOME/ia-lab/services/motores-bd/mssql"
+docker cp "$HOME/ia-lab/projecs/base de datos 2/Consultas-Sql/Creacion de Tablas y Reguistros/Scrips/Mssql/mssql-create-rentals-audit.sql" mssql-server:/tmp/mssql-create-rentals-audit.sql
+docker compose exec -it mssql /opt/mssql-tools18/bin/sqlcmd -S localhost -U admin -C -d Pedalibre-Terminal-Dbeaver -b -i /tmp/mssql-create-rentals-audit.sql
+```
+
+Después ejecuta la prueba DML:
+
+```bash
+cd "$HOME/ia-lab/services/motores-bd/mssql"
+docker cp "$HOME/ia-lab/projecs/base de datos 2/Consultas-Sql/Creacion de Tablas y Reguistros/Scrips/Mssql/seed_rentals_audit_mssql.sql" mssql-server:/tmp/seed_rentals_audit_mssql.sql
+docker compose exec -it mssql /opt/mssql-tools18/bin/sqlcmd -S localhost -U admin -C -d Pedalibre-Terminal-Dbeaver -b -i /tmp/seed_rentals_audit_mssql.sql
+```
+
+### Oracle
+
+```bash
+cd "$HOME/ia-lab/services/motores-bd/oracle"
+docker cp "$HOME/ia-lab/projecs/base de datos 2/Consultas-Sql/Creacion de Tablas y Reguistros/Scrips/Oracle/seed_rentals_audit_oracle.sql" oracle-server:/tmp/seed_rentals_audit_oracle.sql
+docker compose exec -it oracle sqlplus -L 'PEDALIBRETERMINALDBEAVER@//localhost:1521/Pedalibre' @/tmp/seed_rentals_audit_oracle.sql
+```
+
+Al terminar, cada script muestra el identificador del alquiler de prueba. Guárdalo y ejecuta las consultas de verificación por motor en la sección de triggers de [informe.md](../informe.md). Si el DDL de auditoría no está instalado o sus triggers no están asociados a `rentals`, el seed no los crea: primero completa el procedimiento de creación ya documentado para ese motor.
