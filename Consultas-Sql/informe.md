@@ -1657,6 +1657,14 @@ WHERE rental_id = (
 ORDER BY audit_id DESC;
 ```
 
+**Evidencia de ejecucion — DELETE en SQL Server:**
+
+![Resultado de la auditoría DELETE en SQL Server](trazabilidad/sqlserver_rentals_audit_delete.png)
+
+**Retroalimentacion:** Observo el evento `DELETE` del alquiler `1003`; la imagen previa contiene el estado `completed` y `after_data` es `NULL`.
+
+**Lo que aprendi:** Aprendí que SQL Server permite conservar en la tabla de auditoría la última versión de una fila que ya fue eliminada de `rentals`.
+
 ### Oracle
 
 **Datos de prueba (solo DML):** [seed_rentals_audit_oracle.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Oracle/seed_rentals_audit_oracle.sql)
