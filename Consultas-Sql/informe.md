@@ -970,6 +970,60 @@ FETCH FIRST 10 ROWS ONLY;
 
 **Lo que aprendi:** Aprendere a usar `KEEP` y `DENSE_RANK` en Oracle para recuperar una medida de la fila que ocupa la posicion mas reciente dentro de cada grupo.
 
+## Procedimientos parametrizados de las consultas avanzadas
+
+### MySQL: `GROUP_CONCAT`
+
+<a id="sp-avanzada-mysql-group-concat"></a>
+
+Parametrizo cuántos clientes muestro y mantengo el orden descendente de sus alquileres concatenados. En DBeaver ejecuto la consulta avanzada original, creo el procedimiento desde el editor de procedimientos y comparo la llamada con diez clientes.
+
+**Paso a paso:** 1. Selecciono MySQL y ejecuto la consulta `GROUP_CONCAT`; 2. abro el editor de procedimientos de DBeaver y creo `sp_alquileres_por_cliente`; 3. agrego el parámetro `p_cantidad_clientes` de tipo `INT`; 4. pego el cuerpo de la consulta en el editor y guardo el procedimiento; 5. ejecuto `CALL sp_alquileres_por_cliente(10);` desde el editor SQL y comparo los clientes, conteos e identificadores concatenados.
+
+```sql
+CREATE PROCEDURE sp_alquileres_por_cliente(
+    IN p_cantidad_clientes INT
+)
+SELECT
+    c.client_id,
+    CONCAT(c.first_name, ' ', c.last_name) AS client_name,
+    COUNT(r.rental_id) AS rental_count,
+    GROUP_CONCAT(
+        r.rental_id
+        ORDER BY r.started_at DESC
+        SEPARATOR ', '
+    ) AS rental_ids
+    FROM clients c
+    INNER JOIN rentals r
+        ON r.client_id = c.client_id
+GROUP BY
+    c.client_id,
+    c.first_name,
+    c.last_name
+ORDER BY
+    rental_count DESC,
+    c.client_id
+LIMIT p_cantidad_clientes;
+```
+
+Después de guardar el procedimiento en el editor de procedimientos, ejecuto la llamada en el editor SQL:
+
+```sql
+CALL sp_alquileres_por_cliente(10);
+```
+
+**Evidencia de creación:**
+**MySQL: Crear `sp_alquileres_por_cliente` en el editor de procedimientos de DBeaver**
+![MySQL: Crear sp_alquileres_por_cliente en el editor de procedimientos de DBeaver](trazabilidad/mysql_sp_alquileres_por_cliente_creacion.png)
+
+**Evidencia de ejecución:**
+**MySQL: Ejecutar `sp_alquileres_por_cliente` con límite de diez clientes**
+![MySQL: Ejecutar sp_alquileres_por_cliente con límite de diez clientes](trazabilidad/mysql_sp_alquileres_por_cliente_ejecucion.png)
+
+**Retroalimentación:** En el editor de procedimientos de DBeaver definí el parámetro `p_cantidad_clientes` y guardé el procedimiento. Luego ejecuté el `CALL` desde el editor SQL y observé diez filas. Cada cliente aparece con un alquiler y la lista `rental_ids` muestra los identificadores del 1 al 10.
+
+**Lo que aprendí:** Aprendí que en DBeaver debo declarar el parámetro en el editor de procedimientos y guardar allí el procedimiento; luego puedo invocarlo desde el editor SQL con `CALL`.
+
 ## Procedimientos almacenados
 
 En esta sección creo un procedimiento de solo lectura para listar los alquileres completados dentro de un intervalo de fechas. Uso un límite final exclusivo (`started_at < fecha_fin`) para que pueda consultar periodos consecutivos sin contar dos veces los registros ubicados justo en el límite. Cada bloque es específico para un motor; creo y ejecuto únicamente el que corresponde a mi conexión. Las capturas de creación y ejecución quedan pendientes hasta que las tome en DBeaver.
