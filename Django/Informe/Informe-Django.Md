@@ -1058,3 +1058,19 @@ Django informó que creó los modelos `Bicycle`, `DockingPoint`, `Rate` y `Stati
 **Retroalimentación de la evidencia:** La salida confirma la generación de la migración inicial para los cuatro modelos, sin mostrar una aplicación contra la base de datos.
 
 **Conclusión y aprendizaje:** Aprendí que la migración de catálogo registra el estado de los modelos en Django; las tablas PedalLibre siguen bajo administración de los scripts SQL.
+
+### Paso 4 - Aplicación de la migración de estado del catálogo
+
+Ejecuté el comando indicado por el ISS:
+
+```bash
+python manage.py migrate
+```
+
+Django informó `Applying catalog.0001_initial... OK`.
+
+![EVI-05-04 - Aplicación de la migración inicial del catálogo](./Trazabilidad/EVI-05-04-migracion-catalog-aplicada.png)
+
+**Retroalimentación de la evidencia:** La salida confirma que la migración de catálogo quedó aplicada en el historial de Django. Como los modelos se declararon con `managed = False`, Django no administra las tablas físicas existentes.
+
+**Conclusión y aprendizaje:** Aprendí a confirmar en la terminal la aplicación de la migración de estado para la app de catálogo.
