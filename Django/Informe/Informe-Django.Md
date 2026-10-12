@@ -1205,7 +1205,7 @@ Configuré los permisos predeterminados `AllowAny`, los renderers y parsers came
 
 **Retroalimentación de la evidencia:** La captura muestra la configuración de los renderers y parsers para que el contrato HTTP use camelCase, sin cambiar los nombres de los campos de los modelos Python.
 
-**Conclusión y aprendizaje:** Aprendí que la conversión camelCase se configura en la capa HTTP de la API, manteniendo snake_case en los modelos. En estas capturas todavía no aparece una ejecución de `python manage.py check`; la registraré después de verificar el comando.
+**Conclusión y aprendizaje:** Aprendí que la conversión camelCase se configura en la capa HTTP de la API, manteniendo snake_case en los modelos.
 
 ### Paso 3 - Verificación de la configuración
 
@@ -1244,3 +1244,20 @@ La salida fue `System check identified no issues (0 silenced)`.
 **Retroalimentación de la evidencia:** En el explorador observé los archivos `serializers.py` en las apps de cliente, catálogo y alquileres. La terminal confirmó que Django no detectó problemas después de crearlos.
 
 **Conclusión y aprendizaje:** Aprendí a traducir los modelos PedalLibre a serializers sin incorporar los campos StoreLab ni cambiar los nombres del esquema físico.
+
+### Paso 5 - Verificación de los serializers y salida camelCase
+
+Verifiqué que `ReservationSerializer` expone el campo Python `reserved_at` y que el renderer convierte los nombres a camelCase en el JSON.
+
+La salida observada fue:
+
+```json
+{"reservedAt": "2026-10-12T12:00:00Z", "totalAmount": "0.00"}
+Serializer rental y JSON camelCase: OK
+```
+
+![EVI-07-06 - Serializer de reservas y salida JSON camelCase](./Trazabilidad/EVI-07-06-camelcase-serialization.png)
+
+**Retroalimentación de la evidencia:** La terminal muestra `reservedAt` y `totalAmount` en la respuesta, mientras el serializer mantiene `reserved_at` en Python. La verificación terminó con `Serializer rental y JSON camelCase: OK`.
+
+**Conclusión y aprendizaje:** Aprendí a verificar la conversión de nombres en la salida HTTP sin renombrar los campos del modelo ni del serializer.
