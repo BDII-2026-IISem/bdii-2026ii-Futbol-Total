@@ -1524,3 +1524,13 @@ Agregué `RentalRegisterSerializer` sin reemplazar los serializers existentes. D
 **Retroalimentación de la evidencia:** Observé que los cuatro campos de entrada se exponen con los nombres Python que el parser camelCase presenta en las solicitudes HTTP como `clientId`, `bicycleId`, `rateId` y `startStationId`.
 
 **Conclusión y aprendizaje:** Aprendí a separar la validación de estructura de los datos del procesamiento de las reglas transaccionales del alquiler.
+
+### Paso 3 - APIView y ruta de registro
+
+Agregué `RentalRegisterAPIView` para procesar la solicitud POST, validar el cuerpo con `RentalRegisterSerializer` y responder con `RentalSerializer` cuando el registro es válido. También registré `/api/rentals/` en las rutas del proyecto. La verificación de Django terminó sin problemas y la resolución de la ruta identificó `RentalRegisterAPIView`.
+
+![EVI-11-04 - Verificación de Django y resolución de la ruta de alquiler](./Trazabilidad/EVI-11-04-rental-register-api-route.png)
+
+**Retroalimentación de la evidencia:** Observé que la ruta `api/rentals/` se resuelve a la vista esperada y que `python manage.py check` no reportó problemas.
+
+**Conclusión y aprendizaje:** Aprendí a conectar una operación de negocio con una `APIView` y una ruta propia, manteniendo la lógica de validación en el serializer y el manager transaccional.
