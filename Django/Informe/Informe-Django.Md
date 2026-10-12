@@ -1424,3 +1424,15 @@ Ejecuté `python manage.py check`; Django informó `System check identified no i
 **Retroalimentación de la evidencia:** La captura muestra la inclusión de `apps.catalog.urls` en las rutas del proyecto y la comprobación final sin errores.
 
 **Conclusión y aprendizaje:** Aprendí a mantener las rutas específicas del catálogo en su aplicación y a incluirlas en el prefijo común de la API.
+
+### Paso 3 - Verificación de las rutas del catálogo
+
+Verifiqué las rutas de colección y detalle para estaciones, bicicletas, tarifas y puntos de anclaje, sin consultar la base de datos.
+
+![EVI-09-03 - Rutas de colección y detalle del catálogo verificadas](./Trazabilidad/EVI-09-03-catalog-routes-verified.png)
+
+La verificación confirmó las rutas y que `DELETE` no está habilitado para los cuatro recursos.
+
+**Retroalimentación de la evidencia:** La terminal muestra las cuatro parejas de rutas comprobadas y confirma que no se accedió a MySQL.
+
+**Conclusión y aprendizaje:** Aprendí a validar la resolución y los métodos disponibles de cada recurso del catálogo antes de probar consultas contra la base de datos.
