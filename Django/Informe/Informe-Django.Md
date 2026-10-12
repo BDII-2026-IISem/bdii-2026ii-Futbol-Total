@@ -1106,3 +1106,29 @@ Creé la carpeta de destino `apps/rental`, generé la aplicación Django y la re
 **Retroalimentación de la evidencia:** En el explorador observé `apps/rental` dentro del proyecto y la terminal regresó al prompt sin mostrar errores. La aplicación quedó registrada en la configuración de Django.
 
 **Conclusión y aprendizaje:** Aprendí que `startapp` necesita que exista la carpeta de destino cuando se genera una aplicación dentro de `apps/`.
+
+### Paso 2 - Modelos de reservas, alquileres y movimientos de bicicletas
+
+Creé los modelos `Reservation`, `Rental`, `RentalEvent` y `BicycleDocking` en `apps/rental/models.py`, relacionándolos con los modelos de clientes y catálogo existentes. Cada modelo apunta a su tabla física de PedalLibre y declara `managed = False`, por lo que Django no administra la creación de esas tablas.
+
+![EVI-06-02 - Modelo Reservation y comienzo de Rental](./Trazabilidad/EVI-06-02-modelos-reservation-rental.png)
+
+![EVI-06-03 - Relaciones del modelo Rental](./Trazabilidad/EVI-06-03-modelo-rental-relaciones.png)
+
+![EVI-06-04 - Modelos RentalEvent y BicycleDocking y comprobación del sistema](./Trazabilidad/EVI-06-04-modelos-event-docking-check.png)
+
+Ejecuté la comprobación:
+
+```bash
+python manage.py check
+```
+
+El resultado fue:
+
+```text
+System check identified no issues (0 silenced).
+```
+
+**Retroalimentación de las evidencias:** Observé en el código las relaciones con las entidades PedalLibre y los nombres de las tablas físicas. La salida de Django confirma que la configuración y los modelos no presentan problemas de sistema.
+
+**Conclusión y aprendizaje:** Aprendí a representar la operación de reservas y alquileres existente en PedalLibre sin añadir las ventas de StoreLab ni entregar a Django la administración de las tablas del esquema.
