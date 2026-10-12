@@ -733,6 +733,8 @@ El plan incluyó `security.0001_initial` y operaciones de `contenttypes`, `admin
 
 **Retroalimentación de la evidencia:** La salida confirma que aplicar `migrate` no se limitaría al modelo PedalLibre: también procesaría las migraciones integradas de Django. La captura no muestra el SQL detallado de cada operación, por lo que revisaré ese SQL antes de decidir si es compatible con el esquema existente. No ejecuté `migrate`.
 
+**Conclusión y aprendizaje:** Aprendí a revisar el conjunto de migraciones pendientes antes de aplicarlas. El plan permite identificar las apps involucradas y confirmar qué migraciones aparecen pendientes.
+
 ### Paso 9 - Aplicación de las migraciones
 
 Ejecuté el comando indicado por el ISS:
@@ -772,4 +774,22 @@ OK
 
 **Conclusión y aprendizaje:** Aprendí a volver a ejecutar las pruebas después de aplicar migraciones para confirmar que la configuración continúa funcionando. El resultado valida la selección de motores y sus errores configurados; no cubre todavía el flujo de autenticación de PedalLibre.
 
-**Conclusión y aprendizaje:** Aprendí a revisar el conjunto de migraciones pendientes antes de aplicarlas. El plan permite identificar las apps involucradas, pero no basta para conocer los cambios SQL concretos; por eso mantuve la base sin modificaciones hasta revisar el SQL generado.
+### Paso 11 - Verificación final de Django
+
+Al terminar las migraciones y pruebas, ejecuté:
+
+```bash
+python manage.py check
+```
+
+El sistema informó:
+
+```text
+System check identified no issues (0 silenced).
+```
+
+![EVI-03-16 - Verificación final de Django sin problemas](./Trazabilidad/EVI-03-16-check-final-iss03.png)
+
+**Retroalimentación de la evidencia:** La terminal muestra que la comprobación terminó sin errores.
+
+**Conclusión y aprendizaje:** Aprendí a comprobar la configuración de Django al cerrar este paso y confirmar que el proyecto sigue sin problemas reportados por el sistema.
