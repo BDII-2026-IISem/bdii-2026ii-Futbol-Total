@@ -1615,6 +1615,14 @@ WHERE rental_id = (
 ORDER BY audit_id DESC;
 ```
 
+**Evidencia de ejecucion — INSERT en SQL Server:**
+
+![Resultado de la auditoría INSERT en SQL Server](trazabilidad/sqlserver_rentals_audit_insert.png)
+
+**Retroalimentacion:** Observo el primer evento de auditoría del alquiler `1003`, con acción `INSERT`, usuario `admin` y `before_data` en `NULL`; `after_data` contiene la fila creada.
+
+**Lo que aprendi:** Aprendí que SQL Server registra la inserción con los valores nuevos y deja vacía la imagen anterior, como corresponde a una fila recién creada.
+
 ```sql
 SELECT TOP (1) audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
 FROM dbo.rentals_audit
