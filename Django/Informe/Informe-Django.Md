@@ -1094,3 +1094,15 @@ System check identified no issues (0 silenced).
 **Retroalimentación de la evidencia:** La terminal confirma que Django no identificó problemas después de registrar y migrar el catálogo.
 
 **Conclusión y aprendizaje:** Aprendí a verificar la configuración al terminar la unidad de modelos del catálogo antes de pasar al siguiente ISS.
+
+## ISS-06 - Operación de reservas y alquileres PedalLibre
+
+### Paso 1 - Creación y registro de la aplicación `rental`
+
+Creé la carpeta de destino `apps/rental`, generé la aplicación Django y la registré en `INSTALLED_APPS` como `apps.rental.apps.RentalConfig`.
+
+![EVI-06-01 - Aplicación rental creada y visible en el proyecto Django](./Trazabilidad/EVI-06-01-app-rental-registered.png)
+
+**Retroalimentación de la evidencia:** En el explorador observé `apps/rental` dentro del proyecto y la terminal regresó al prompt sin mostrar errores. La aplicación quedó registrada en la configuración de Django.
+
+**Conclusión y aprendizaje:** Aprendí que `startapp` necesita que exista la carpeta de destino cuando se genera una aplicación dentro de `apps/`.
