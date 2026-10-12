@@ -1184,3 +1184,25 @@ System check identified no issues (0 silenced).
 **Retroalimentación de la evidencia:** La terminal confirma que Django no encontró problemas después de registrar los modelos de reservas y alquileres.
 
 **Conclusión y aprendizaje:** Aprendí a cerrar la verificación del ISS con el chequeo del proyecto, confirmando que la app `rental` y sus modelos están registrados sin errores.
+
+## ISS-07 - Configuración de REST Framework, CORS y JSON camelCase
+
+### Paso 1 - Registro de REST Framework y configuración de CORS
+
+Registré `rest_framework` y `corsheaders` en `INSTALLED_APPS`, agregué `CorsMiddleware` antes del middleware de seguridad y configuré `CORS_ALLOW_ALL_ORIGINS` a partir de la variable de entorno `CORS_ALLOW_ALL_ORIGINS`.
+
+![EVI-07-02 - Aplicaciones DRF/CORS y middleware en settings.py](./Trazabilidad/EVI-07-02-settings-drf-cors.png)
+
+**Retroalimentación de la evidencia:** En `settings.py` observé las aplicaciones y el middleware de CORS en la configuración del proyecto.
+
+**Conclusión y aprendizaje:** Aprendí a integrar los componentes de REST Framework y CORS en la configuración de Django. La lista de orígenes queda controlada por una variable de entorno.
+
+### Paso 2 - Renderer y parser JSON camelCase
+
+Configuré los permisos predeterminados `AllowAny`, los renderers y parsers camelCase y la paginación desactivada, de acuerdo con el ISS-07.
+
+![EVI-07-03 - Configuración REST Framework con JSON camelCase](./Trazabilidad/EVI-07-03-settings-json-camelcase.png)
+
+**Retroalimentación de la evidencia:** La captura muestra la configuración de los renderers y parsers para que el contrato HTTP use camelCase, sin cambiar los nombres de los campos de los modelos Python.
+
+**Conclusión y aprendizaje:** Aprendí que la conversión camelCase se configura en la capa HTTP de la API, manteniendo snake_case en los modelos. En estas capturas todavía no aparece una ejecución de `python manage.py check`; la registraré después de verificar el comando.
