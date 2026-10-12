@@ -1206,3 +1206,23 @@ Configuré los permisos predeterminados `AllowAny`, los renderers y parsers came
 **Retroalimentación de la evidencia:** La captura muestra la configuración de los renderers y parsers para que el contrato HTTP use camelCase, sin cambiar los nombres de los campos de los modelos Python.
 
 **Conclusión y aprendizaje:** Aprendí que la conversión camelCase se configura en la capa HTTP de la API, manteniendo snake_case en los modelos. En estas capturas todavía no aparece una ejecución de `python manage.py check`; la registraré después de verificar el comando.
+
+### Paso 3 - Verificación de la configuración
+
+Ejecuté la comprobación del sistema después de configurar DRF y CORS:
+
+```bash
+python manage.py check
+```
+
+El resultado fue:
+
+```text
+System check identified no issues (0 silenced).
+```
+
+![EVI-07-04 - Comprobación de la configuración REST Framework sin problemas](./Trazabilidad/EVI-07-04-check-rest-framework.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma que Django no encontró problemas con la configuración de REST Framework y CORS.
+
+**Conclusión y aprendizaje:** Aprendí a comprobar los ajustes después de integrar las aplicaciones, el middleware y los renderers y parsers camelCase.
