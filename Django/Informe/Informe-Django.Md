@@ -1363,3 +1363,21 @@ Validación del cuerpo sin crear registros: OK
 **Retroalimentación de la evidencia:** La respuesta `400 Bad Request` confirma que el serializer rechaza un cuerpo que no contiene los campos requeridos. La prueba no insertó datos.
 
 **Conclusión y aprendizaje:** Aprendí a validar una solicitud incompleta de manera segura antes de probar una creación válida.
+
+### Paso 9 - Verificación aislada del CRUD de clientes
+
+Probé POST, GET de detalle y PATCH usando una base SQLite en memoria con tablas temporales para la prueba. La salida confirmó:
+
+```text
+POST en SQLite en memoria: HTTP 201
+GET de detalle: HTTP 200
+PATCH en SQLite en memoria: HTTP 200
+DELETE: HTTP 405
+MySQL no fue utilizado ni modificado.
+```
+
+![EVI-08-09 - CRUD de clientes verificado en SQLite en memoria, sin modificar MySQL](./Trazabilidad/EVI-08-09-client-crud-isolated.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma la creación y actualización en la base temporal, la lectura del detalle y el rechazo de DELETE. La conexión MySQL no se utilizó.
+
+**Conclusión y aprendizaje:** Aprendí a probar las operaciones de escritura en una base aislada y desechable para mantener intactos los datos reales de PedalLibre.
