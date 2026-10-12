@@ -1074,3 +1074,23 @@ Django informó `Applying catalog.0001_initial... OK`.
 **Retroalimentación de la evidencia:** La salida confirma que la migración de catálogo quedó aplicada en el historial de Django. Como los modelos se declararon con `managed = False`, Django no administra las tablas físicas existentes.
 
 **Conclusión y aprendizaje:** Aprendí a confirmar en la terminal la aplicación de la migración de estado para la app de catálogo.
+
+### Paso 5 - Verificación del catálogo
+
+Ejecuté la comprobación del proyecto:
+
+```bash
+python manage.py check
+```
+
+El resultado fue:
+
+```text
+System check identified no issues (0 silenced).
+```
+
+![EVI-05-05 - Verificación de Django sin problemas después de la migración del catálogo](./Trazabilidad/EVI-05-05-check-catalog.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma que Django no identificó problemas después de registrar y migrar el catálogo.
+
+**Conclusión y aprendizaje:** Aprendí a verificar la configuración al terminar la unidad de modelos del catálogo antes de pasar al siguiente ISS.
