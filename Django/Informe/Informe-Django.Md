@@ -523,3 +523,33 @@ class User(AbstractBaseUser):
 **Retroalimentación de las evidencias:** Revisé el contenido mostrado y el archivo guardado. El mapeo mantiene los campos de la tabla PedalLibre y evita que Django administre su esquema. La verificación que aportan estas capturas es visual; todavía no ejecuté `check` ni pruebas de autenticación. Tampoco registré aún la app en `INSTALLED_APPS` ni definí `AUTH_USER_MODEL`.
 
 **Conclusión y aprendizaje:** Aprendí que un usuario personalizado debe reflejar las columnas reales de la base y que no se debe aplicar literalmente una guía cuyo esquema corresponde a otro proyecto. También aprendí que un hash SHA-256 heredado no es un hash de contraseña compatible con Django; el modelo compara el valor de manera segura y, tras una autenticación correcta, lo actualiza al formato de Django. Mantengo pendiente la integración con los ajustes y no ejecutaré migraciones sobre las tablas PedalLibre.
+
+### Paso 4 - Registro de la app y selección del usuario personalizado
+
+Registré `SecurityConfig` en `INSTALLED_APPS` y configuré `AUTH_USER_MODEL` para que Django utilice `security.User`.
+
+```python
+INSTALLED_APPS = [
+    # ...
+    "apps.client.apps.ClientConfig",
+    "apps.security.apps.SecurityConfig",
+]
+
+AUTH_USER_MODEL = "security.User"
+```
+
+Verifiqué los ajustes del proyecto con:
+
+```bash
+python manage.py check
+```
+
+```text
+System check identified no issues (0 silenced).
+```
+
+**Evidencia visual pendiente:** en esta sesión no recibí capturas de `config/settings.py` ni de la terminal. Por eso no incorporé imágenes para este paso. Cuando las comparta, las agregaré en este apartado y en `Informe/Trazabilidad`.
+
+**Retroalimentación:** La comprobación de Django terminó sin errores, por lo que el registro de la app y la referencia al modelo personalizado son reconocidos por el proyecto. Esta verificación no implica que se hayan probado consultas de autenticación contra la base de datos.
+
+**Conclusión y aprendizaje:** Aprendí que la app que define el modelo de usuario y el ajuste `AUTH_USER_MODEL` deben estar alineados desde la configuración inicial. También confirmé que `manage.py check` valida la configuración de Django, pero no reemplaza las pruebas contra los datos reales. No ejecuté `makemigrations` ni `migrate` para conservar intacto el esquema PedalLibre.
