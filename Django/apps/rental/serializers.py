@@ -79,3 +79,24 @@ class RentalRegisterSerializer(serializers.Serializer):
             )
         except DjangoValidationError as exc:
             raise serializers.ValidationError(exc.message_dict) from exc
+
+
+class RentalReadSerializer(serializers.ModelSerializer):
+    events = RentalEventSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Rental
+        fields = [
+            "id",
+            "client",
+            "bicycle",
+            "rate",
+            "start_station",
+            "end_station",
+            "started_at",
+            "ended_at",
+            "status",
+            "total_amount",
+            "events",
+        ]
+        read_only_fields = fields

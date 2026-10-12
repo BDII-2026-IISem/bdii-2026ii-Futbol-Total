@@ -1566,3 +1566,17 @@ Agregué pruebas automatizadas para el registro correcto y para los casos de bic
 ### Cierre del ISS-11
 
 Verifiqué los criterios de aceptación de la guía: el registro válido responde HTTP 201 con alquiler activo y monto inicial cero; se crea el evento `started`, la bicicleta cambia a `rented` y se libera su anclaje. Los casos no válidos responden HTTP 400 y no dejan cambios parciales. Las ocho pruebas automatizadas finalizaron correctamente. Los modelos continúan mapeados a las tablas existentes con `managed = False`. Las migraciones que aparecen durante la salida de pruebas se aplicaron en la base temporal SQLite del runner; esa base se destruyó al finalizar y MySQL no fue utilizado ni modificado.
+
+## ISS-12 - Consulta y operaciones de alquiler
+
+### Paso 1 - Consulta de colección y detalle de alquileres
+
+Agregué la lectura de la colección `GET /api/rentals/` y del detalle `GET /api/rentals/<id>/`. El serializer de lectura incluye los eventos relacionados del alquiler, y las consultas cargan las relaciones para responder sin crear ni modificar registros. Añadí pruebas automatizadas para verificar que la colección incluya un alquiler registrado y que el detalle incluya su evento `started`.
+
+![EVI-12-01 - Serializer de lectura y diez pruebas exitosas con SQLite en memoria](./Trazabilidad/EVI-12-01-rental-read-tests.png)
+
+Ejecuté las diez pruebas de `RentalRegisterTransactionTests`; todas finalizaron correctamente. La prueba se ejecutó sobre SQLite en memoria, que se destruyó al terminar. MySQL no fue utilizado ni modificado.
+
+**Retroalimentación de la evidencia:** Observé que las pruebas del registro y las nuevas consultas de colección y detalle pasaron, y que la respuesta del detalle contiene el evento del alquiler.
+
+**Conclusión y aprendizaje:** Aprendí a exponer lecturas de colección y detalle con sus relaciones usando serializers de solo lectura, manteniendo la operación de inicio del alquiler separada.

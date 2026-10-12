@@ -108,7 +108,7 @@ class RentalRegisterTransactionTests(TransactionTestCase):
         )
 
         self.assertEqual(response.status_code, 201, response.data)
-        rental = Rental.objects.get()
+        rental = Rental.objects.get(pk=response.data["id"])
         self.assertEqual(rental.status, "active")
         self.assertEqual(str(rental.total_amount), "0.00")
         self.assertTrue(
@@ -196,3 +196,30 @@ class RentalRegisterTransactionTests(TransactionTestCase):
         self.assertEqual(RentalEvent.objects.count(), events_before)
         self.bicycle.refresh_from_db()
         self.assertEqual(self.bicycle.status, "available")
+
+    def test_rental_list_includes_registered_rental(self):
+        created = self.api.post(
+            "/api/rentals/",
+            self.payload(),
+            format="json",
+        )
+        self.assertEqual(created.status_code, 201, created.data)
+
+        response = self.api.get("/api/rentals/")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertTrue(
+            any(item["id"] == created.data["id"] for item in response.data)
+        )
+
+    def test_rental_detail_includes_its_event(self):
+        created = self.api.post(
+            "/api/rentals/",
+            self.payload(),
+            format="json",
+        )
+        self.assertEqual(created.status_code, 201, created.data)
+
+        response = self.api.get(f"/api/rentals/{created.data['id']}/")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["status"], "active")
+        self.assertEqual(response.data["events"][0]["event_type"], "started")
