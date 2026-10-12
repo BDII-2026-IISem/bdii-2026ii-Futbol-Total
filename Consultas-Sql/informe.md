@@ -1134,6 +1134,66 @@ COMMIT;
 
 **Lo que aprendí:** Aprendí que el cursor `REFCURSOR` debe permanecer dentro de la misma transacción hasta ejecutar `FETCH`; también debo revisar el mensaje final de DBeaver y no considerar la ejecución libre de errores mientras aparezca un aviso de transacción.
 
+### SQL Server: duración de alquiler por tipo
+
+<a id="sp-avanzada-sqlserver-datediff"></a>
+
+Parametrizo el tipo de bicicleta, manteniendo la duración promedio de alquileres completados. Ejecuto la consulta original, creo el procedimiento y comparo todos los tipos y la llamada filtrada.
+
+**Paso a paso:** 1. Selecciono la conexión de SQL Server y ejecuto la consulta con `DATEDIFF`; 2. selecciono la definición completa del procedimiento, desde `CREATE OR ALTER` hasta `END;`, y la ejecuto con **Alt+X**; 3. ejecuto por separado cada llamada de prueba; 4. comparo conteos y promedios.
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.sp_duracion_alquiler_por_tipo
+    @p_tipo_bicicleta VARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT b.bicycle_type, COUNT(*) AS rental_count,
+           AVG(CAST(DATEDIFF(MINUTE, r.started_at, r.ended_at) AS DECIMAL(10,2)))
+               AS average_duration_minutes
+    FROM dbo.rentals AS r
+    INNER JOIN dbo.bicycles AS b
+        ON b.bicycle_id = r.bicycle_id
+    WHERE r.status = 'completed'
+      AND r.ended_at IS NOT NULL
+      AND (@p_tipo_bicicleta IS NULL
+           OR b.bicycle_type = @p_tipo_bicicleta)
+    GROUP BY b.bicycle_type
+    ORDER BY average_duration_minutes DESC, b.bicycle_type;
+END;
+```
+
+```sql
+EXEC dbo.sp_duracion_alquiler_por_tipo @p_tipo_bicicleta = NULL;
+```
+
+```sql
+EXEC dbo.sp_duracion_alquiler_por_tipo @p_tipo_bicicleta = 'electric';
+```
+
+**Evidencia de creación:**
+
+**SQL Server: Crear `dbo.sp_duracion_alquiler_por_tipo`**
+
+![SQL Server: Crear sp_duracion_alquiler_por_tipo](trazabilidad/sqlserver_sp_duracion_alquiler_tipo_creacion.png)
+
+**Evidencia de ejecución sin filtro:**
+
+**SQL Server: Consultar la duración por todos los tipos de bicicleta**
+
+![SQL Server: Ejecutar sp_duracion_alquiler_por_tipo sin filtro](trazabilidad/sqlserver_sp_duracion_alquiler_tipo_todos_tipos.png)
+
+**Evidencia de ejecución filtrada:**
+
+**SQL Server: Consultar la duración de bicicletas electric**
+
+![SQL Server: Ejecutar sp_duracion_alquiler_por_tipo para electric](trazabilidad/sqlserver_sp_duracion_alquiler_tipo_electric.png)
+
+**Retroalimentación:** Observé que el procedimiento quedó creado en el esquema `dbo`. La llamada con el parámetro `NULL` devolvió cuatro tipos de bicicleta; la llamada con `electric` devolvió solo ese tipo. En ambas capturas el resultado muestra 17 alquileres completados y un promedio de 60 minutos para los tipos incluidos.
+
+**Lo que aprendí:** Aprendí a usar un parámetro opcional para alternar entre el resumen general y un tipo específico, y a calcular promedios de duración en minutos con `DATEDIFF` y una conversión decimal.
+
 ## Procedimientos almacenados
 
 En esta sección creo un procedimiento de solo lectura para listar los alquileres completados dentro de un intervalo de fechas. Uso un límite final exclusivo (`started_at < fecha_fin`) para que pueda consultar periodos consecutivos sin contar dos veces los registros ubicados justo en el límite. Cada bloque es específico para un motor; creo y ejecuto únicamente el que corresponde a mi conexión. Las capturas de creación y ejecución quedan pendientes hasta que las tome en DBeaver.
