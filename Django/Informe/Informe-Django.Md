@@ -1,6 +1,6 @@
 # Informe de desarrollo del proyecto Django
 
-En este informe registro en primera persona los pasos que sigo según cada ISS, las evidencias, la retroalimentación de lo observado y lo que aprendo.
+En este informe registro los pasos que sigo según cada ISS, las evidencias, la retroalimentación de lo observado y lo que aprendo.
 
 ## ISS-00 - Entorno y proyecto Django
 
@@ -29,3 +29,22 @@ htmlcov/
 **Retroalimentación de la evidencia:** En la captura observé el comando que crea `.gitignore` desde la raíz `Django`, la ruta impresa por `pwd` y el contenido mostrado después con `cat`. Así comprobé que el archivo quedó en la ubicación indicada y que contiene las reglas de exclusión solicitadas.
 
 **Conclusión y aprendizaje:** Aprendí que `.gitignore` debe estar en la raíz del proyecto para que Git aplique sus reglas a los archivos y carpetas generados dentro de él. Excluir `.venv/`, cachés y archivos locales evita incorporarlos accidentalmente a los commits.
+
+### Paso 2 - Creación del entorno virtual e inicio del proyecto
+
+Creé el entorno virtual `.venv`, lo activé, instalé Django 5.2.17, generé el proyecto `config` en la raíz y guardé las dependencias instaladas en `requirements.txt`.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install "Django==5.2.17"
+django-admin startproject config .
+python -m pip freeze > requirements.txt
+python -m django --version
+```
+
+**Evidencia:** [EVI-00-02 - Entorno y proyecto Django generados](./Trazabilidad/EVI-00-02-proyecto-django.png)
+
+**Retroalimentación de la evidencia:** En la captura observé la ejecución de los comandos, la instalación exitosa de Django 5.2.17 y la versión `5.2.17` impresa al final. En el Explorador de VS Code aparecen `.venv/`, `config/`, `manage.py` y `requirements.txt`, correspondientes a la estructura inicial.
+
+**Conclusión y aprendizaje:** Aprendí que `venv` permite aislar las dependencias del proyecto y que `django-admin startproject config .` genera la configuración en la raíz actual. `requirements.txt` conserva las dependencias para poder reproducir el entorno.
