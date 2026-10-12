@@ -1273,3 +1273,15 @@ Ejecuté la comprobación del sistema y Django informó `System check identified
 **Retroalimentación de la evidencia:** En el archivo observé el queryset de clientes, el serializer, el permiso y los métodos HTTP habilitados sin `DELETE`. La terminal confirma que Django no detectó problemas.
 
 **Conclusión y aprendizaje:** Aprendí a adaptar el ViewSet al esquema real de `clients` y a no copiar la baja lógica del ejemplo StoreLab, cuyo campo `status` no existe en PedalLibre.
+
+### Paso 2 - Registro de las rutas de clientes
+
+Registré las rutas de `ClientViewSet` con `SimpleRouter` y conecté el router bajo el prefijo `/api/`, para exponer el recurso de clientes.
+
+![EVI-08-02 - Rutas del CRUD de clientes registradas bajo /api/](./Trazabilidad/EVI-08-02-client-api-routes.png)
+
+Verifiqué la configuración con `python manage.py check`; Django informó `System check identified no issues (0 silenced)`.
+
+**Retroalimentación de la evidencia:** La captura muestra el router de la app `client`, su inclusión bajo `/api/` y el resultado correcto de la comprobación.
+
+**Conclusión y aprendizaje:** Aprendí a separar el prefijo general de la API en la configuración del proyecto de las rutas específicas del recurso en su aplicación.
