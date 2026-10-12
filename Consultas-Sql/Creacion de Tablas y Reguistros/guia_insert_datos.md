@@ -67,3 +67,20 @@ Cada script muestra el conteo de filas por tabla al terminar.
 | `invoices` | Facturas asociadas a pagos, con número, subtotal, impuesto y total. |
 
 Los nombres, documentos, teléfonos, correos, referencias de pago y demás valores son datos ficticios de prueba; no representan personas ni transacciones reales.
+
+## Pruebas DML para los triggers de auditoría existentes
+
+<a id="pruebas-dml-triggers-auditoria"></a>
+
+Después de cargar los registros base, ejecuta únicamente el seed de prueba del motor que vas a validar, y solo si la tabla `rentals_audit` y sus triggers ya fueron creados previamente. Estos archivos no crean ni modifican triggers o tablas permanentes: insertan un alquiler aislado, lo actualizan y lo eliminan. Los triggers existentes guardan las tres acciones en `rentals_audit`. En PostgreSQL, el SQL usa una tabla temporal para conservar el identificador generado durante la transacción.
+
+Ejecuta cada archivo completo como script en DBeaver, conectado a la base Pedalibre correspondiente:
+
+| Motor | Seed DML para activar INSERT, UPDATE y DELETE |
+|---|---|
+| MySQL | [seed_rentals_audit_mysql.sql](./Scrips/Mysql/seed_rentals_audit_mysql.sql) |
+| PostgreSQL | [seed_rentals_audit_postgres.sql](./Scrips/Postgres/seed_rentals_audit_postgres.sql) |
+| Microsoft SQL Server | [seed_rentals_audit_mssql.sql](./Scrips/Mssql/seed_rentals_audit_mssql.sql) |
+| Oracle | [seed_rentals_audit_oracle.sql](./Scrips/Oracle/seed_rentals_audit_oracle.sql) |
+
+Al terminar, toma el identificador de prueba que muestra el script y ejecuta las consultas de verificación por motor en la sección de triggers de [informe.md](../informe.md). Si el DDL de auditoría no está instalado o sus triggers no están asociados a `rentals`, el seed no los crea: primero completa el procedimiento de creación ya documentado para ese motor.

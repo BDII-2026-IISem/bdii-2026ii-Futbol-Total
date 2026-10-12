@@ -1434,174 +1434,226 @@ Ejecuto este bloque como script en una versión de Oracle que admita `DBMS_SQL.R
 
 ## Triggers
 
-En esta sección automatizo el registro de cambios de estado de un alquiler en la tabla existente `rental_events`. Así aprovecho el historial operativo del esquema y no creo otra tabla. El trigger añade una fila solo cuando cambia `rentals.status`; no altera el alquiler, no modifica ni elimina los eventos anteriores y no requiere que ejecute un `INSERT` manual en el historial.
+Los triggers de auditoría para INSERT, UPDATE y DELETE ya se crearon. Aquí conservo su evidencia visual y las consultas para comprobar los registros de auditoría; no incluyo SQL para crear ni modificar triggers.
 
-Creo el trigger correspondiente una sola vez en la conexión indicada. Para verificarlo, selecciono un alquiler activo de prueba, desactivo el autocommit, cambio su estado a `cancelled` y consulto el evento nuevo; después revierto la transacción desde DBeaver para que no queden modificados ni el alquiler ni el historial. Sustituyo el identificador de ejemplo por el de un alquiler activo real. Las capturas quedan pendientes hasta que complete la ejecución.
+Para probarlos, primero cargo los datos base y luego ejecuto el seed DML de prueba que corresponde al motor, siguiendo el apartado [Pruebas DML para los triggers de auditoría existentes](./Creacion%20de%20Tablas%20y%20Reguistros/guia_insert_datos.md#pruebas-dml-triggers-auditoria). Cada seed agrega, actualiza y elimina un alquiler de prueba; los triggers ya instalados registran esas operaciones en `rentals_audit`. Después ejecuto las consultas de este apartado para revisar INSERT, UPDATE y DELETE del alquiler de prueba, identificado mediante su evento DELETE más reciente.
 
 ### MySQL
 
-```sql
-DROP TRIGGER IF EXISTS trg_rentals_status_event;
+**Datos de prueba (solo DML):** [seed_rentals_audit_mysql.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Mysql/seed_rentals_audit_mysql.sql)
 
-DELIMITER //
-CREATE TRIGGER trg_rentals_status_event
-AFTER UPDATE ON rentals
-FOR EACH ROW
-BEGIN
-    IF NOT (OLD.status <=> NEW.status) THEN
-        INSERT INTO rental_events (rental_id, event_type, description, event_at)
-        VALUES (
-            NEW.rental_id,
-            'STATUS_CHANGE',
-            CONCAT('Estado: ', OLD.status, ' -> ', NEW.status),
-            CURRENT_TIMESTAMP
-        );
-    END IF;
-END//
-DELIMITER ;
+**Evidencia de los triggers existentes en MySQL:**
+
+![Triggers de auditoría MySQL visibles y asociados a rentals](trazabilidad/mysql_triggers_audit_creacion.png)
+
+```sql
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM rentals_audit
+    WHERE action_name = 'DELETE'
+    ORDER BY audit_id DESC
+    LIMIT 1
+)
+  AND action_name = 'INSERT'
+ORDER BY audit_id DESC
+LIMIT 1;
 ```
 
-**Evidencia de ejecucion:**
+```sql
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM rentals_audit
+    WHERE action_name = 'DELETE'
+    ORDER BY audit_id DESC
+    LIMIT 1
+)
+  AND action_name = 'UPDATE'
+ORDER BY audit_id DESC
+LIMIT 1;
+```
 
-**MySQL: Registrar cambios de estado de alquiler con un trigger**
-
-*Captura pendiente: `mysql_trigger_estado_alquiler.png`.*
-
-**Retroalimentacion:** Comparo los estados anterior y nuevo; cuando son distintos, inserto en `rental_events` el identificador del alquiler, la transición y la fecha del cambio.
-
-**Lo que aprendi:** Aprenderé a utilizar `OLD` y `NEW` en un trigger por fila de MySQL y a registrar un cambio sin modificar la tabla principal.
+```sql
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM rentals_audit
+    WHERE action_name = 'DELETE'
+    ORDER BY audit_id DESC
+    LIMIT 1
+)
+  AND action_name = 'DELETE'
+ORDER BY audit_id DESC
+LIMIT 1;
+```
 
 ### PostgreSQL
 
+**Datos de prueba (solo DML):** [seed_rentals_audit_postgres.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Postgres/seed_rentals_audit_postgres.sql)
+
+**Evidencia del estado en PostgreSQL:**
+
+![Estado de los triggers PostgreSQL y errores de relación rentals no existente](trazabilidad/postgresql_triggers_audit_estado.png)
+
+La captura muestra errores indicando que la relación `rentals` no existe durante la creación del trigger. Por ello, no la presento como una instalación funcional: primero debe verificarse la tabla/esquema de la conexión PostgreSQL; las consultas siguientes sirven para revisar la auditoría después de corregir el estado y ejecutar el seed DML.
+
 ```sql
-CREATE OR REPLACE FUNCTION fn_rentals_status_event()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    IF OLD.status IS DISTINCT FROM NEW.status THEN
-        INSERT INTO rental_events (rental_id, event_type, description, event_at)
-        VALUES (
-            NEW.rental_id,
-            'STATUS_CHANGE',
-            format('Estado: %s -> %s', OLD.status, NEW.status),
-            CURRENT_TIMESTAMP
-        );
-    END IF;
-
-    RETURN NEW;
-END;
-$$;
-
-DROP TRIGGER IF EXISTS trg_rentals_status_event ON rentals;
-CREATE TRIGGER trg_rentals_status_event
-AFTER UPDATE OF status ON rentals
-FOR EACH ROW
-EXECUTE FUNCTION fn_rentals_status_event();
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM public.rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM public.rentals_audit
+    WHERE action_name = 'DELETE'
+    ORDER BY audit_id DESC
+    LIMIT 1
+)
+  AND action_name = 'INSERT'
+ORDER BY audit_id DESC
+LIMIT 1;
 ```
 
-**Evidencia de ejecucion:**
+```sql
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM public.rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM public.rentals_audit
+    WHERE action_name = 'DELETE'
+    ORDER BY audit_id DESC
+    LIMIT 1
+)
+  AND action_name = 'UPDATE'
+ORDER BY audit_id DESC
+LIMIT 1;
+```
 
-**PostgreSQL: Registrar cambios de estado de alquiler con un trigger**
-
-*Captura pendiente: `postgresql_trigger_estado_alquiler.png`.*
-
-**Retroalimentacion:** Comparo los estados anterior y nuevo con `IS DISTINCT FROM` y añado un evento únicamente cuando detecto un cambio.
-
-**Lo que aprendi:** Aprenderé a separar en PostgreSQL la función PL/pgSQL que contiene la lógica del trigger y la definición que la asocia a `rentals`.
+```sql
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM public.rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM public.rentals_audit
+    WHERE action_name = 'DELETE'
+    ORDER BY audit_id DESC
+    LIMIT 1
+)
+  AND action_name = 'DELETE'
+ORDER BY audit_id DESC
+LIMIT 1;
+```
 
 ### Microsoft SQL Server
 
-```sql
-CREATE OR ALTER TRIGGER dbo.trg_rentals_status_event
-ON dbo.rentals
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
+**Datos de prueba (solo DML):** [seed_rentals_audit_mssql.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Mssql/seed_rentals_audit_mssql.sql)
 
-    INSERT INTO dbo.rental_events (rental_id, event_type, description, event_at)
-    SELECT
-        i.rental_id,
-        'STATUS_CHANGE',
-        CONCAT('Estado: ', d.status, ' -> ', i.status),
-        SYSDATETIME()
-    FROM inserted AS i
-    JOIN deleted AS d ON d.rental_id = i.rental_id
-    WHERE i.status <> d.status;
-END;
-GO
+**Evidencia de los triggers existentes en SQL Server:**
+
+![Triggers de auditoría SQL Server creados sobre dbo.rentals](trazabilidad/sqlserver_triggers_audit_creacion.png)
+
+```sql
+SELECT TOP (1) audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM dbo.rentals_audit
+WHERE rental_id = (
+    SELECT TOP (1) rental_id
+    FROM dbo.rentals_audit
+    WHERE action_name = N'DELETE'
+    ORDER BY audit_id DESC
+)
+  AND action_name = N'INSERT'
+ORDER BY audit_id DESC;
 ```
 
-**Evidencia de ejecucion:**
+```sql
+SELECT TOP (1) audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM dbo.rentals_audit
+WHERE rental_id = (
+    SELECT TOP (1) rental_id
+    FROM dbo.rentals_audit
+    WHERE action_name = N'DELETE'
+    ORDER BY audit_id DESC
+)
+  AND action_name = N'UPDATE'
+ORDER BY audit_id DESC;
+```
 
-**SQL Server: Registrar cambios de estado de alquiler con un trigger**
-
-*Captura pendiente: `sqlserver_trigger_estado_alquiler.png`.*
-
-**Retroalimentacion:** Relaciono las tablas lógicas `inserted` y `deleted` por `rental_id`. Con esa comparación registro los cambios de estado y admito que una sentencia modifique varias filas.
-
-**Lo que aprendi:** Aprenderé que los triggers de SQL Server deben procesar conjuntos de filas con `inserted` y `deleted`, no asumir una única fila por ejecución.
+```sql
+SELECT TOP (1) audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM dbo.rentals_audit
+WHERE rental_id = (
+    SELECT TOP (1) rental_id
+    FROM dbo.rentals_audit
+    WHERE action_name = N'DELETE'
+    ORDER BY audit_id DESC
+)
+  AND action_name = N'DELETE'
+ORDER BY audit_id DESC;
+```
 
 ### Oracle
 
-```sql
-CREATE OR REPLACE TRIGGER trg_rentals_status_event
-AFTER UPDATE OF status ON rentals
-FOR EACH ROW
-WHEN (OLD.status <> NEW.status)
-BEGIN
-    INSERT INTO rental_events (rental_id, event_type, description, event_at)
-    VALUES (
-        :NEW.rental_id,
-        'STATUS_CHANGE',
-        'Estado: ' || :OLD.status || ' -> ' || :NEW.status,
-        LOCALTIMESTAMP
-    );
-END;
-/
-```
+**Datos de prueba (solo DML):** [seed_rentals_audit_oracle.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Oracle/seed_rentals_audit_oracle.sql)
 
-**Evidencia de ejecucion:**
+**Evidencia de los triggers existentes en Oracle:**
 
-**Oracle: Registrar cambios de estado de alquiler con un trigger**
-
-*Captura pendiente: `oracle_trigger_estado_alquiler.png`.*
-
-**Retroalimentacion:** Al actualizar `status`, comparo `:OLD.status` con `:NEW.status` y agrego un evento solo cuando encuentro una transición.
-
-**Lo que aprendi:** Aprenderé a utilizar `:OLD` y `:NEW` en un trigger PL/SQL por fila.
-
-### Verificación del trigger y reversión de la prueba
-
-Primero consulto un alquiler activo y elijo su identificador:
+![Triggers de auditoría Oracle creados sobre RENTALS](trazabilidad/oracle_triggers_audit_creacion.png)
 
 ```sql
-SELECT rental_id
-FROM rentals
-WHERE status = 'active'
-ORDER BY rental_id;
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM (
+        SELECT rental_id
+        FROM rentals_audit
+        WHERE action_name = 'DELETE'
+        ORDER BY audit_id DESC
+    )
+    WHERE ROWNUM = 1
+)
+  AND action_name = 'INSERT'
+ORDER BY audit_id DESC
+FETCH FIRST 1 ROW ONLY;
 ```
-
-Con el autocommit desactivado, sustituyo el `1` de este ejemplo por el identificador activo que seleccioné y ejecuto la actualización:
 
 ```sql
-UPDATE rentals
-SET status = 'cancelled'
-WHERE rental_id = 1
-  AND status = 'active';
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM (
+        SELECT rental_id
+        FROM rentals_audit
+        WHERE action_name = 'DELETE'
+        ORDER BY audit_id DESC
+    )
+    WHERE ROWNUM = 1
+)
+  AND action_name = 'UPDATE'
+ORDER BY audit_id DESC
+FETCH FIRST 1 ROW ONLY;
 ```
-
-Después de actualizar el alquiler de prueba, consulto el historial para comprobar el evento registrado:
 
 ```sql
-SELECT rental_event_id, rental_id, event_type, description, event_at
-FROM rental_events
-WHERE event_type = 'STATUS_CHANGE'
-ORDER BY rental_event_id DESC;
+SELECT audit_id, rental_id, action_name, changed_at, changed_by, before_data, after_data
+FROM rentals_audit
+WHERE rental_id = (
+    SELECT rental_id
+    FROM (
+        SELECT rental_id
+        FROM rentals_audit
+        WHERE action_name = 'DELETE'
+        ORDER BY audit_id DESC
+    )
+    WHERE ROWNUM = 1
+)
+  AND action_name = 'DELETE'
+ORDER BY audit_id DESC
+FETCH FIRST 1 ROW ONLY;
 ```
-
-Al confirmar el resultado, uso **Rollback** en DBeaver antes de volver a activar el autocommit. Así revierto la actualización y el evento que insertó el trigger. Registro en las capturas el trigger creado y la fila temporal de evento; todavía no he ejecutado esta prueba y no presento resultados como verificados.
 
 ## Evidencia de trazabilidad
 
