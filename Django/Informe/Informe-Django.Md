@@ -354,3 +354,28 @@ class ClientConfig(AppConfig):
 **Retroalimentación de las evidencias:** En la primera captura observé la ejecución de los comandos y los archivos que generó `startapp` dentro de `apps/client`. En la segunda observé que `ClientConfig` usa `name = "apps.client"` y `label = "client"`, como requiere la ubicación de la app.
 
 **Conclusión y aprendizaje:** Aprendí que `startapp` genera la estructura inicial de la app y que su `AppConfig.name` debe reflejar el paquete Python completo. La app todavía debe agregarse a `INSTALLED_APPS` para que Django la registre; lo haré en el siguiente paso.
+
+### Paso 2 - Registro de la app y comprobación del proyecto
+
+Agregué la configuración de `client` al final de `INSTALLED_APPS` en `config/settings.py` y ejecuté la comprobación del sistema Django.
+
+```python
+INSTALLED_APPS = [
+    # Aplicaciones Django integradas...
+    "apps.client.apps.ClientConfig",
+]
+```
+
+```bash
+python manage.py check
+```
+
+![EVI-02-03 - App `client` registrada en `INSTALLED_APPS`](./Trazabilidad/EVI-02-03-registro-client-installd-apps.png)
+
+![EVI-02-04 - Comprobación de Django sin errores](./Trazabilidad/EVI-02-04-check-app-client.png)
+
+**Retroalimentación de las evidencias:** En la primera captura observé `apps.client.apps.ClientConfig` dentro de `INSTALLED_APPS`. En la segunda, el comando `python manage.py check` terminó con `System check identified no issues (0 silenced)`, sin errores de registro.
+
+**Conclusión y aprendizaje:** Aprendí que crear una app no basta para que Django la cargue: también hay que registrarla en `INSTALLED_APPS`. La verificación confirma que Django reconoce `client`. Aún no he creado modelos de negocio.
+
+**Estado del ISS-02:** La app de clientes fue creada con la CLI, está registrada y supera `check`. No creé `product` ni `sale` porque no pertenecen al esquema PedalLibre descrito en la referencia del proyecto.
