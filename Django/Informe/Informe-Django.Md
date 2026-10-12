@@ -1042,3 +1042,19 @@ class DockingPoint(models.Model):
 **Retroalimentación de la evidencia:** Revisé el archivo completo y lo contrasté con las definiciones SQL de las tablas. `manage.py check` terminó con `System check identified no issues (0 silenced)`. Los modelos describen el catálogo real, sin crear entidades de productos.
 
 **Conclusión y aprendizaje:** Aprendí a representar entidades de catálogo existentes con `db_table`, `db_column` y `managed = False`, conservando la relación de los puntos de anclaje con su estación.
+
+### Paso 3 - Generación de la migración inicial del catálogo
+
+Generé la migración inicial con:
+
+```bash
+python manage.py makemigrations catalog
+```
+
+Django informó que creó los modelos `Bicycle`, `DockingPoint`, `Rate` y `Station` en `apps/catalog/migrations/0001_initial.py`. Revisé el archivo y confirmé que cada modelo declara su tabla física y `managed = False`.
+
+![EVI-05-03 - Generación de la migración inicial del catálogo](./Trazabilidad/EVI-05-03-migracion-inicial-catalog.png)
+
+**Retroalimentación de la evidencia:** La salida confirma la generación de la migración inicial para los cuatro modelos, sin mostrar una aplicación contra la base de datos.
+
+**Conclusión y aprendizaje:** Aprendí que la migración de catálogo registra el estado de los modelos en Django; las tablas PedalLibre siguen bajo administración de los scripts SQL.
