@@ -1164,3 +1164,23 @@ Django informó `Applying rental.0001_initial... OK`.
 **Retroalimentación de la evidencia:** La salida confirma que Django registró la migración `rental.0001_initial` sin reportar errores. Los modelos se mantienen con `managed = False`, de modo que las tablas físicas siguen bajo el esquema SQL de PedalLibre.
 
 **Conclusión y aprendizaje:** Aprendí a aplicar y verificar la migración de estado de la app sin transferir a Django la administración de las tablas existentes.
+
+### Paso 5 - Verificación final de Django
+
+Ejecuté la comprobación del sistema después de aplicar la migración:
+
+```bash
+python manage.py check
+```
+
+El resultado fue:
+
+```text
+System check identified no issues (0 silenced).
+```
+
+![EVI-06-07 - Comprobación final del proyecto sin problemas](./Trazabilidad/EVI-06-07-check-rental.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma que Django no encontró problemas después de registrar los modelos de reservas y alquileres.
+
+**Conclusión y aprendizaje:** Aprendí a cerrar la verificación del ISS con el chequeo del proyecto, confirmando que la app `rental` y sus modelos están registrados sin errores.
