@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 
 from apps.catalog.models import Bicycle, DockingPoint, Rate, Station
 from apps.client.models import Client as ClientProfile
-from apps.rental.models import BicycleDocking, Rental, RentalEvent
+from apps.rental.models import BicycleDocking, Rental, RentalEvent, Reservation
 from apps.security.models import User
 
 
@@ -22,6 +22,7 @@ class RentalRegisterTransactionTests(TransactionTestCase):
             Rate,
             DockingPoint,
             BicycleDocking,
+            Reservation,
             Rental,
             RentalEvent,
         ]
@@ -69,6 +70,12 @@ class RentalRegisterTransactionTests(TransactionTestCase):
             first_name="Cliente",
             last_name="Temporal",
             document_number=f"ISS11-{self.suffix}",
+        )
+        self.reservation = Reservation.objects.create(
+            client=self.client_profile,
+            bicycle=self.bicycle,
+            station=self.station,
+            status="pending",
         )
 
     def payload(self, **overrides):
@@ -223,3 +230,28 @@ class RentalRegisterTransactionTests(TransactionTestCase):
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["status"], "active")
         self.assertEqual(response.data["events"][0]["event_type"], "started")
+
+    def test_pending_reservation_delete_cancels_once_without_deleting(self):
+        reservation_id = self.reservation.pk
+
+        first = self.api.delete(f"/api/reservations/{reservation_id}/")
+        second = self.api.delete(f"/api/reservations/{reservation_id}/")
+
+        self.assertEqual(first.status_code, 204)
+        self.assertEqual(second.status_code, 204)
+        self.assertTrue(Reservation.objects.filter(pk=reservation_id).exists())
+
+        self.reservation.refresh_from_db()
+        self.assertEqual(self.reservation.status, "cancelled")
+
+    def test_completed_reservation_cannot_be_cancelled(self):
+        self.reservation.status = "completed"
+        self.reservation.save(update_fields=["status"])
+
+        response = self.api.delete(
+            f"/api/reservations/{self.reservation.pk}/"
+        )
+
+        self.assertEqual(response.status_code, 409)
+        self.reservation.refresh_from_db()
+        self.assertEqual(self.reservation.status, "completed")

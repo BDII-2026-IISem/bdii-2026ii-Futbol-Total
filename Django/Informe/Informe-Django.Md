@@ -1580,3 +1580,17 @@ Ejecuté las diez pruebas de `RentalRegisterTransactionTests`; todas finalizaron
 **Retroalimentación de la evidencia:** Observé que las pruebas del registro y las nuevas consultas de colección y detalle pasaron, y que la respuesta del detalle contiene el evento del alquiler.
 
 **Conclusión y aprendizaje:** Aprendí a exponer lecturas de colección y detalle con sus relaciones usando serializers de solo lectura, manteniendo la operación de inicio del alquiler separada.
+
+### Paso 2 - Cancelación de reservas sin eliminar el historial
+
+Agregué `DELETE /api/reservations/<id>/` para cancelar reservas pendientes o confirmadas. La operación conserva la fila y cambia su estado a `cancelled`; repetir la solicitud responde HTTP 204 sin volver a modificar el registro. Una reserva ya completada no se cancela y responde HTTP 409. Ejecuté las doce pruebas de la suite de alquileres en SQLite en memoria; todas pasaron. MySQL no fue utilizado ni modificado.
+
+![EVI-12-02 - Pruebas de cancelación idempotente y reserva completada](./Trazabilidad/EVI-12-02-reservation-cancellation-tests.png)
+
+![EVI-12-03 - Casos de cancelación y conservación del historial](./Trazabilidad/EVI-12-03-reservation-cancellation-cases.png)
+
+![EVI-12-04 - Resultado de las doce pruebas exitosas en SQLite temporal](./Trazabilidad/EVI-12-04-all-rental-tests-pass.png)
+
+**Retroalimentación de las evidencias:** Observé que la cancelación puede repetirse sin borrar el registro, que una reserva completada permanece sin cambios y que todas las pruebas de alquiler y reserva terminaron correctamente.
+
+**Conclusión y aprendizaje:** Aprendí a conservar la trazabilidad de las reservas cancelándolas mediante un cambio de estado transaccional en lugar de eliminarlas físicamente.
