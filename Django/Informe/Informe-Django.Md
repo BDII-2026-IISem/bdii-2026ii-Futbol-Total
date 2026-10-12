@@ -702,3 +702,19 @@ La salida mostró una operación `CreateModel` para `User`, y el estado del mode
 **Retroalimentación de la evidencia:** La simulación confirma que Django prepara el estado del modelo personalizado y conserva la indicación de que `users` no es administrada por Django. Esto no demuestra que el conjunto de migraciones de Django sea inocuo: las migraciones de `auth`, `contenttypes`, `admin` y `sessions` pueden crear sus propias tablas si se aplican. Por esa razón, todavía no ejecutaré `migrate`.
 
 **Conclusión y aprendizaje:** Aprendí que `makemigrations --dry-run` permite revisar el archivo propuesto sin guardarlo ni tocar la base de datos. También confirmé que una migración de estado para un modelo `managed = False` no equivale a una autorización para aplicar todas las migraciones del proyecto.
+
+### Paso 7 - Generación de la migración inicial del usuario
+
+Después de revisar la simulación, generé el archivo de migración con:
+
+```bash
+python manage.py makemigrations security
+```
+
+Django creó `apps/security/migrations/0001_initial.py` con el estado del modelo `User`. Revisé el archivo y confirmé que incluye `managed = False` y el nombre físico de la tabla `users`. Esta operación generó el archivo local, pero no ejecutó la migración ni modificó la base de datos.
+
+![EVI-03-12 - Archivo `0001_initial.py` generado y salida de `makemigrations security`](./Trazabilidad/EVI-03-12-migracion-inicial-usuario.png)
+
+**Retroalimentación de la evidencia:** La captura muestra el archivo y el mensaje `Create model User`. En el contenido guardado comprobé que Django conserva `managed = False`; por tanto, esta migración describe el estado del modelo en el historial de migraciones, sin pedirle a Django administrar la tabla `users`.
+
+**Conclusión y aprendizaje:** Aprendí que `makemigrations` genera el archivo de estado y no aplica cambios a la base de datos. Antes de cualquier ejecución de `migrate`, todavía debo revisar por separado qué tablas crearían las migraciones integradas de Django. No ejecuté `migrate`.
