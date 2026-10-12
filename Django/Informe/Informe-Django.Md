@@ -909,3 +909,21 @@ NO TESTS RAN
 **Retroalimentación de la evidencia:** El comando terminó sin problemas del sistema, pero Django no encontró pruebas para ejecutar. Por eso este resultado no se registra como pruebas de Client aprobadas.
 
 **Conclusión y aprendizaje:** Aprendí que ejecutar el test runner no significa que haya cobertura si no existen casos de prueba. La guía ubica las pruebas HTTP del CRUD después de construir la API; aún no se implementaron en esta app.
+
+## ISS-07 - Preparación de Django REST Framework
+
+### Paso 1 - Instalación de dependencias de API
+
+Instalé Django REST Framework, el renderer/parser camelCase y los encabezados CORS con las versiones indicadas en la guía. Actualicé `requirements.txt` después de la instalación.
+
+```bash
+source .venv/bin/activate
+python -m pip install "djangorestframework==3.17.2" "djangorestframework-camel-case==1.4.2" "django-cors-headers==4.9.0"
+python -m pip freeze > requirements.txt
+```
+
+![EVI-07-01 - Instalación de DRF, camel case y CORS](./Trazabilidad/EVI-07-01-instalacion-dependencias-api.png)
+
+**Retroalimentación de la evidencia:** La terminal confirma la instalación de las tres dependencias y el archivo `requirements.txt` incluye sus versiones.
+
+**Conclusión y aprendizaje:** Aprendí a instalar y registrar las dependencias de la API antes de configurar sus aplicaciones, middleware y renderers.
