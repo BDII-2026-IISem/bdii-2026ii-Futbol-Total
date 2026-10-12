@@ -1534,3 +1534,13 @@ Agregué `RentalRegisterAPIView` para procesar la solicitud POST, validar el cue
 **Retroalimentación de la evidencia:** Observé que la ruta `api/rentals/` se resuelve a la vista esperada y que `python manage.py check` no reportó problemas.
 
 **Conclusión y aprendizaje:** Aprendí a conectar una operación de negocio con una `APIView` y una ruta propia, manteniendo la lógica de validación en el serializer y el manager transaccional.
+
+### Paso 4 - Pruebas transaccionales del registro
+
+Probé el endpoint con datos temporales en SQLite en memoria. El registro válido respondió HTTP 201, creó el alquiler activo y el evento `started`, actualizó el estado de la bicicleta a `rented` y marcó el anclaje como liberado. También comprobé que la bicicleta no disponible, la tarifa inactiva, la estación inactiva, el cliente vinculado a un usuario inactivo y la estación distinta a la del anclaje respondieran HTTP 400 sin dejar cambios parciales. MySQL no fue utilizado ni modificado.
+
+![EVI-11-05 - Pruebas de registro, validaciones y rollback en SQLite en memoria](./Trazabilidad/EVI-11-05-rental-transaction-tests.png)
+
+**Retroalimentación de la evidencia:** Observé que los casos válidos e inválidos produjeron los resultados esperados y que las solicitudes rechazadas no dejaron alquileres, eventos ni modificaciones parciales.
+
+**Conclusión y aprendizaje:** Aprendí a verificar una operación transaccional completa con escenarios de éxito y de rechazo, aislando los datos de prueba para proteger la base MySQL del proyecto.
