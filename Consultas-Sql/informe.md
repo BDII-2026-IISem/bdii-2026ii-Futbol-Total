@@ -1507,6 +1507,14 @@ ORDER BY audit_id DESC
 LIMIT 1;
 ```
 
+**Evidencia de ejecucion — DELETE en MySQL:**
+
+![Resultado de la auditoría DELETE en MySQL](trazabilidad/mysql_rentals_audit_delete.png)
+
+**Retroalimentacion:** Observo el tercer registro del alquiler `101`, con `action_name` igual a `DELETE`; `before_data` conserva el estado `completed` y `after_data` queda en `NULL`.
+
+**Lo que aprendi:** Aprendí que la auditoría mantiene los datos previos de una fila eliminada, aunque esa fila ya no exista en `rentals`.
+
 ### PostgreSQL
 
 **Datos de prueba (solo DML):** [seed_rentals_audit_postgres.sql](./Creacion%20de%20Tablas%20y%20Reguistros/Scrips/Postgres/seed_rentals_audit_postgres.sql)
