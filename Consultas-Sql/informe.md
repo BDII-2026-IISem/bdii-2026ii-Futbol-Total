@@ -834,9 +834,9 @@ ORDER BY total_revenue DESC, b.bicycle_type;
 
 **Lo que aprendi:** Aprendere a calcular participaciones porcentuales de grupos con la funcion analitica `RATIO_TO_REPORT` de Oracle.
 
-## Consultas propias de cada motor
+## Consultas avanzadas por motor
 
-Además de las consultas comunes, presento ejemplos que aprovechan funciones propias de cada motor. Ejecuto cada consulta solo en el motor indicado; debajo registro la captura y lo que observo, y dejo pendiente la evidencia de las consultas que todavía no ejecuto.
+Además de las consultas comunes, presento ejemplos avanzados que aprovechan funciones propias de cada motor, como agregados filtrados, funciones analíticas, CTE, `PIVOT`, JSON y generación de series. Ejecuto cada consulta solo en el motor indicado; debajo registro la captura y lo que observo, y dejo pendiente la evidencia de las consultas que todavía no ejecuto.
 
 ### MySQL: agrupar alquileres con `GROUP_CONCAT`
 
@@ -970,9 +970,340 @@ FETCH FIRST 10 ROWS ONLY;
 
 **Lo que aprendi:** Aprendere a usar `KEEP` y `DENSE_RANK` en Oracle para recuperar una medida de la fila que ocupa la posicion mas reciente dentro de cada grupo.
 
+## Procedimientos almacenados
+
+En esta sección creo un procedimiento de solo lectura para listar los alquileres completados dentro de un intervalo de fechas. Uso un límite final exclusivo (`started_at < fecha_fin`) para que pueda consultar periodos consecutivos sin contar dos veces los registros ubicados justo en el límite. Cada bloque es específico para un motor; creo y ejecuto únicamente el que corresponde a mi conexión. Las capturas de creación y ejecución quedan pendientes hasta que las tome en DBeaver.
+
+### MySQL
+
+```sql
+DELIMITER //
+CREATE PROCEDURE sp_listar_alquileres_completados(
+    IN p_inicio DATETIME,
+    IN p_fin DATETIME
+)
+BEGIN
+    SELECT rental_id, client_id, bicycle_id, started_at, ended_at, total_amount
+    FROM rentals
+    WHERE status = 'completed'
+      AND started_at >= p_inicio
+      AND started_at < p_fin
+    ORDER BY started_at;
+END//
+DELIMITER ;
+
+CALL sp_listar_alquileres_completados(
+    '2026-10-01 00:00:00',
+    '2026-11-01 00:00:00'
+);
+```
+
+**Evidencia de ejecucion:**
+
+**MySQL: Crear y ejecutar el procedimiento de alquileres completados**
+
+*Captura pendiente: `mysql_procedimiento_alquileres_completados.png`.*
+
+**Retroalimentacion:** Con el procedimiento filtro los alquileres completados por fecha de inicio y obtengo sus datos ordenados cronológicamente. Registraré las filas reales cuando lo ejecute.
+
+**Lo que aprendi:** Aprenderé a encapsular una consulta parametrizada en un procedimiento MySQL y a invocarlo con `CALL`.
+
+### PostgreSQL
+
+Mantengo abierta la transacción para recuperar el cursor que devuelve el procedimiento y ejecuto el bloque completo como script en DBeaver:
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_listar_alquileres_completados(
+    IN p_inicio TIMESTAMP,
+    IN p_fin TIMESTAMP,
+    INOUT p_resultado REFCURSOR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    OPEN p_resultado FOR
+        SELECT rental_id, client_id, bicycle_id, started_at, ended_at, total_amount
+        FROM rentals
+        WHERE status = 'completed'
+          AND started_at >= p_inicio
+          AND started_at < p_fin
+        ORDER BY started_at;
+END;
+$$;
+
+BEGIN;
+CALL sp_listar_alquileres_completados(
+    TIMESTAMP '2026-10-01 00:00:00',
+    TIMESTAMP '2026-11-01 00:00:00',
+    'r_alquileres'
+);
+FETCH ALL FROM r_alquileres;
+COMMIT;
+```
+
+**Evidencia de ejecucion:**
+
+**PostgreSQL: Crear y ejecutar el procedimiento de alquileres completados**
+
+*Captura pendiente: `postgresql_procedimiento_alquileres_completados.png`.*
+
+**Retroalimentacion:** Con el procedimiento abro un cursor con los alquileres completados del intervalo y recupero las filas con `FETCH ALL`. Anotaré el resultado observado al ejecutarlo en DBeaver.
+
+**Lo que aprendi:** Aprenderé a devolver resultados desde un procedimiento PostgreSQL mediante un cursor y una transacción.
+
+### Microsoft SQL Server
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.sp_listar_alquileres_completados
+    @p_inicio DATETIME2,
+    @p_fin DATETIME2
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT rental_id, client_id, bicycle_id, started_at, ended_at, total_amount
+    FROM dbo.rentals
+    WHERE status = 'completed'
+      AND started_at >= @p_inicio
+      AND started_at < @p_fin
+    ORDER BY started_at;
+END;
+GO
+
+EXEC dbo.sp_listar_alquileres_completados
+    @p_inicio = '2026-10-01T00:00:00',
+    @p_fin = '2026-11-01T00:00:00';
+```
+
+**Evidencia de ejecucion:**
+
+**SQL Server: Crear y ejecutar el procedimiento de alquileres completados**
+
+*Captura pendiente: `sqlserver_procedimiento_alquileres_completados.png`.*
+
+**Retroalimentacion:** Con el procedimiento recibo dos parámetros de fecha y consulto los alquileres completados dentro del intervalo. Completaré la observación con las filas que devuelva SQL Server.
+
+**Lo que aprendi:** Aprenderé a definir y ejecutar un procedimiento parametrizado de SQL Server con `CREATE OR ALTER PROCEDURE` y `EXEC`.
+
+### Oracle
+
+```sql
+CREATE OR REPLACE PROCEDURE sp_listar_alquileres_completados(
+    p_inicio IN TIMESTAMP,
+    p_fin IN TIMESTAMP,
+    p_resultado OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_resultado FOR
+        SELECT rental_id, client_id, bicycle_id, started_at, ended_at, total_amount
+        FROM rentals
+        WHERE status = 'completed'
+          AND started_at >= p_inicio
+          AND started_at < p_fin
+        ORDER BY started_at;
+END;
+/
+
+DECLARE
+    v_resultado SYS_REFCURSOR;
+BEGIN
+    sp_listar_alquileres_completados(
+        TIMESTAMP '2026-10-01 00:00:00',
+        TIMESTAMP '2026-11-01 00:00:00',
+        v_resultado
+    );
+    DBMS_SQL.RETURN_RESULT(v_resultado);
+END;
+/
+```
+
+Ejecuto este bloque como script en una versión de Oracle que admita `DBMS_SQL.RETURN_RESULT` (12c o posterior), para mostrar el cursor devuelto en el cliente.
+
+**Evidencia de ejecucion:**
+
+**Oracle: Crear y ejecutar el procedimiento de alquileres completados**
+
+*Captura pendiente: `oracle_procedimiento_alquileres_completados.png`.*
+
+**Retroalimentacion:** Con el procedimiento abro un `SYS_REFCURSOR` con las filas completadas del intervalo y devuelvo ese resultado al cliente. Anotaré las filas reales después de ejecutarlo.
+
+**Lo que aprendi:** Aprenderé a definir un procedimiento PL/SQL con parámetros de entrada y a devolver una consulta mediante `SYS_REFCURSOR`.
+
+## Triggers
+
+En esta sección automatizo el registro de cambios de estado de un alquiler en la tabla existente `rental_events`. Así aprovecho el historial operativo del esquema y no creo otra tabla. El trigger añade una fila solo cuando cambia `rentals.status`; no altera el alquiler, no modifica ni elimina los eventos anteriores y no requiere que ejecute un `INSERT` manual en el historial.
+
+Creo el trigger correspondiente una sola vez en la conexión indicada. Para verificarlo, selecciono un alquiler activo de prueba, desactivo el autocommit, cambio su estado a `cancelled` y consulto el evento nuevo; después revierto la transacción desde DBeaver para que no queden modificados ni el alquiler ni el historial. Sustituyo el identificador de ejemplo por el de un alquiler activo real. Las capturas quedan pendientes hasta que complete la ejecución.
+
+### MySQL
+
+```sql
+DROP TRIGGER IF EXISTS trg_rentals_status_event;
+
+DELIMITER //
+CREATE TRIGGER trg_rentals_status_event
+AFTER UPDATE ON rentals
+FOR EACH ROW
+BEGIN
+    IF NOT (OLD.status <=> NEW.status) THEN
+        INSERT INTO rental_events (rental_id, event_type, description, event_at)
+        VALUES (
+            NEW.rental_id,
+            'STATUS_CHANGE',
+            CONCAT('Estado: ', OLD.status, ' -> ', NEW.status),
+            CURRENT_TIMESTAMP
+        );
+    END IF;
+END//
+DELIMITER ;
+```
+
+**Evidencia de ejecucion:**
+
+**MySQL: Registrar cambios de estado de alquiler con un trigger**
+
+*Captura pendiente: `mysql_trigger_estado_alquiler.png`.*
+
+**Retroalimentacion:** Comparo los estados anterior y nuevo; cuando son distintos, inserto en `rental_events` el identificador del alquiler, la transición y la fecha del cambio.
+
+**Lo que aprendi:** Aprenderé a utilizar `OLD` y `NEW` en un trigger por fila de MySQL y a registrar un cambio sin modificar la tabla principal.
+
+### PostgreSQL
+
+```sql
+CREATE OR REPLACE FUNCTION fn_rentals_status_event()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF OLD.status IS DISTINCT FROM NEW.status THEN
+        INSERT INTO rental_events (rental_id, event_type, description, event_at)
+        VALUES (
+            NEW.rental_id,
+            'STATUS_CHANGE',
+            format('Estado: %s -> %s', OLD.status, NEW.status),
+            CURRENT_TIMESTAMP
+        );
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_rentals_status_event ON rentals;
+CREATE TRIGGER trg_rentals_status_event
+AFTER UPDATE OF status ON rentals
+FOR EACH ROW
+EXECUTE FUNCTION fn_rentals_status_event();
+```
+
+**Evidencia de ejecucion:**
+
+**PostgreSQL: Registrar cambios de estado de alquiler con un trigger**
+
+*Captura pendiente: `postgresql_trigger_estado_alquiler.png`.*
+
+**Retroalimentacion:** Comparo los estados anterior y nuevo con `IS DISTINCT FROM` y añado un evento únicamente cuando detecto un cambio.
+
+**Lo que aprendi:** Aprenderé a separar en PostgreSQL la función PL/pgSQL que contiene la lógica del trigger y la definición que la asocia a `rentals`.
+
+### Microsoft SQL Server
+
+```sql
+CREATE OR ALTER TRIGGER dbo.trg_rentals_status_event
+ON dbo.rentals
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.rental_events (rental_id, event_type, description, event_at)
+    SELECT
+        i.rental_id,
+        'STATUS_CHANGE',
+        CONCAT('Estado: ', d.status, ' -> ', i.status),
+        SYSDATETIME()
+    FROM inserted AS i
+    JOIN deleted AS d ON d.rental_id = i.rental_id
+    WHERE i.status <> d.status;
+END;
+GO
+```
+
+**Evidencia de ejecucion:**
+
+**SQL Server: Registrar cambios de estado de alquiler con un trigger**
+
+*Captura pendiente: `sqlserver_trigger_estado_alquiler.png`.*
+
+**Retroalimentacion:** Relaciono las tablas lógicas `inserted` y `deleted` por `rental_id`. Con esa comparación registro los cambios de estado y admito que una sentencia modifique varias filas.
+
+**Lo que aprendi:** Aprenderé que los triggers de SQL Server deben procesar conjuntos de filas con `inserted` y `deleted`, no asumir una única fila por ejecución.
+
+### Oracle
+
+```sql
+CREATE OR REPLACE TRIGGER trg_rentals_status_event
+AFTER UPDATE OF status ON rentals
+FOR EACH ROW
+WHEN (OLD.status <> NEW.status)
+BEGIN
+    INSERT INTO rental_events (rental_id, event_type, description, event_at)
+    VALUES (
+        :NEW.rental_id,
+        'STATUS_CHANGE',
+        'Estado: ' || :OLD.status || ' -> ' || :NEW.status,
+        LOCALTIMESTAMP
+    );
+END;
+/
+```
+
+**Evidencia de ejecucion:**
+
+**Oracle: Registrar cambios de estado de alquiler con un trigger**
+
+*Captura pendiente: `oracle_trigger_estado_alquiler.png`.*
+
+**Retroalimentacion:** Al actualizar `status`, comparo `:OLD.status` con `:NEW.status` y agrego un evento solo cuando encuentro una transición.
+
+**Lo que aprendi:** Aprenderé a utilizar `:OLD` y `:NEW` en un trigger PL/SQL por fila.
+
+### Verificación del trigger y reversión de la prueba
+
+Primero consulto un alquiler activo y elijo su identificador:
+
+```sql
+SELECT rental_id
+FROM rentals
+WHERE status = 'active'
+ORDER BY rental_id;
+```
+
+Con el autocommit desactivado, sustituyo el `1` de este ejemplo por el identificador activo que seleccioné y ejecuto la actualización:
+
+```sql
+UPDATE rentals
+SET status = 'cancelled'
+WHERE rental_id = 1
+  AND status = 'active';
+```
+
+Después de actualizar el alquiler de prueba, consulto el historial para comprobar el evento registrado:
+
+```sql
+SELECT rental_event_id, rental_id, event_type, description, event_at
+FROM rental_events
+WHERE event_type = 'STATUS_CHANGE'
+ORDER BY rental_event_id DESC;
+```
+
+Al confirmar el resultado, uso **Rollback** en DBeaver antes de volver a activar el autocommit. Así revierto la actualización y el evento que insertó el trigger. Registro en las capturas el trigger creado y la fila temporal de evento; todavía no he ejecutado esta prueba y no presento resultados como verificados.
+
 ## Evidencia de trazabilidad
 
-Debajo de cada evidencia puse el título del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentación en la que explico para qué sirve la consulta y qué observo en el resultado. En las primeras ocho capturas observo 80 bicicletas disponibles y 67 alquileres completados en cada motor. Marco como pendientes las capturas de las consultas que todavía no ejecuto; completaré la observación cuando tenga el resultado real.
+Debajo de cada evidencia puse el título del motor (MySQL, PostgreSQL, SQL Server u Oracle) y una retroalimentación en la que explico para qué sirve la consulta y qué observo en el resultado. En las primeras ocho capturas observo 80 bicicletas disponibles y 67 alquileres completados en cada motor. También dejo marcadas como pendientes las capturas de los procedimientos, los triggers y las consultas que todavía no ejecuto; completaré cada observación cuando tenga el resultado real.
 
 Agregué a [trazabilidad/](./trazabilidad/) las siguientes capturas:
 
