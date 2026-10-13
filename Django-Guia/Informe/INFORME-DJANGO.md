@@ -403,7 +403,7 @@ Creé y registré `client`, `product` y `sale`, configuré sus nombres de paquet
 
 ## ISS-03 — Custom User antes de la primera migración
 
-**Estado:** parcialmente completada según las evidencias recibidas; quedan pendientes las pruebas del flujo de autenticación y la confirmación completa de los criterios de aceptación.
+**Estado:** completé parcialmente esta ISS. Me quedan pendientes las pruebas del flujo de autenticación y confirmar todos los criterios de aceptación.
 
 ### Objetivo
 
@@ -510,3 +510,66 @@ Ejecuté los comandos de la ISS para generar la migración de seguridad, aplicar
 ### Conclusión
 
 Avancé con la creación de `RecordStatus`, la app `security`, el modelo de usuario personalizado, su registro en settings y las pruebas de selección de motores. La evidencia final muestra seis pruebas de `DatabaseSelectionTests` aprobadas y la migración inicial generada. Dejo el estado como parcialmente completado: la guía especifica `AuthFlowTests` para verificar los criterios de login, y esas pruebas no aparecen en las capturas recibidas. Por ello, todavía no marco el GATE completo como PASS.
+
+## ISS-04 — Modelo Client
+
+**Estado:** completé parcialmente esta ISS. Me queda pendiente documentar las verificaciones del cliente y confirmar los criterios de aceptación.
+
+### Objetivo
+
+Persistir compradores con el diccionario de `clients`.
+
+### Paso 1. Creación de los modelos abstractos compartidos
+
+Creé `apps/common/models.py` con `TimeStampedModel` para las fechas y `StoreLabModel` para el estado y la restricción reutilizable, siguiendo el bloque de la ISS.
+
+#### Evidencia — Modelos base `TimeStampedModel` y `StoreLabModel`
+
+![Modelos abstractos compartidos en apps/common/models.py](Trazabilidad/ISS-04-EVI-04-01.png)
+
+**Qué hice:** definí las clases abstractas y el método `status_constraint()` que produce la restricción de estados permitidos.
+
+**Retroalimentación:** la captura muestra los campos `created_at`, `updated_at`, `status` y el constraint construido a partir de `RecordStatus`.
+
+**Lo que aprendí:** las clases abstractas permiten compartir fechas y estado entre modelos sin crear una tabla propia para la clase base.
+
+### Paso 2. Creación del modelo `Client`
+
+Reescribí `apps/client/models.py` con los campos del comprador, las reglas de validación, la tabla física `clients` y la normalización del correo electrónico.
+
+#### Evidencia — Modelo `Client`
+
+![Modelo Client en apps/client/models.py](Trazabilidad/ISS-04-EVI-04-02.png)
+
+**Qué hice:** definí `Client` como descendiente de `StoreLabModel`, agregué nombre, dirección, teléfono y correo, establecí `db_table = "clients"` y convertí el email a minúsculas al guardar.
+
+**Retroalimentación:** el código de la captura muestra el validador de longitud mínima para el nombre, los campos opcionales y la unicidad del correo.
+
+**Lo que aprendí:** las reglas del modelo y la clase base compartida mantienen consistentes los datos persistidos y preparan la validación que usarán interfaces posteriores.
+
+### Paso 3. Generación y aplicación de la migración
+
+Ejecuté los comandos indicados para crear la migración de `client` y aplicar las migraciones:
+
+```sh
+python manage.py makemigrations client
+python manage.py migrate
+```
+
+#### Evidencia EVI-04-01 — Migración inicial de `client`
+
+![Creación de client.0001_initial y salida de migrate](Trazabilidad/ISS-04-EVI-04-03.png)
+
+**Qué hice:** generé `apps/client/migrations/0001_initial.py` y ejecuté el comando de migración.
+
+**Retroalimentación:** la terminal muestra la creación de la migración `client.0001_initial` con el modelo `Client`; después, `migrate` informa que no hay migraciones pendientes.
+
+**Lo que aprendí:** Django genera la migración a partir del modelo y registra qué migraciones quedan por aplicar en la base configurada.
+
+### Verificaciones pendientes
+
+La ISS indica crear un cliente en el shell y observar `status`, `created_at` y el rechazo de un email repetido. Esa ejecución todavía no aparece en las capturas recibidas. La prueba HTTP llega en ISS-08 y `ClientApiTests` se menciona como verificación posterior; no afirmo que estas pruebas hayan pasado con la evidencia actual.
+
+### Conclusión
+
+Creé los modelos abstractos reutilizables, definí `Client` y generé su migración inicial. La captura muestra que no quedaron migraciones pendientes, pero aún no tengo evidencia de la creación manual del cliente ni de las comprobaciones de unicidad y longitud. Por eso dejo la ISS-04 parcialmente completada y no marco su GATE como PASS.
