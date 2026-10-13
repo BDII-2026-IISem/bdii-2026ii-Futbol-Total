@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.catalog.models import DockingPoint, Station
+from apps.catalog.models import Bicycle, DockingPoint, Station
 
 
 @admin.register(Station)
@@ -19,6 +19,7 @@ class StationAdmin(admin.ModelAdmin):
     readonly_fields = ("id", "created_at")
 
 
+
 @admin.register(DockingPoint)
 class DockingPointAdmin(admin.ModelAdmin):
     list_display = ("id", "code", "station", "status")
@@ -27,3 +28,18 @@ class DockingPointAdmin(admin.ModelAdmin):
     list_select_related = ("station",)
     ordering = ("station__name", "code")
     readonly_fields = ("id",)
+
+
+@admin.register(Bicycle)
+class BicycleAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "serial_number",
+        "bicycle_type",
+        "status",
+        "created_at",
+    )
+    list_filter = ("status", "bicycle_type")
+    search_fields = ("serial_number",)
+    ordering = ("serial_number",)
+    readonly_fields = ("id", "created_at")

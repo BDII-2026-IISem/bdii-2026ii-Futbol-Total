@@ -1638,3 +1638,13 @@ Registré `DockingPoint` en Django Admin para consultar el código, la estación
 **Retroalimentación de la evidencia:** Observé `StationAdmin` y `DockingPointAdmin` configurados en `apps/catalog/admin.py`, junto con la comprobación exitosa del proyecto.
 
 **Conclusión y aprendizaje:** Aprendí a presentar los puntos de anclaje junto con su estación relacionada y a facilitar su consulta mediante filtros y búsqueda.
+
+### Paso 5 - Consulta de bicicletas
+
+Registré `Bicycle` en Django Admin para mostrar el número de serie, tipo, estado y fecha de creación. Añadí filtros por estado y tipo, búsqueda por número de serie, orden alfabético por serie y dejé como solo lectura el identificador y la fecha de creación. La captura muestra que `python manage.py check` terminó sin problemas.
+
+![EVI-13-06 - Registro de bicicletas y comprobación del sistema](./Trazabilidad/EVI-13-06-bicycle-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé los registros administrativos de estaciones, puntos de anclaje y bicicletas en `apps/catalog/admin.py`, además del resultado exitoso de la comprobación de Django.
+
+**Conclusión y aprendizaje:** Aprendí a consultar el inventario de bicicletas desde el panel administrativo con filtros por sus atributos operativos y búsqueda por número de serie.
