@@ -688,16 +688,108 @@ Primero encontré el error de clave foránea porque la base ya tenía tablas cre
 
 ## ISS-07 — Serializers y JSON camelCase
 
-**Estado:** pendiente de ejecución y evidencias.
+**Estado:** completé la instalación de dependencias, la configuración de DRF y los serializers; me quedan pendientes las pruebas de esta ISS.
 
 ### Objetivo
 
 Traducir modelos a JSON sin renombrar los campos Python.
 
-### Desarrollo
+### Paso 1. Instalación de dependencias de la API
 
-Guardé la guía de construcción en [ISS-07.md](Iss/ISS-07.md). Aún no incorporo pasos ejecutados ni evidencias de esta ISS.
+Instalé Django REST Framework, el renderer/parser camelCase y CORS con los comandos de la guía:
+
+```sh
+source .venv/bin/activate
+python -m pip install "djangorestframework==3.17.2" "djangorestframework-camel-case==1.4.2" "django-cors-headers==4.9.0"
+python -m pip freeze > requirements.txt
+```
+
+#### Evidencia — Dependencias instaladas y apps registradas
+
+![Instalación de dependencias API y registro de rest_framework y corsheaders](Trazabilidad/ISS-07-EVI-07-01.png)
+
+**Qué hice:** instalé los tres paquetes indicados y preparé su registro en `INSTALLED_APPS`.
+
+**Retroalimentación:** la terminal muestra la instalación exitosa de Django REST Framework, camel-case y CORS; el settings visible muestra `rest_framework` y `corsheaders`.
+
+**Lo que aprendí:** los serializers y el renderer/parsers pertenecen a dependencias adicionales a Django y se registran en la configuración para usarlos en la API.
+
+### Paso 2. Configuración de CORS y REST Framework
+
+Configuré `CORS_ALLOW_ALL_ORIGINS` y las clases de permisos, renderers, parsers y paginación según la ISS.
+
+#### Evidencia — `REST_FRAMEWORK` y CORS
+
+![Configuración de CORS, renderers y parsers camelCase](Trazabilidad/ISS-07-EVI-07-02.png)
+
+**Qué hice:** añadí la configuración de CORS y definí los renderers y parsers camelCase de REST Framework.
+
+**Retroalimentación:** la captura muestra la configuración `AllowAny`, el renderer JSON camelCase, sus parsers y `DEFAULT_PAGINATION_CLASS = None`.
+
+**Lo que aprendí:** la conversión camelCase se configura en el borde HTTP; los nombres de los campos Python y de la base de datos se mantienen en snake_case.
+
+### Paso 3. Creación de `ClientSerializer`
+
+Creé `apps/client/serializers.py` con los campos expuestos, reglas de lectura y validación del correo y de los campos opcionales.
+
+#### Evidencia — Serializer de clientes
+
+![ClientSerializer y validación de email](Trazabilidad/ISS-07-EVI-07-03.png)
+
+**Qué hice:** definí `ClientSerializer` con lista explícita de campos, campos de solo lectura y validaciones para nombre, email, dirección y teléfono.
+
+**Retroalimentación:** el código muestra que el email vacío se normaliza a `None` y el email escrito se guarda en minúsculas.
+
+**Lo que aprendí:** la lista explícita de campos controla lo que expone la API y las validaciones del serializer preparan los datos antes de persistirlos.
+
+### Paso 4. Creación de serializers para productos
+
+Creé `ProductTypeSerializer` y `ProductSerializer`, exponiendo la relación escribible `product_type_id` y el nombre de tipo solo como lectura.
+
+#### Evidencia — Serializers de tipos y productos
+
+![ProductTypeSerializer y ProductSerializer](Trazabilidad/ISS-07-EVI-07-04.png)
+
+**Qué hice:** declaré los campos de ambos serializers, incluida la relación con `ProductType`.
+
+**Retroalimentación:** la captura muestra `product_type_id` como `PrimaryKeyRelatedField` y `product_type_name` como campo de solo lectura.
+
+**Lo que aprendí:** una API puede aceptar el identificador de la relación y responder también con un campo informativo derivado del objeto relacionado.
+
+### Paso 5. Creación de serializers de lectura para ventas
+
+Creé `ProductSaleSerializer` y `SaleSerializer` en `apps/sale/serializers.py`.
+
+#### Evidencia — Serializers de ventas y líneas
+
+![ProductSaleSerializer y SaleSerializer](Trazabilidad/ISS-07-EVI-07-05.png)
+
+**Qué hice:** definí la representación de las líneas y la venta con `client_name` y `lines` anidados de solo lectura.
+
+**Retroalimentación:** todos los campos mostrados están declarados como solo lectura, de acuerdo con el alcance de ISS-07, que solo consulta ventas.
+
+**Lo que aprendí:** el serializer puede componer datos relacionados en una respuesta JSON sin permitir todavía el alta transaccional de la venta.
+
+### Verificaciones pendientes
+
+La guía indica ejecutar `ClientApiTests.test_create_defaults_and_persists` y `ProductApiTests.test_product_crud_and_available_filter`. Las capturas recibidas muestran el código de los serializers y settings, pero no la salida de esas pruebas. Todavía no marco el GATE de ISS-07 como PASS.
 
 ### Conclusión
 
-Pendiente de realizar los pasos de ISS-07 y documentar las capturas correspondientes.
+Instalé las dependencias de la API, configuré CORS y REST Framework y escribí los serializers de clientes, productos y ventas. Las capturas documentan estos pasos. Me falta la evidencia de las pruebas que verifican el JSON camelCase, la normalización del correo y el nombre del tipo de producto; por eso dejo ISS-07 parcialmente completada.
+
+## ISS-08 — Client con ModelViewSet
+
+**Estado:** pendiente de ejecución y evidencias.
+
+### Objetivo
+
+Publicar el CRUD de clientes con `ModelViewSet`.
+
+### Desarrollo
+
+Guardé la guía de construcción en [ISS-08.md](Iss/ISS-08.md). Aún no incorporo pasos ejecutados ni evidencias de esta ISS.
+
+### Conclusión
+
+Pendiente de realizar los pasos de ISS-08 y documentar las capturas correspondientes.
