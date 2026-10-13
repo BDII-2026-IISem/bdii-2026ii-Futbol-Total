@@ -1594,3 +1594,17 @@ Agregué `DELETE /api/reservations/<id>/` para cancelar reservas pendientes o co
 **Retroalimentación de las evidencias:** Observé que la cancelación puede repetirse sin borrar el registro, que una reserva completada permanece sin cambios y que todas las pruebas de alquiler y reserva terminaron correctamente.
 
 **Conclusión y aprendizaje:** Aprendí a conservar la trazabilidad de las reservas cancelándolas mediante un cambio de estado transaccional en lugar de eliminarlas físicamente.
+
+## ISS-13 - Django Admin de PedalLibre
+
+### Paso 1 - Registro de usuarios en modo de solo lectura
+
+Registré el modelo `User` de PedalLibre en Django Admin para consultar usuarios, filtrar por estado y rol, y buscar por nombre de usuario o correo electrónico. Dejé deshabilitadas las acciones de alta, edición y eliminación desde el panel. Ejecuté `python manage.py check` y Django informó que no encontró problemas. No creé usuarios ni modifiqué la base de datos.
+
+![EVI-13-01 - Registro de User en modo de solo lectura](./Trazabilidad/EVI-13-01-user-admin-readonly.png)
+
+![EVI-13-02 - Verificación de configuración de Django sin problemas](./Trazabilidad/EVI-13-02-django-system-check.png)
+
+**Retroalimentación de las evidencias:** Observé la configuración de solo lectura para el modelo `User` y la comprobación exitosa del proyecto.
+
+**Conclusión y aprendizaje:** Aprendí a presentar los usuarios existentes en el Admin como registros consultables, sin habilitar operaciones de escritura desde esta interfaz.
