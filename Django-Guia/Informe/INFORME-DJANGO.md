@@ -650,14 +650,54 @@ python manage.py migrate
 
 **Lo que aprendí:** las claves foráneas de MySQL requieren que la columna referenciada exista en la tabla real y sea compatible con la clave primaria que declara el modelo.
 
-### Solución del error y estado
+### Solución del error
 
-La migración de `Client` define una clave primaria `id` de tipo `BigAutoField`, y `Sale.client` apunta a esa clave primaria por defecto. El error indica que la tabla `clients` de la base seleccionada no tiene esa columna; la definición real no coincide con la que Django espera según el modelo y su migración.
+La causa fue que la base de datos ya tenía tablas creadas. Borré y volví a crear la base de datos para dejarla limpia y permitir que Django construyera las tablas a partir de las migraciones del proyecto.
 
-Antes de reintentar `migrate`, debo comprobar en la misma base configurada por `DB_ENGINE` la definición de `clients` con `SHOW CREATE TABLE clients;` y contrastarla con `apps/client/migrations/0001_initial.py`. Si la tabla existente no corresponde a esa migración, debo corregir la discrepancia de esquema de forma compatible con los datos existentes para que `clients.id` esté presente y sea la clave referenciada, o confirmar que Django está conectado a la base que contiene el esquema correcto. Si el primer intento dejó una tabla `sales` incompleta, también debo revisar su definición antes de volver a aplicar la migración.
+**Qué hice:** eliminé la base de datos anterior, que ya contenía tablas, y creé nuevamente la base. Después volví a ejecutar `migrate`.
 
-No debo borrar la base ni eliminar tablas con datos como atajo. Aún no he documentado una ejecución que confirme la corrección y una aplicación exitosa de `sale.0001_initial`; por eso la solución queda descrita, pero pendiente de verificar con evidencia.
+**Retroalimentación:** la captura posterior muestra `Applying sale.0001_initial... OK`, por lo que la migración se aplicó en la base recién creada.
+
+**Lo que aprendí:** las tablas preexistentes pueden no coincidir con el esquema que espera el estado actual de las migraciones. Al recrear la base, Django pudo construir desde cero las tablas y claves foráneas definidas por el proyecto.
+
+### Paso 3. Aplicación exitosa de la migración
+
+Después de recrear la base de datos, ejecuté nuevamente:
+
+```sh
+python manage.py migrate
+```
+
+#### Evidencia — `sale.0001_initial` aplicada
+
+![Migraciones aplicadas correctamente, incluida sale.0001_initial](Trazabilidad/ISS-06-EVI-06-03.png)
+
+**Qué hice:** apliqué las migraciones del proyecto sobre la base de datos recién creada.
+
+**Retroalimentación:** la terminal muestra que las migraciones se aplicaron y que `sale.0001_initial` terminó con `OK`.
+
+**Lo que aprendí:** después de iniciar una base limpia, las migraciones pueden crear en orden las tablas y sus claves foráneas según los modelos del proyecto.
+
+### Estado y verificaciones pendientes
+
+La migración de `sale` quedó aplicada. Aún me falta la verificación del precio histórico indicada por la ISS; por ello, no marco el GATE completo como PASS.
 
 ### Conclusión
 
-Creé `SaleQuerySet` y `SaleManager`, escribí los modelos de venta y detalle y generé la migración inicial. La aplicación se bloqueó porque MySQL no encuentra `clients.id`, la clave primaria que la relación necesita. Debo alinear el esquema real de `clients` con el modelo y la migración, revisar si quedó una tabla `sales` incompleta y volver a ejecutar `migrate` solo después de resolver la discrepancia. La ISS-06 sigue en progreso y su GATE no está aprobado.
+Primero encontré el error de clave foránea porque la base ya tenía tablas creadas. Borré y creé de nuevo la base, volví a ejecutar `migrate` y la captura confirma que `sale.0001_initial` se aplicó correctamente. Me queda pendiente la prueba de precio histórico para completar las verificaciones de ISS-06.
+
+## ISS-07 — Serializers y JSON camelCase
+
+**Estado:** pendiente de ejecución y evidencias.
+
+### Objetivo
+
+Traducir modelos a JSON sin renombrar los campos Python.
+
+### Desarrollo
+
+Guardé la guía de construcción en [ISS-07.md](Iss/ISS-07.md). Aún no incorporo pasos ejecutados ni evidencias de esta ISS.
+
+### Conclusión
+
+Pendiente de realizar los pasos de ISS-07 y documentar las capturas correspondientes.
