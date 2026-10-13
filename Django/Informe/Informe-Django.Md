@@ -1648,3 +1648,13 @@ Registré `Bicycle` en Django Admin para mostrar el número de serie, tipo, esta
 **Retroalimentación de la evidencia:** Observé los registros administrativos de estaciones, puntos de anclaje y bicicletas en `apps/catalog/admin.py`, además del resultado exitoso de la comprobación de Django.
 
 **Conclusión y aprendizaje:** Aprendí a consultar el inventario de bicicletas desde el panel administrativo con filtros por sus atributos operativos y búsqueda por número de serie.
+
+### Paso 6 - Consulta de tarifas
+
+Registré `Rate` en Django Admin para mostrar el nombre, precio, unidad de cobro y estado de actividad. Añadí filtros por actividad y unidad de cobro, búsqueda por nombre y orden alfabético. El identificador queda como solo lectura. La captura muestra que `python manage.py check` terminó sin problemas.
+
+![EVI-13-07 - Registro de tarifas y comprobación del sistema](./Trazabilidad/EVI-13-07-rate-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé las configuraciones administrativas de estaciones, puntos de anclaje, bicicletas y tarifas en `apps/catalog/admin.py`, además del resultado exitoso de la comprobación.
+
+**Conclusión y aprendizaje:** Aprendí a facilitar la consulta de tarifas por unidad y estado de actividad desde Django Admin.

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.catalog.models import Bicycle, DockingPoint, Station
+from apps.catalog.models import Bicycle, DockingPoint, Rate, Station
 
 
 @admin.register(Station)
@@ -17,8 +17,6 @@ class StationAdmin(admin.ModelAdmin):
     search_fields = ("name", "address")
     ordering = ("name",)
     readonly_fields = ("id", "created_at")
-
-
 
 @admin.register(DockingPoint)
 class DockingPointAdmin(admin.ModelAdmin):
@@ -43,3 +41,12 @@ class BicycleAdmin(admin.ModelAdmin):
     search_fields = ("serial_number",)
     ordering = ("serial_number",)
     readonly_fields = ("id", "created_at")
+
+
+@admin.register(Rate)
+class RateAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "price", "billing_unit", "is_active")
+    list_filter = ("is_active", "billing_unit")
+    search_fields = ("name",)
+    ordering = ("name",)
+    readonly_fields = ("id",)
