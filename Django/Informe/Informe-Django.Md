@@ -1688,3 +1688,13 @@ Registré `RentalEvent` para consultar el alquiler relacionado, el tipo y fecha 
 **Retroalimentación de la evidencia:** Observé `RentalEventAdmin` con sus relaciones y permisos de consulta, junto con el resultado exitoso de la comprobación de Django.
 
 **Conclusión y aprendizaje:** Aprendí a conservar el historial del alquiler ofreciendo una vista administrativa de eventos sin habilitar su alteración o borrado.
+
+### Paso 10 - Consulta protegida de relaciones bicicleta-anclaje
+
+Registré `BicycleDocking` para consultar la bicicleta, el punto de anclaje y las fechas de anclaje y liberación. Añadí filtros por fechas, búsqueda por serie de bicicleta, código del punto o nombre de estación, y carga anticipada de las relaciones. Dejé todos los campos como solo lectura y deshabilité alta, edición y eliminación, para preservar las operaciones transaccionales que actualizan estas relaciones. La captura muestra que `python manage.py check` terminó sin problemas.
+
+![EVI-13-11 - Registro protegido de relaciones bicicleta-anclaje y comprobación del sistema](./Trazabilidad/EVI-13-11-bicycle-docking-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé la configuración de `BicycleDockingAdmin` con las relaciones y fechas, sus permisos sin escritura y el resultado exitoso de la comprobación de Django.
+
+**Conclusión y aprendizaje:** Aprendí a consultar el historial de anclajes sin permitir que el panel altere los datos que administran las operaciones de negocio.
