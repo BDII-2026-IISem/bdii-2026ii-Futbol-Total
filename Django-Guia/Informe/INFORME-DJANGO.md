@@ -292,3 +292,111 @@ python manage.py runserver
 ### Conclusión
 
 Completé la ISS-01 configurando la selección de un único motor desde `.env`, creando el paquete de settings y ajustando los puntos de entrada. La evidencia del paso final muestra que `check` terminó sin problemas y que la página inicial de Django respondió. Los criterios de selección de cada motor requieren las pruebas descritas en la ruta; el GATE queda pendiente hasta que esas pruebas se ejecuten en la unidad indicada.
+
+## ISS-02 — Apps client, product y sale
+
+**Estado:** completada según las evidencias recibidas.
+
+### Objetivo
+
+Crear las tres apps de negocio con la CLI y registrarlas dentro del paquete `apps`, todavía sin escribir modelos.
+
+### Paso 1. Creación de las apps y del paquete `apps`
+
+Creé las tres apps de negocio usando `startapp` y preparé el paquete `apps`:
+
+```sh
+mkdir -p apps/client apps/product apps/sale
+python manage.py startapp client apps/client
+python manage.py startapp product apps/product
+python manage.py startapp sale apps/sale
+mkdir -p apps
+cat > apps/__init__.py <<'EOF'
+EOF
+```
+
+#### Evidencia EVI-02-01 — Estructura de las tres apps
+
+![Paquete apps con client, product y sale](Trazabilidad/ISS-02-EVI-02-01.png)
+
+**Qué hice:** creé las carpetas `client`, `product` y `sale` dentro de `apps/`, además de `apps/__init__.py`.
+
+**Retroalimentación:** el explorador muestra las tres apps y el archivo de inicialización del paquete.
+
+**Lo que aprendí:** `startapp` genera la estructura estándar de cada app, y `apps/__init__.py` permite importar el paquete común.
+
+### Paso 2. Configuración de `AppConfig`
+
+Actualicé el `name` y el `label` de cada aplicación, conservando los nombres de clase indicados por la guía.
+
+#### Evidencia EVI-02-02 — `ClientConfig`
+
+![Configuración de ClientConfig](Trazabilidad/ISS-02-EVI-02-02.png)
+
+**Qué hice:** configuré `name = "apps.client"` y `label = "client"`.
+
+**Retroalimentación:** los valores aparecen en `ClientConfig` y se conserva el nombre de clase.
+
+**Lo que aprendí:** `name` representa la ruta importable de la app y `label` mantiene el nombre del dominio.
+
+#### Evidencia EVI-02-03 — `ProductConfig`
+
+![Configuración de ProductConfig](Trazabilidad/ISS-02-EVI-02-03.png)
+
+**Qué hice:** configuré `name = "apps.product"` y `label = "product"`.
+
+**Retroalimentación:** los valores aparecen en `ProductConfig`.
+
+**Lo que aprendí:** cada app alojada en `apps/` necesita su ruta completa en `name`.
+
+#### Evidencia EVI-02-04 — `SaleConfig`
+
+![Configuración de SaleConfig](Trazabilidad/ISS-02-EVI-02-04.png)
+
+**Qué hice:** configuré `name = "apps.sale"` y `label = "sale"`.
+
+**Retroalimentación:** los valores aparecen en `SaleConfig` y la clase conserva el nombre indicado.
+
+**Lo que aprendí:** las tres apps usan el mismo patrón de configuración y cada una conserva su label de dominio.
+
+### Paso 3. Registro de las apps y ejecución de `check`
+
+Agregué las tres clases a `INSTALLED_APPS` y ejecuté la verificación indicada:
+
+```sh
+python manage.py check
+```
+
+#### Evidencia — Registro de las apps en settings
+
+![Las apps client, product y sale registradas en INSTALLED_APPS](Trazabilidad/ISS-02-EVI-02-05.png)
+
+**Qué hice:** agregué `ClientConfig`, `ProductConfig` y `SaleConfig` a `config/settings/__init__.py`.
+
+**Retroalimentación:** la lista muestra las tres rutas de configuración registradas.
+
+**Lo que aprendí:** Django debe cargar las apps desde `INSTALLED_APPS`, además de que sus directorios existan.
+
+#### Evidencia EVI-02-01 — Resultado de `python manage.py check`
+
+![Resultado de System check](Trazabilidad/ISS-02-EVI-02-06.png)
+
+**Qué hice:** ejecuté el comando `python manage.py check`.
+
+**Retroalimentación:** la terminal responde `System check identified no issues (0 silenced)`.
+
+**Lo que aprendí:** esta comprobación detecta problemas de configuración de Django, incluidos errores al cargar las apps.
+
+#### Evidencia complementaria — Settings y ausencia de modelos de negocio
+
+![Settings del proyecto y estado de las apps en esta unidad](Trazabilidad/ISS-02-EVI-02-07.png)
+
+**Qué hice:** documenté la vista adicional de settings y el estado del proyecto después del registro de las apps.
+
+**Retroalimentación:** la captura complementa la revisión del settings; esta unidad no añade modelos de negocio.
+
+**Lo que aprendí:** la ISS-02 prepara las apps para las unidades siguientes y deja la creación de modelos para cuando corresponda.
+
+### Conclusión
+
+Creé y registré `client`, `product` y `sale`, configuré sus nombres de paquete y labels, y ejecuté `python manage.py check`. La salida mostrada no reporta problemas. En esta unidad todavía no se escribieron modelos de negocio; según las evidencias recibidas, el GATE de ISS-02 queda en PASS.
