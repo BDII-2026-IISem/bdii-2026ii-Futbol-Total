@@ -573,3 +573,91 @@ La ISS indica crear un cliente en el shell y observar `status`, `created_at` y e
 ### Conclusión
 
 Creé los modelos abstractos reutilizables, definí `Client` y generé su migración inicial. La captura muestra que no quedaron migraciones pendientes, pero aún no tengo evidencia de la creación manual del cliente ni de las comprobaciones de unicidad y longitud. Por eso dejo la ISS-04 parcialmente completada y no marco su GATE como PASS.
+
+## ISS-05 — ProductType y Product
+
+**Estado:** completé parcialmente esta ISS. Tengo evidencia de la definición de los modelos y de la migración; me faltan las pruebas requeridas para confirmar el GATE.
+
+### Objetivo
+
+Modelar el catálogo y la integridad `ProductType 1 → N Product`.
+
+### Paso 1. Definición de `ProductType` y `Product`
+
+Reescribí `apps/product/models.py` con los dos modelos de catálogo y la relación protegida entre ellos.
+
+#### Evidencia — Modelos y migración de producto
+
+![Modelos ProductType y Product junto con la migración](Trazabilidad/ISS-05-EVI-05-01.png)
+
+**Qué hice:** definí `ProductType` y `Product`, los campos de catálogo, precio y stock, y la clave foránea `product_type` con `on_delete=models.RESTRICT`. Después ejecuté los comandos de migración indicados en la guía:
+
+```sh
+python manage.py makemigrations product
+python manage.py migrate
+```
+
+**Retroalimentación:** la captura muestra el código de ambos modelos y la salida con la creación de `product.0001_initial` y su aplicación.
+
+**Lo que aprendí:** el detalle de la relación se conserva mediante una FK explícita; `RESTRICT` evita eliminar un tipo de producto que esté siendo referenciado.
+
+### Verificaciones pendientes
+
+La captura no muestra la ejecución de `ProductApiTests.test_default_status_and_type_restriction` ni `test_duplicate_product_name`. Por eso todavía no confirmo mediante pruebas el rechazo al borrar un tipo referenciado, el nombre duplicado ni los valores por defecto.
+
+### Conclusión
+
+Definí los modelos `ProductType` y `Product` y generé y apliqué la migración inicial. Me falta evidencia de las pruebas de restricción, unicidad y valores predeterminados, así que dejo la ISS-05 parcialmente completada y el GATE pendiente.
+
+## ISS-06 — Sale y ProductSale
+
+**Estado:** en progreso. Generé la migración de `sale`, pero `migrate` quedó bloqueado por una incompatibilidad en la tabla `clients`.
+
+### Objetivo
+
+Representar la venta y su detalle con precio histórico, sin sustituir el detalle por una relación muchos-a-muchos simple.
+
+### Paso 1. Creación del manager de ventas
+
+Creé `apps/sale/managers.py` con el `SaleQuerySet` y el `SaleManager` vacíos, tal como indica esta ISS.
+
+#### Evidencia — `SaleQuerySet` y `SaleManager`
+
+![Creación de apps/sale/managers.py](Trazabilidad/ISS-06-EVI-06-01.png)
+
+**Qué hice:** declaré el queryset y el manager que utilizará el modelo `Sale`; todavía no agregué el método `register`, que corresponde a ISS-11.
+
+**Retroalimentación:** la captura muestra las dos clases generadas con `pass`, de acuerdo con el alcance de esta unidad.
+
+**Lo que aprendí:** puedo preparar el manager para el modelo sin adelantar operaciones transaccionales que la guía reserva para una ISS posterior.
+
+### Paso 2. Creación de `Sale` y `ProductSale` y generación de migración
+
+Escribí los modelos de venta y detalle siguiendo el bloque de ISS-06 y ejecuté:
+
+```sh
+python manage.py makemigrations sale
+python manage.py migrate
+```
+
+#### Evidencia — Error al aplicar `sale.0001_initial`
+
+![La migración sale.0001_initial falla al crear la clave foránea de sales hacia clients](Trazabilidad/ISS-06-EVI-06-02.png)
+
+**Qué hice:** generé `sale.0001_initial` y traté de aplicar las migraciones.
+
+**Retroalimentación:** Django generó la migración con los modelos `Sale` y `ProductSale`, pero MySQL detuvo su aplicación con el error 3734: no encuentra la columna `id` en la tabla referenciada `clients` para crear la clave foránea `sales_client_id_32ab12f6_fk_clients_id`. Por tanto, la migración de `sale` no quedó confirmada como aplicada.
+
+**Lo que aprendí:** las claves foráneas de MySQL requieren que la columna referenciada exista en la tabla real y sea compatible con la clave primaria que declara el modelo.
+
+### Solución del error y estado
+
+La migración de `Client` define una clave primaria `id` de tipo `BigAutoField`, y `Sale.client` apunta a esa clave primaria por defecto. El error indica que la tabla `clients` de la base seleccionada no tiene esa columna; la definición real no coincide con la que Django espera según el modelo y su migración.
+
+Antes de reintentar `migrate`, debo comprobar en la misma base configurada por `DB_ENGINE` la definición de `clients` con `SHOW CREATE TABLE clients;` y contrastarla con `apps/client/migrations/0001_initial.py`. Si la tabla existente no corresponde a esa migración, debo corregir la discrepancia de esquema de forma compatible con los datos existentes para que `clients.id` esté presente y sea la clave referenciada, o confirmar que Django está conectado a la base que contiene el esquema correcto. Si el primer intento dejó una tabla `sales` incompleta, también debo revisar su definición antes de volver a aplicar la migración.
+
+No debo borrar la base ni eliminar tablas con datos como atajo. Aún no he documentado una ejecución que confirme la corrección y una aplicación exitosa de `sale.0001_initial`; por eso la solución queda descrita, pero pendiente de verificar con evidencia.
+
+### Conclusión
+
+Creé `SaleQuerySet` y `SaleManager`, escribí los modelos de venta y detalle y generé la migración inicial. La aplicación se bloqueó porque MySQL no encuentra `clients.id`, la clave primaria que la relación necesita. Debo alinear el esquema real de `clients` con el modelo y la migración, revisar si quedó una tabla `sales` incompleta y volver a ejecutar `migrate` solo después de resolver la discrepancia. La ISS-06 sigue en progreso y su GATE no está aprobado.
