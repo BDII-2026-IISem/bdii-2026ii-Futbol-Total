@@ -1668,3 +1668,13 @@ Registré `Reservation` en Django Admin para consultar cliente, bicicleta, estac
 **Retroalimentación de la evidencia:** Observé el listado y los campos de consulta de `ReservationAdmin`, sus permisos sin escritura y el resultado exitoso de la comprobación de Django.
 
 **Conclusión y aprendizaje:** Aprendí a exponer reservas en modo de consulta, evitando cambios desde el Admin que deban gestionarse por las operaciones de negocio de la API.
+
+### Paso 8 - Consulta protegida de alquileres
+
+Registré `Rental` en Django Admin para consultar el cliente, la bicicleta, la tarifa, las estaciones, las fechas, el estado y el monto total. Configuré filtros y búsqueda por documento del cliente y serie de bicicleta, y cargué anticipadamente las relaciones necesarias. Dejé todos los campos como solo lectura y deshabilité alta, edición y eliminación desde el panel para preservar las operaciones transaccionales de alquiler. La captura muestra que `python manage.py check` terminó sin problemas.
+
+![EVI-13-09 - Registro de alquileres de solo lectura y comprobación del sistema](./Trazabilidad/EVI-13-09-rental-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé `RentalAdmin` junto con `ReservationAdmin`, los permisos sin escritura y el resultado exitoso de la comprobación de Django.
+
+**Conclusión y aprendizaje:** Aprendí a consultar los alquileres y sus relaciones en el Admin sin exponer desde esa interfaz operaciones que deben mantenerse bajo control transaccional.
