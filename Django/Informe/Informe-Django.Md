@@ -1698,3 +1698,13 @@ Registré `BicycleDocking` para consultar la bicicleta, el punto de anclaje y la
 **Retroalimentación de la evidencia:** Observé la configuración de `BicycleDockingAdmin` con las relaciones y fechas, sus permisos sin escritura y el resultado exitoso de la comprobación de Django.
 
 **Conclusión y aprendizaje:** Aprendí a consultar el historial de anclajes sin permitir que el panel altere los datos que administran las operaciones de negocio.
+
+### Paso 11 - Revisión visual de la entrada al Django Admin
+
+Inicié el servidor de desarrollo y abrí `/admin/`. Observé que Django presenta la pantalla de inicio de sesión y que la ruta responde. Esta revisión confirma que la interfaz está disponible, pero no pude inspeccionar los modelos dentro del panel porque no se autenticó una cuenta autorizada. Por eso, todavía no considero cerrado el GATE visual de ISS-13.
+
+![EVI-13-12 - Pantalla de inicio de sesión del Django Admin](./Trazabilidad/EVI-13-12-admin-login-screen.png)
+
+**Retroalimentación de la evidencia:** Observé la página de inicio de sesión de Django Admin y, en la terminal, el arranque correcto del servidor y la respuesta HTTP de la ruta.
+
+**Conclusión y aprendizaje:** Aprendí que comprobar que `/admin/` abre no basta para validar la visualización de los modelos; también hace falta resolver el acceso administrativo autorizado sin exponer ni modificar credenciales o datos.
