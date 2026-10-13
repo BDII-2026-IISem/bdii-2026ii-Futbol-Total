@@ -1608,3 +1608,13 @@ Registré el modelo `User` de PedalLibre en Django Admin para consultar usuarios
 **Retroalimentación de las evidencias:** Observé la configuración de solo lectura para el modelo `User` y la comprobación exitosa del proyecto.
 
 **Conclusión y aprendizaje:** Aprendí a presentar los usuarios existentes en el Admin como registros consultables, sin habilitar operaciones de escritura desde esta interfaz.
+
+### Paso 2 - Consulta de clientes desde Django Admin
+
+Registré el modelo `Client` para mostrar los datos de identificación y contacto, buscar por nombre, apellido, documento, usuario o correo, y cargar la relación con el usuario asociado. Dejé como solo lectura el identificador y la fecha de creación. Ejecuté `python manage.py check`; Django confirmó que no encontró problemas.
+
+![EVI-13-03 - Registro de clientes y comprobación del sistema](./Trazabilidad/EVI-13-03-client-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé el registro de `ClientAdmin` en `apps/client/admin.py` y el resultado exitoso de la comprobación de Django.
+
+**Conclusión y aprendizaje:** Aprendí a configurar la visualización, búsqueda y carga anticipada de la relación del cliente con su usuario en el panel administrativo.
