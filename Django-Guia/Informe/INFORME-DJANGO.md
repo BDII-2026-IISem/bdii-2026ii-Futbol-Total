@@ -400,3 +400,113 @@ python manage.py check
 ### Conclusión
 
 Creé y registré `client`, `product` y `sale`, configuré sus nombres de paquete y labels, y ejecuté `python manage.py check`. La salida mostrada no reporta problemas. En esta unidad todavía no se escribieron modelos de negocio; según las evidencias recibidas, el GATE de ISS-02 queda en PASS.
+
+## ISS-03 — Custom User antes de la primera migración
+
+**Estado:** parcialmente completada según las evidencias recibidas; quedan pendientes las pruebas del flujo de autenticación y la confirmación completa de los criterios de aceptación.
+
+### Objetivo
+
+Definir el usuario de StoreLab sobre `django.contrib.auth` y fijar `AUTH_USER_MODEL` antes de migrar.
+
+### Paso 1. Creación de `apps/common` y `RecordStatus`
+
+Creé el paquete común y definí `RecordStatus` con los estados `ACTIVE` e `INACTIVE`, según el bloque de la guía.
+
+#### Evidencia — Paquete común y estados del registro
+
+![Creación de apps/common y RecordStatus](Trazabilidad/ISS-03-EVI-03-01.png)
+
+**Qué hice:** creé `apps/common/__init__.py` y escribí `apps/common/status.py` con las opciones de estado.
+
+**Retroalimentación:** la terminal muestra la escritura de ambos archivos y el explorador muestra el paquete y `status.py`.
+
+**Lo que aprendí:** puedo centralizar opciones compartidas para que el usuario y las apps de negocio utilicen la misma definición de estado.
+
+### Paso 2. Creación de la app `security`
+
+Creé el directorio de destino y generé la app de seguridad mediante `startapp`.
+
+#### Evidencia — Estructura inicial de `apps/security`
+
+![Creación de la app security con startapp](Trazabilidad/ISS-03-EVI-03-02.png)
+
+**Qué hice:** ejecuté los comandos de la ISS para crear `apps/security` con la CLI de Django.
+
+**Retroalimentación:** la terminal muestra `python manage.py startapp security apps/security` y el explorador muestra los archivos iniciales de la aplicación.
+
+**Lo que aprendí:** `startapp` genera la estructura estándar de la aplicación dentro del directorio de destino creado previamente.
+
+### Paso 3. Configuración de `SecurityConfig`
+
+Actualicé `apps/security/apps.py` con el nombre importable y el label indicados en la guía.
+
+#### Evidencia — `SecurityConfig`
+
+![Configuración de SecurityConfig](Trazabilidad/ISS-03-EVI-03-03.png)
+
+**Qué hice:** configuré `name = "apps.security"` y `label = "security"`, manteniendo la clase `SecurityConfig`.
+
+**Retroalimentación:** la captura muestra los valores en el archivo de configuración de la app.
+
+**Lo que aprendí:** `name` debe reflejar la ubicación de la app dentro del paquete `apps`, mientras que el label identifica a la app en Django.
+
+### Paso 4. Definición del usuario personalizado
+
+Elegí `AbstractUser`, como propone la ISS, y escribí el modelo `User`, su manager, los campos de estado y fechas, la restricción y el comportamiento de `save()`.
+
+#### Evidencia — Modelo `User` y `StoreUserManager`
+
+![Modelo de usuario personalizado y manager](Trazabilidad/ISS-03-EVI-03-04.png)
+
+**Qué hice:** escribí el código del modelo y del manager conforme al bloque de la guía.
+
+**Retroalimentación:** la captura muestra el uso de `AbstractUser`, los valores de estado predeterminados, el email único, las fechas y la restricción `users_status_valid`.
+
+**Lo que aprendí:** `AbstractUser` aporta la funcionalidad de autenticación de Django, y el manager permite definir estados iniciales distintos para usuarios normales y superusuarios.
+
+### Paso 5. Registro de security y declaración del usuario de Django
+
+Agregué `SecurityConfig` antes de las apps de negocio y declaré `AUTH_USER_MODEL = "security.User"` antes de ejecutar las migraciones.
+
+#### Evidencia — `INSTALLED_APPS` y `AUTH_USER_MODEL`
+
+![Registro de SecurityConfig y declaración de AUTH_USER_MODEL](Trazabilidad/ISS-03-EVI-03-05.png)
+
+**Qué hice:** registré la app de seguridad en settings y declaré el modelo de usuario personalizado.
+
+**Retroalimentación:** la captura muestra `apps.security.apps.SecurityConfig` delante de las apps de negocio y la asignación de `AUTH_USER_MODEL`.
+
+**Lo que aprendí:** Django debe conocer el modelo personalizado antes de la primera migración para crear el esquema de autenticación correcto desde el inicio.
+
+### Paso 6. Pruebas de selección de base de datos
+
+Reemplacé el archivo de pruebas de la app con `DatabaseSelectionTests`, tal como indica la ISS.
+
+#### Evidencia — `DatabaseSelectionTests`
+
+![Pruebas de selección de motores en apps/security/tests.py](Trazabilidad/ISS-03-EVI-03-06.png)
+
+**Qué hice:** escribí pruebas para los cuatro motores, el motor inválido y la ausencia de una variable obligatoria.
+
+**Retroalimentación:** el archivo muestra los casos de prueba y sus valores de entorno de ejemplo.
+
+**Lo que aprendí:** con `SimpleTestCase` puedo verificar la configuración de motores sin abrir una conexión a cada base de datos.
+
+### Paso 7. Generación de migración y ejecución de pruebas
+
+Ejecuté los comandos de la ISS para generar la migración de seguridad, aplicar migraciones y ejecutar `DatabaseSelectionTests`.
+
+#### Evidencia — Migración inicial y seis pruebas PASS
+
+![Migración security.0001_initial y resultado de DatabaseSelectionTests](Trazabilidad/ISS-03-EVI-03-07.png)
+
+**Qué hice:** ejecuté `makemigrations security`, `migrate` y `python manage.py test apps.security.tests.DatabaseSelectionTests`.
+
+**Retroalimentación:** la salida muestra la creación de `security.0001_initial`, seis pruebas ejecutadas y el resultado `OK`, junto con `System check identified no issues`. Esta captura no demuestra las pruebas de login de `AuthFlowTests` ni identifica por sí sola el motor de base de datos utilizado.
+
+**Lo que aprendí:** la migración del usuario personalizado debe generarse después de configurar `AUTH_USER_MODEL`, y las pruebas de selección comprueban la configuración sin sustituir las pruebas del flujo de autenticación.
+
+### Conclusión
+
+Avancé con la creación de `RecordStatus`, la app `security`, el modelo de usuario personalizado, su registro en settings y las pruebas de selección de motores. La evidencia final muestra seis pruebas de `DatabaseSelectionTests` aprobadas y la migración inicial generada. Dejo el estado como parcialmente completado: la guía especifica `AuthFlowTests` para verificar los criterios de login, y esas pruebas no aparecen en las capturas recibidas. Por ello, todavía no marco el GATE completo como PASS.
