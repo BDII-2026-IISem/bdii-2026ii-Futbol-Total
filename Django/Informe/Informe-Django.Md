@@ -1658,3 +1658,13 @@ Registré `Rate` en Django Admin para mostrar el nombre, precio, unidad de cobro
 **Retroalimentación de la evidencia:** Observé las configuraciones administrativas de estaciones, puntos de anclaje, bicicletas y tarifas en `apps/catalog/admin.py`, además del resultado exitoso de la comprobación.
 
 **Conclusión y aprendizaje:** Aprendí a facilitar la consulta de tarifas por unidad y estado de actividad desde Django Admin.
+
+### Paso 7 - Consulta protegida de reservas
+
+Registré `Reservation` en Django Admin para consultar cliente, bicicleta, estación, fechas y estado, con filtros y búsquedas por los datos relacionados. Dejé todos sus campos como solo lectura y deshabilité las acciones de alta, edición y eliminación para conservar las reglas de negocio de las reservas en la API. La captura muestra que `python manage.py check` terminó sin problemas.
+
+![EVI-13-08 - Registro protegido de reservas y comprobación del sistema](./Trazabilidad/EVI-13-08-reservation-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé el listado y los campos de consulta de `ReservationAdmin`, sus permisos sin escritura y el resultado exitoso de la comprobación de Django.
+
+**Conclusión y aprendizaje:** Aprendí a exponer reservas en modo de consulta, evitando cambios desde el Admin que deban gestionarse por las operaciones de negocio de la API.
