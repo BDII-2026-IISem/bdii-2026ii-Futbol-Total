@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.rental.models import Rental, Reservation
+from apps.rental.models import Rental, RentalEvent, Reservation
 
 
 @admin.register(Reservation)
@@ -45,7 +45,6 @@ class ReservationAdmin(admin.ModelAdmin):
         return False
 
 
-
 @admin.register(Rental)
 class RentalAdmin(admin.ModelAdmin):
     list_display = (
@@ -82,6 +81,39 @@ class RentalAdmin(admin.ModelAdmin):
         "ended_at",
         "status",
         "total_amount",
+    )
+
+    def has_view_permission(self, request, obj=None):
+        return True
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(RentalEvent)
+class RentalEventAdmin(admin.ModelAdmin):
+    list_display = ("id", "rental", "event_type", "event_at")
+    list_filter = ("event_type", "event_at")
+    search_fields = (
+        "event_type",
+        "description",
+        "rental__client__document_number",
+        "rental__bicycle__serial_number",
+    )
+    list_select_related = ("rental", "rental__client", "rental__bicycle")
+    ordering = ("-event_at",)
+    readonly_fields = (
+        "id",
+        "rental",
+        "event_type",
+        "description",
+        "event_at",
     )
 
     def has_view_permission(self, request, obj=None):

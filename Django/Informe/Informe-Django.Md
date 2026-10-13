@@ -1678,3 +1678,13 @@ Registré `Rental` en Django Admin para consultar el cliente, la bicicleta, la t
 **Retroalimentación de la evidencia:** Observé `RentalAdmin` junto con `ReservationAdmin`, los permisos sin escritura y el resultado exitoso de la comprobación de Django.
 
 **Conclusión y aprendizaje:** Aprendí a consultar los alquileres y sus relaciones en el Admin sin exponer desde esa interfaz operaciones que deben mantenerse bajo control transaccional.
+
+### Paso 9 - Consulta protegida de eventos de alquiler
+
+Registré `RentalEvent` para consultar el alquiler relacionado, el tipo y fecha del evento y su descripción. Añadí filtros y búsquedas por tipo, descripción, documento del cliente y número de serie de la bicicleta, con carga anticipada de las relaciones. Dejé todos los campos como solo lectura y deshabilité alta, edición y eliminación para preservar el historial de eventos. La captura muestra que `python manage.py check` terminó sin problemas.
+
+![EVI-13-10 - Registro de eventos de alquiler de solo lectura y comprobación del sistema](./Trazabilidad/EVI-13-10-rental-event-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé `RentalEventAdmin` con sus relaciones y permisos de consulta, junto con el resultado exitoso de la comprobación de Django.
+
+**Conclusión y aprendizaje:** Aprendí a conservar el historial del alquiler ofreciendo una vista administrativa de eventos sin habilitar su alteración o borrado.
