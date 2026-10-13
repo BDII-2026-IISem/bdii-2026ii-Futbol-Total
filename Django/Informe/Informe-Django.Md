@@ -1618,3 +1618,13 @@ Registré el modelo `Client` para mostrar los datos de identificación y contact
 **Retroalimentación de la evidencia:** Observé el registro de `ClientAdmin` en `apps/client/admin.py` y el resultado exitoso de la comprobación de Django.
 
 **Conclusión y aprendizaje:** Aprendí a configurar la visualización, búsqueda y carga anticipada de la relación del cliente con su usuario en el panel administrativo.
+
+### Paso 3 - Consulta de estaciones desde Django Admin
+
+Registré el modelo `Station` para mostrar el nombre, dirección, capacidad, estado y fecha de creación. Añadí un filtro por estado y búsqueda por nombre o dirección; el identificador y la fecha de creación quedan como solo lectura. La captura evidencia que `python manage.py check` terminó sin problemas.
+
+![EVI-13-04 - Registro de estaciones y comprobación del sistema](./Trazabilidad/EVI-13-04-station-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé la configuración de `StationAdmin` en `apps/catalog/admin.py` y el resultado exitoso de la comprobación de Django.
+
+**Conclusión y aprendizaje:** Aprendí a preparar en el panel administrativo una consulta de estaciones con filtros y campos de identificación protegidos contra edición.
