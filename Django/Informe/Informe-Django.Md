@@ -1628,3 +1628,13 @@ Registré el modelo `Station` para mostrar el nombre, dirección, capacidad, est
 **Retroalimentación de la evidencia:** Observé la configuración de `StationAdmin` en `apps/catalog/admin.py` y el resultado exitoso de la comprobación de Django.
 
 **Conclusión y aprendizaje:** Aprendí a preparar en el panel administrativo una consulta de estaciones con filtros y campos de identificación protegidos contra edición.
+
+### Paso 4 - Consulta de puntos de anclaje
+
+Registré `DockingPoint` en Django Admin para consultar el código, la estación asociada y el estado. Añadí filtros por estado y estación, búsqueda por código o nombre de estación, y carga anticipada de la relación con `Station`. El identificador queda como solo lectura. La captura muestra que `python manage.py check` terminó sin problemas.
+
+![EVI-13-05 - Registro de puntos de anclaje y comprobación del sistema](./Trazabilidad/EVI-13-05-docking-point-admin-system-check.png)
+
+**Retroalimentación de la evidencia:** Observé `StationAdmin` y `DockingPointAdmin` configurados en `apps/catalog/admin.py`, junto con la comprobación exitosa del proyecto.
+
+**Conclusión y aprendizaje:** Aprendí a presentar los puntos de anclaje junto con su estación relacionada y a facilitar su consulta mediante filtros y búsqueda.
