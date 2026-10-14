@@ -1735,6 +1735,6 @@ Implementé y probé el flujo de login OPEN mostrado en las capturas: username o
 
 ## ISS-18 — Refresh con rotación
 
-**Estado:** guardé la guía ejecutable en [ISS-18.md](Iss/ISS-18.md). No implemento `RefreshAPIView` en este paso: ISS-18 requiere ISS-17 superado y el GATE de ISS-17 permanece pendiente por el requisito ISS-16.
+**Estado:** guardé la guía ejecutable en [ISS-18.md](Iss/ISS-18.md). Al revisar el árbol de trabajo local encontré `RefreshAPIView`, la ruta `auth/refresh/` y `test_refresh_rotates_and_reuse_revokes_family` ya presentes como cambios sin commit. No ejecuté el comando de prueba ni hice commit de esos archivos.
 
-La implementación y su prueba de rotación quedan pendientes. En particular, todavía no afirmo resultados para AC-18-01, AC-18-02 ni AC-18-03. Antes de ejecutar esta unidad, debo completar la evidencia pendiente de `seed_rbac`, las 53 filas y la ruta resuelta de ISS-16.
+La implementación visible cubre la rotación del token, el registro de `replaced_by` y el bloqueo de la familia al reutilizar el refresh anterior. No hay todavía una captura del resultado del test de ISS-18, así que AC-18-01, AC-18-02 y AC-18-03 siguen pendientes de verificación. El GATE de ISS-17 también continúa sin aprobar por el requisito ISS-16; antes de cerrar la unidad debo completar la evidencia pendiente de `seed_rbac`, las 53 filas y la ruta resuelta.
