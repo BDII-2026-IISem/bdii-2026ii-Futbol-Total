@@ -1632,12 +1632,12 @@ Instalé SimpleJWT, configuré sus parámetros, implementé la generación y el 
 
 ## ISS-16 — Role, RoleUser, Resource y ResourceRole
 
-**Estado:** guardé la guía ejecutable en [ISS-16.md](Iss/ISS-16.md). No inicio la construcción: su requisito ISS-15 superado todavía no está acreditado.
+**Estado:** guardé la guía ejecutable en [ISS-16.md](Iss/ISS-16.md). Al revisar `apps/security/models.py` encontré que ya contiene las definiciones de `HttpMethod`, `Role`, `RoleUser`, `Resource` y `ResourceRole`. Como las clases estaban en ese archivo, quedaron incluidas junto con `RefreshToken` en el commit `abc41cd`; la separación de cambios por ISS no fue correcta. No las elimino ni modifico. No hay evidencia aquí de migración, semilla `seed_rbac` o pruebas RBAC.
 
 ### Requisito previo
 
-Antes de agregar los modelos RBAC debo completar la prueba de ISS-15 sobre persistencia/hash del refresh y ausencia de `password`, y dejar superado el cierre requerido de ISS-14.
+ISS-16 requiere ISS-15 superado. Aún falta el test de autenticación requerido por ISS-15 y sigue pendiente el cierre de ISS-14 por los errores de `spectacular --validate`. Por tanto, no considero ISS-16 cerrada ni marco sus criterios como PASS.
 
 ### Conclusión
 
-La matriz RBAC queda pendiente. Todavía no agregué `HttpMethod`, `Role`, `RoleUser`, `Resource` ni `ResourceRole`, ni generé migraciones de ISS-16. Primero debo cerrar los GATE previos.
+Las clases RBAC están presentes en `apps/security/models.py`, pero no cuento con evidencia de su migración, de las 53 filas de recursos ni de las pruebas que exige la guía. Aprendí que tener las clases en el archivo no demuestra que existan las tablas ni que las rutas se hayan guardado mediante `resolve()`. Mantengo ISS-16 parcial hasta cerrar los requisitos previos y aportar esas verificaciones.
