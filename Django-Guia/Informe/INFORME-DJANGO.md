@@ -1055,16 +1055,186 @@ Publiqué `/api/products/available/` con `ListAPIView` y filtré por estado acti
 
 ## ISS-11 — Registro de venta con APIView
 
-**Estado:** guía recibida; pendiente de ejecución y evidencias.
+**Estado:** implementé el registro transaccional y las capturas muestran cuatro pruebas aprobadas. El GATE queda parcial hasta verificar los motores exigidos.
 
 ### Objetivo
 
 Registrar cliente, líneas de producto, precio histórico, totales y descuento de stock como una sola transacción.
 
-### Preparación
+### Paso 1. Estado inicial del manager y prueba previa de ISS-10
 
-Guardé la guía ejecutable en [ISS-11.md](Iss/ISS-11.md). Todavía no he implementado los pasos ni ejecutado `SaleTransactionTests`.
+La primera captura muestra el `SaleQuerySet` todavía vacío y la ejecución aprobada de la prueba específica de productos disponibles de ISS-10.
+
+#### Evidencia EVI-11-01 — Estado inicial
+
+![SaleQuerySet inicial vacío y prueba de ISS-10 aprobada](Trazabilidad/ISS-11-EVI-11-01.png)
+
+**Qué observé:** antes de añadir la operación, `SaleQuerySet` solo tenía `pass`; la prueba de ISS-10 terminó con `OK`.
+
+**Retroalimentación:** esta captura documenta el punto de partida del manager y el cierre de la comprobación específica anterior; no la cuento como prueba de registro de ventas.
+
+**Lo que aprendí:** documentar el estado previo ayuda a distinguir el manager inicial de la operación transaccional añadida en esta ISS.
+
+### Paso 2. Registro transaccional en `SaleQuerySet`
+
+Implementé `SaleQuerySet.register` en `apps/sale/managers.py`. La operación valida los artículos y descuentos, bloquea el cliente y los productos, comprueba estados y existencias, crea la venta y sus líneas con el precio vigente y actualiza el stock dentro de `transaction.atomic()`.
+
+#### Evidencia EVI-11-02 — Validaciones y bloqueos
+
+![Validaciones, bloqueo del cliente y carga de productos en SaleQuerySet.register](Trazabilidad/ISS-11-EVI-11-02.png)
+
+**Qué hice:** agregué la validación de los artículos y del descuento, el bloqueo del cliente y la consulta de productos relacionados ordenada por id.
+
+**Retroalimentación:** la captura muestra el control del estado del cliente y de los productos, el tipo relacionado y el stock requerido.
+
+**Lo que aprendí:** validar y bloquear los registros antes de descontar stock reduce el riesgo de completar ventas incompatibles con el inventario.
+
+#### Evidencia EVI-11-03 — Totales, líneas y descuento de stock
+
+![Creación de líneas, cálculo de importes y descuento de stock](Trazabilidad/ISS-11-EVI-11-03.png)
+
+**Qué hice:** guardé la venta y sus líneas, calculé subtotal, impuesto y total, activé la venta y luego desconté el inventario.
+
+**Retroalimentación:** la captura muestra el cierre del cálculo y el guardado del stock dentro del contexto transaccional.
+
+**Lo que aprendí:** guardar el precio unitario en cada línea conserva el precio histórico, mientras que la transacción permite revertir cabecera, líneas y cambios de stock si ocurre un error.
+
+### Paso 3. Serializers de entrada para el registro
+
+Amplié `apps/sale/serializers.py` con `SaleItemSerializer` y `SaleRegisterSerializer`, incluyendo ids de cliente y producto, cantidad, fecha, descuento opcional y la llamada a `Sale.objects.register`.
+
+#### Evidencia EVI-11-04 — Imports para la entrada
+
+![Imports de validación, cliente y producto añadidos a los serializers](Trazabilidad/ISS-11-EVI-11-04.png)
+
+**Qué hice:** incorporé los imports para normalizar errores Django y validar las referencias a cliente y producto.
+
+**Retroalimentación:** la captura muestra los imports agregados junto a los serializers de lectura que ya existían.
+
+**Lo que aprendí:** el serializer traduce la estructura de entrada y comunica como errores de API las validaciones de dominio.
+
+#### Evidencia EVI-11-05 — Referencias a cliente y producto
+
+![Imports de Client y Product en el serializer de venta](Trazabilidad/ISS-11-EVI-11-05.png)
+
+**Qué hice:** añadí las referencias a los modelos `Client` y `Product` requeridas por los campos relacionales del serializer.
+
+**Retroalimentación:** se observan los querysets usados para validar ids recibidos.
+
+**Lo que aprendí:** validar las claves foráneas en el serializer permite rechazar referencias inexistentes antes de intentar registrar la operación.
+
+#### Evidencia EVI-11-06 — Serializers para alta transaccional
+
+![SaleItemSerializer y SaleRegisterSerializer](Trazabilidad/ISS-11-EVI-11-06.png)
+
+**Qué hice:** definí los campos de entrada y delegué la creación de la venta al manager transaccional, convirtiendo errores de validación de Django a errores de DRF.
+
+**Retroalimentación:** la captura muestra el descuento por defecto, la lista de artículos y la llamada a `Sale.objects.register`.
+
+**Lo que aprendí:** la validación de forma se mantiene en el serializer y la invariante de inventario y transacción vive en el manager.
+
+### Paso 4. Endpoint de registro y rutas
+
+Creé `apps/sale/views.py` para validar la entrada, registrar la venta y responder con su representación y HTTP 201. También creé `apps/sale/urls.py` para `sales/` y lo incluí bajo `api/` en `config/urls.py`.
+
+#### Evidencia EVI-11-07 — Vistas de registro
+
+![SaleRegisterAPIView y SaleCollectionAPIView](Trazabilidad/ISS-11-EVI-11-07.png)
+
+**Qué hice:** añadí las vistas abiertas de esta fase. La vista de colección delega el POST a la vista de registro, y esta devuelve la venta con sus líneas.
+
+**Retroalimentación:** la captura muestra las clases APIView, la validación del serializer, la carga de líneas y la respuesta 201.
+
+**Lo que aprendí:** el alta transaccional tiene un endpoint explícito en vez de publicar acciones CRUD que no corresponden a la operación de venta.
+
+#### Evidencia EVI-11-08 — URL de ventas
+
+![Ruta de colección para ventas](Trazabilidad/ISS-11-EVI-11-08.png)
+
+**Qué hice:** creé la ruta `sales/` para el endpoint de colección.
+
+**Retroalimentación:** el URLconf de la app apunta a `SaleCollectionAPIView`; el prefijo `api/` se agrega en el URLconf principal.
+
+**Lo que aprendí:** una operación de negocio con un método específico puede declararse con `path()` sin usar un router.
+
+#### Evidencia EVI-11-09 — Inclusión del URLconf de ventas
+
+![Inclusión de apps.sale.urls en las rutas api del proyecto](Trazabilidad/ISS-11-EVI-11-09.png)
+
+**Qué hice:** agregué `apps.sale.urls` bajo el prefijo `api/`.
+
+**Retroalimentación:** la captura muestra el URLconf de ventas junto a los de clientes y productos.
+
+**Lo que aprendí:** el endpoint queda disponible como `/api/sales/` al combinar el prefijo del proyecto con `sales/`.
+
+### Paso 5. Pruebas de transacción
+
+Escribí `SaleTransactionTests` para verificar la venta con dos productos y descuento, el precio histórico y descuento de stock, la reversión ante stock insuficiente, el rollback ante fallo al guardar stock y el rechazo de cliente inactivo.
+
+#### Evidencia EVI-11-10 — Preparación y payload de prueba
+
+![Configuración de cliente, productos y payload para SaleTransactionTests](Trazabilidad/ISS-11-EVI-11-10.png)
+
+**Qué hice:** preparé datos de prueba de cliente y productos activos, junto con un payload HTTP que incluye fecha, descuento y líneas.
+
+**Retroalimentación:** la captura muestra que cliente y productos de apoyo se crean en `setUp` por el ORM.
+
+**Lo que aprendí:** los datos de apoyo pueden prepararse directamente en el ORM para concentrar la prueba en el comportamiento HTTP de registro.
+
+#### Evidencia EVI-11-11 — Totales, precio histórico y stock insuficiente
+
+![Aserciones de totales, precio histórico y rollback por stock insuficiente](Trazabilidad/ISS-11-EVI-11-11.png)
+
+**Qué hice:** agregué aserciones de subtotal 24.50, total 23.00, impuesto cero, precio histórico 10.00 y stock restante, además del rechazo cuando la cantidad supera las existencias.
+
+**Retroalimentación:** la captura verifica resultados y persistencia en los casos de venta válida y stock insuficiente. La prueba confirma que la línea recibió el valor `10.00`, pero no cambia después el precio del producto a `99.00`; esa parte concreta de AC-11-02 todavía necesita una aserción explícita.
+
+**Lo que aprendí:** la prueba de la operación debe comprobar tanto importes y precios congelados como el inventario resultante.
+
+#### Evidencia EVI-11-12 — Rollback y cliente inactivo
+
+![Pruebas de rollback ante fallo de stock y rechazo de cliente inactivo](Trazabilidad/ISS-11-EVI-11-12.png)
+
+**Qué hice:** probé que un fallo al guardar el descuento de stock no deje ventas ni líneas, y que un cliente inactivo produzca un error 400 sin crear una venta.
+
+**Retroalimentación:** la captura muestra ambos escenarios negativos y las aserciones sobre las filas persistidas.
+
+**Lo que aprendí:** una prueba de rollback confirma que un error en el último paso de la operación no deja cambios parciales.
+
+### Paso 6. Ejecución de `apps.sale`
+
+Ejecuté `python manage.py test apps.sale`.
+
+#### Evidencia EVI-11-13 — Cuatro pruebas aprobadas
+
+![Ejecución de apps.sale con cuatro pruebas y resultado OK](Trazabilidad/ISS-11-EVI-11-13.png)
+
+**Qué observé:** Django encontró cuatro pruebas, las ejecutó y terminó con `OK`.
+
+**Retroalimentación:** la captura confirma el resultado de `SaleTransactionTests` en la configuración de base de datos activa para esa ejecución.
+
+**Lo que aprendí:** los casos de registro válido, stock insuficiente, rollback y cliente inactivo pueden verificarse como pruebas HTTP de una misma unidad.
+
+### Criterios y verificaciones pendientes
+
+Las cuatro pruebas mostradas cubren la venta válida, el stock insuficiente, el rollback por fallo al guardar el stock y el rechazo de cliente inactivo. La prueba de venta válida comprueba que la línea guarda `10.00`, pero no demuestra explícitamente que este precio se conserve después de cambiar el precio del producto a `99.00`; dejo AC-11-02 pendiente de esa comprobación. La guía también pide PASS en los tres motores; las capturas solo evidencian una ejecución y no identifican por separado PostgreSQL, MySQL y SQL Server. Mantengo pendiente la confirmación completa del GATE.
 
 ### Conclusión
 
-Pendiente de realizar ISS-11 y documentar cada evidencia antes de marcar sus criterios como aprobados.
+Implementé el registro de ventas como una operación transaccional con validaciones, captura del precio en la línea, cálculo de totales y descuento de stock. Creé los serializers de entrada, las vistas, la ruta y cuatro pruebas. La captura muestra las cuatro pruebas aprobadas. Aprendí que `transaction.atomic()` evita dejar cabeceras, líneas o stock en un estado parcial ante un fallo. Dejo pendiente verificar el cambio posterior del precio del catálogo y aportar evidencia de todos los motores solicitados para cerrar el GATE.
+
+## ISS-12 — Consulta y anulación de ventas
+
+**Estado:** guía recibida; pendiente de implementación, pruebas y evidencias.
+
+### Objetivo
+
+Consultar ventas y anularlas sin borrar el registro histórico.
+
+### Preparación
+
+Guardé la guía ejecutable en [ISS-12.md](Iss/ISS-12.md). Todavía no incorporo el viewset de lectura/anulación ni las rutas del detalle.
+
+### Conclusión
+
+Pendiente de realizar los pasos de ISS-12 y documentar las evidencias antes de marcar sus criterios como aprobados.
