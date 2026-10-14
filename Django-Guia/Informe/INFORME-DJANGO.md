@@ -1302,16 +1302,130 @@ Publiqué la lista y el detalle de ventas, mantuve el precio histórico en la re
 
 ## ISS-13 — Django Admin
 
-**Estado:** guía recibida; pendiente de configurar el admin, ejecutar las verificaciones y aportar evidencias.
+**Estado:** configuré el superusuario y el admin de los cinco modelos de negocio. `python manage.py check` terminó sin errores; queda pendiente la comprobación visual de acceso y navegación por cada modelo en `/admin/`.
 
 ### Objetivo
 
 Explorar las cinco tablas de negocio desde Django Admin, con listas y formularios apropiados, sin rearmar ventas desde el admin.
 
-### Preparación
+### Paso 1. Creación del superusuario
 
-Guardaré la guía ejecutable de ISS-13 y documentaré los pasos del superusuario y los registros de modelos cuando avance con esta unidad.
+Ejecuté `python manage.py createsuperuser` y Django confirmó `Superuser created successfully`. La contraseña no se incluye en el informe ni en la evidencia que se versiona.
+
+#### Evidencia EVI-13-01 — Superusuario creado
+
+![Creación satisfactoria del superusuario con correo redactado](Trazabilidad/ISS-13-EVI-13-01-redactada.png)
+
+**Qué hice:** creé el usuario administrativo desde el comando de Django.
+
+**Retroalimentación:** Django mostró primero avisos de contraseña corta y numérica; acepté el bypass interactivo y terminó confirmando la creación del superusuario.
+
+**Lo que aprendí:** el comando aplica validaciones de contraseña y permite continuar de forma interactiva tras advertir sobre una clave débil. No guardaré ni compartiré la contraseña.
+
+### Paso 2. Registro y configuración del admin de clientes
+
+Configuré `ClientAdmin` con columnas, filtros, búsqueda, edición del estado, ordenamiento y grupos de campos para información, estado y auditoría.
+
+#### Evidencia EVI-13-02 — `ClientAdmin`
+
+![Registro y configuración de la lista y formulario de clientes](Trazabilidad/ISS-13-EVI-13-02.png)
+
+**Qué hice:** registré el modelo `Client` y configuré sus opciones de listado y formulario.
+
+**Retroalimentación:** el formulario no incluye contraseña; `created_at` y `updated_at` aparecen como solo lectura en el grupo plegable de auditoría.
+
+**Lo que aprendí:** el admin puede agrupar los campos del formulario y limitar los campos editables sin cambiar el modelo.
+
+### Paso 3. Registro de tipos y productos
+
+Configuré `ProductTypeAdmin` y `ProductAdmin`, incluyendo búsqueda de tipo para la relación del producto y `select_related` en su queryset.
+
+#### Evidencia EVI-13-03 — `ProductTypeAdmin` y `ProductAdmin`
+
+![Configuración de tipos de producto y productos en Django Admin](Trazabilidad/ISS-13-EVI-13-03.png)
+
+**Qué hice:** registré ambos modelos y definí sus columnas, filtros, búsquedas, campos editables y grupos de formulario.
+
+**Retroalimentación:** el producto muestra `product_type`, `price` y `stock`; no usa campos que no existen en el modelo. El autocompletado está respaldado por los `search_fields` del tipo de producto.
+
+**Lo que aprendí:** un campo de relación puede cambiarse por un autocompletado y cargar su relación con `select_related` para evitar consultas repetidas al mostrar productos.
+
+### Paso 4. Admin de ventas e inline de detalle
+
+Configuré `ProductSaleInline` y `SaleAdmin` para mostrar los importes y las líneas como datos de solo lectura, sin permitir alta ni eliminación desde el admin.
+
+#### Evidencia EVI-13-04 — Venta de solo lectura e inline
+
+![Inline de ProductSale de solo lectura y lista de Sale](Trazabilidad/ISS-13-EVI-13-04.png)
+
+**Qué hice:** añadí el detalle de venta como inline tabular y agrupé la información y los importes de la venta.
+
+**Retroalimentación:** los campos de línea son de solo lectura y el inline no permite crear ni eliminar líneas. La venta tampoco permite alta ni borrado.
+
+**Lo que aprendí:** las ventas deben originarse en el flujo transaccional de la API para preservar precio histórico e inventario; el admin sirve para inspeccionarlas.
+
+### Paso 5. Ficha de solo lectura de líneas de venta
+
+Registré `ProductSaleAdmin` con búsqueda, filtros y campos de solo lectura, y deshabilité el alta y borrado.
+
+#### Evidencia EVI-13-05 — Permisos y campos de `ProductSaleAdmin`
+
+![ProductSaleAdmin de solo lectura y consultas relacionadas](Trazabilidad/ISS-13-EVI-13-05.png)
+
+**Qué hice:** configuré las columnas y consultas relacionadas del admin de líneas de venta.
+
+**Retroalimentación:** la captura muestra `has_add_permission` y `has_delete_permission` desactivados, junto con `select_related` para las relaciones mostradas.
+
+**Lo que aprendí:** restringir los cambios de las líneas protege la consistencia de ventas y el stock.
+
+#### Evidencia EVI-13-06 — Reglas de ventas y detalles
+
+![Venta sin permisos de alta o borrado y detalle de solo lectura](Trazabilidad/ISS-13-EVI-13-06.png)
+
+**Qué hice:** completé la configuración de ventas y sus detalles para inspección solamente.
+
+**Retroalimentación:** venta y línea no ofrecen alta ni borrado desde el admin; los valores de estado y de auditoría no se editan allí.
+
+**Lo que aprendí:** la anulación de una venta debe pasar por `void()` desde la API, no por una edición manual del estado ni por un borrado físico.
+
+### Paso 6. Verificación del proyecto
+
+Ejecuté el comando de verificación prescrito:
+
+```sh
+python manage.py check
+```
+
+#### Evidencia EVI-13-07 — System check sin errores
+
+![python manage.py check termina con System check identified no issues](Trazabilidad/ISS-13-EVI-13-07.png)
+
+**Qué observé:** Django mostró `System check identified no issues (0 silenced)`.
+
+**Retroalimentación:** la verificación confirma que la configuración del admin, incluido el autocompletado, no produce errores del sistema.
+
+**Lo que aprendí:** `manage.py check` detecta problemas de configuración del admin sin necesidad de alterar los datos del proyecto.
+
+### Criterios y comprobaciones pendientes
+
+Las capturas y los archivos de admin documentan el registro y configuración de los cinco modelos; `python manage.py check` pasó. Queda pendiente entrar a `/admin/` con el superusuario y abrir cada modelo para completar la comprobación visual pedida por la guía. Hasta realizar ese recorrido, mantengo el GATE de ISS-13 parcial.
 
 ### Conclusión
 
-ISS-13 queda pendiente de ejecución. No marco sus criterios ni su GATE como aprobados antes de contar con las comprobaciones y evidencias.
+Creé el superusuario y configuré los modelos de clientes, tipos, productos, ventas y líneas de venta en Django Admin. Separé los datos editables del catálogo de las ventas, que deben permanecer de solo lectura y conservar el flujo transaccional. `python manage.py check` terminó sin errores. Me falta ingresar al admin y recorrer los modelos para cerrar la verificación completa.
+
+## ISS-14 — OpenAPI
+
+**Estado:** guía recibida; pendiente de instalar/configurar `drf-spectacular`, generar el esquema y documentar evidencias.
+
+### Objetivo
+
+Publicar un contrato OpenAPI generado desde las vistas, con nombres camelCase alineados al JSON.
+
+### Preparación
+
+Guardé la guía ejecutable en [ISS-14.md](Iss/ISS-14.md). Todavía no ejecuto la instalación ni modifico settings o rutas para OpenAPI.
+
+### Conclusión
+
+ISS-14 queda pendiente de ejecución. No marco sus criterios ni el cierre de Fase I antes de contar con la validación del esquema y las evidencias solicitadas.
