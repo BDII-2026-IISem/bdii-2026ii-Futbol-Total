@@ -1735,6 +1735,51 @@ Implementé y probé el flujo de login OPEN mostrado en las capturas: username o
 
 ## ISS-18 — Refresh con rotación
 
-**Estado:** guardé la guía ejecutable en [ISS-18.md](Iss/ISS-18.md). Al revisar el árbol de trabajo local encontré `RefreshAPIView`, la ruta `auth/refresh/` y `test_refresh_rotates_and_reuse_revokes_family` ya presentes como cambios sin commit. No ejecuté el comando de prueba ni hice commit de esos archivos.
+**Estado:** la evidencia aportada muestra `RefreshAPIView`, la ruta `auth/refresh/`, `test_refresh_rotates_and_reuse_revokes_family` y la salida satisfactoria de su ejecución (`Ran 1 test`, `OK`). El código continúa como cambio local sin commit; no lo modifiqué.
 
-La implementación visible cubre la rotación del token, el registro de `replaced_by` y el bloqueo de la familia al reutilizar el refresh anterior. No hay todavía una captura del resultado del test de ISS-18, así que AC-18-01, AC-18-02 y AC-18-03 siguen pendientes de verificación. El GATE de ISS-17 también continúa sin aprobar por el requisito ISS-16; antes de cerrar la unidad debo completar la evidencia pendiente de `seed_rbac`, las 53 filas y la ruta resuelta.
+#### Evidencia EVI-18-01 — Rutas de autenticación
+
+![Rutas de login y refresh registradas en security.urls; prompt redactado](Trazabilidad/ISS-18-EVI-18-01-redactada.png)
+
+#### Evidencia EVI-18-02 — Test de rotación y reuso
+
+![Test de renovación, reuso del refresh previo y revocación de la familia; prompt redactado](Trazabilidad/ISS-18-EVI-18-02-redactada.png)
+
+#### Evidencia EVI-18-03 — Imports y emisión de refresh
+
+![Imports y helper issue_refresh para tokens de la misma familia; prompt redactado](Trazabilidad/ISS-18-EVI-18-03-redactada.png)
+
+#### Evidencia EVI-18-04 — Inicio de RefreshAPIView
+
+![Vista OPEN de refresh y consulta del token por hash con select_for_update; prompt redactado](Trazabilidad/ISS-18-EVI-18-04-redactada.png)
+
+#### Evidencia EVI-18-05 — Rotación y manejo de reutilización
+
+![Vista de refresh con revocación de familia, expiración y token reemplazado; prompt redactado](Trazabilidad/ISS-18-EVI-18-05-redactada.png)
+
+#### Evidencia EVI-18-06 — Test de rotación satisfactorio
+
+![Ejecución de test_refresh_rotates_and_reuse_revokes_family con Ran 1 test y OK; prompt redactado](Trazabilidad/ISS-18-EVI-18-06-redactada.png)
+
+**Qué observé:** el test crea la sesión mediante login, comprueba que el refresh renovado sea distinto, vuelve a presentar el anterior y verifica 401; después comprueba que el token nuevo también responda 401 tras la revocación de la familia. La terminal muestra `Ran 1 test` y `OK`.
+
+**Retroalimentación:** la captura de ejecución aporta evidencia para los tres criterios funcionales de ISS-18. Registro el resultado del test como satisfactorio, sin confundirlo con el cumplimiento del requisito previo ISS-17.
+
+**Lo que aprendí:** al detectar la reutilización de un refresh reemplazado, revocar la familia invalida también el token que se había emitido durante la rotación.
+
+### Criterios y requisito previo
+
+- AC-18-01: EVI-18-06 muestra el test satisfactorio que comprueba la rotación y la respuesta 200.
+- AC-18-02: EVI-18-06 muestra el test satisfactorio que comprueba que reutilizar el refresh anterior responde 401.
+- AC-18-03: EVI-18-06 muestra el test satisfactorio que comprueba que el refresh nuevo también queda invalidado.
+- GATE ISS-18: los criterios de aceptación están verificados; mantengo pendiente el GATE por el requisito ISS-17 superado, que no está acreditado mientras ISS-16 conserve pendientes `seed_rbac`, las 53 filas y `resolve(path).route`.
+
+### Conclusión
+
+Verifiqué con la captura del test que el refresh rota, que reutilizar el anterior responde 401 y que la detección de reuso invalida la familia. Aprendí cómo se vinculan los tokens de una familia para que un refresh previamente reemplazado no pueda seguir usándose. Dejo pendiente el GATE de la unidad hasta superar los requisitos previos.
+
+## ISS-19 — Logout
+
+**Estado:** guardé la guía ejecutable en [ISS-19.md](Iss/ISS-19.md). No agregué `LogoutAPIView`, su ruta ni el test: en las capturas recibidas aún no aparece la implementación de logout.
+
+ISS-19 requiere ISS-18 superado. Aunque la evidencia de ISS-18 muestra sus criterios funcionales aprobados, el GATE permanece pendiente por el requisito ISS-17. Por ello, dejo pendientes AC-19-01 y AC-19-02, así como la implementación y la ejecución de `test_logout_invalidates_refresh`.
