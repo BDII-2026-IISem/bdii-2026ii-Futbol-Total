@@ -1500,9 +1500,9 @@ Accedí a `/admin/` y ejecuté el servidor para revisar la documentación desde 
 
 ### Paso 5. Apertura de Swagger UI y revisión de endpoints
 
-Abr? Swagger UI sin autorizar la autenticaci?n y recorr? los grupos de operaciones.
+Abri Swagger UI sin autorizar credenciales y recorri los grupos de operaciones.
 
-#### Evidencia EVI-14-06 ? Swagger UI sin autenticaci?n
+#### Evidencia EVI-14-06 - Swagger UI sin autenticacion
 
 ![Swagger UI abierta en el navegador sin autorizar un token](Trazabilidad/ISS-14-EVI-14-06.png)
 
@@ -1528,18 +1528,116 @@ Abr? Swagger UI sin autorizar la autenticaci?n y recorr? los grupos de operacion
 
 No marco aprobado el GATE de ISS-14 ni el cierre de la Fase I mientras la validación devuelva errores y falten las comprobaciones indicadas.
 
+#### Evidencia EVI-14-09 — Check, migraciones y pruebas de negocio
+
+![Check, migrate y 16 pruebas de client, product y sale; prompt redactado](Trazabilidad/ISS-14-EVI-14-09-redactada.png)
+
+**Qué observé:** `check` no reportó problemas, `migrate` indicó que no había migraciones pendientes y `python manage.py test apps.client apps.product apps.sale` terminó con 16 pruebas `OK`.
+
+**Retroalimentación:** esta ejecución comprueba la suite mostrada para las apps de negocio en la base de pruebas configurada. No demuestra los 24 tests ni la ejecución en PostgreSQL, MySQL y SQL Server mencionados en el texto de la guía; tampoco resuelve los ocho errores de `spectacular --validate`.
+
+**Lo que aprendí:** el resultado de las pruebas de negocio y la validación del contrato OpenAPI son comprobaciones independientes, por lo que debo conservar pendientes los criterios que no pasaron.
+
 ### Conclusión
 
 Instalé y configuré `drf-spectacular`, añadí las rutas del esquema, Swagger y ReDoc, y abrí Swagger sin Bearer. Aprendí que la interfaz puede estar disponible aunque el generador todavía reporte problemas: la validación mostró ocho errores y una advertencia. Dejo ISS-14 parcial y no doy por superado el cierre de Fase I hasta resolverlos y completar las verificaciones pendientes.
 
 ## ISS-15 — RefreshToken
 
-**Estado:** recibí la guía ejecutable y la guardé en [ISS-15.md](Iss/ISS-15.md). No implemento esta unidad hasta superar el requisito previo de ISS-14: su validación OpenAPI aún reporta errores.
+**Estado:** implementé el helper de generación/hash, el modelo `RefreshToken`, la configuración de SimpleJWT y su migración. El GATE de ISS-15 sigue pendiente: falta evidencia del test `AuthFlowTests.test_login_with_username_and_email` y el requisito previo de cierre de ISS-14 no está aprobado.
 
-### Requisito previo
+### Paso 1. Helper para generar y hashear el refresh
 
-ISS-15 requiere el cierre de negocio de ISS-14 superado en el motor utilizado. Antes de iniciar la construcción de RefreshToken, debo resolver los errores de `spectacular --validate`, comprobar los tres criterios de ISS-14 y documentar el GATE correspondiente.
+Creé `apps/security/tokens.py` con `secrets.token_urlsafe(48)` para generar el valor y SHA-256 para obtener su representación hexadecimal.
+
+#### Evidencia EVI-15-01 — Helpers de refresh
+
+![Funciones generate_refresh_value y hash_token](Trazabilidad/ISS-15-EVI-15-01.png)
+
+**Qué hice:** separé la generación del refresh de su hash persistible.
+
+**Retroalimentación:** el helper retorna un valor aleatorio y la función de hash codifica el token en UTF-8 antes de calcular SHA-256.
+
+**Lo que aprendí:** se puede entregar el refresh al cliente y almacenar solo un hash que permita verificarlo sin conservar el secreto en claro.
+
+### Paso 2. Modelo `RefreshToken`
+
+Agregué `RefreshToken` después de `User`, con la relación restringida al usuario, hash único, familia, expiración, revocación, reemplazo, estado y auditoría.
+
+#### Evidencia EVI-15-02 — Imports y declaración del modelo
+
+![Imports y comienzo del modelo RefreshToken](Trazabilidad/ISS-15-EVI-15-02.png)
+
+#### Evidencia EVI-15-03 — Campos y métodos del modelo
+
+![Campos, restricciones, is_usable, lifetime y default_expiry](Trazabilidad/ISS-15-EVI-15-03.png)
+
+**Qué hice:** definí la tabla `refresh_tokens`, con `token_hash` único y estado inicial `active`; `is_usable` comprueba estado, revocación, reemplazo y expiración.
+
+**Retroalimentación:** las capturas muestran el modelo y sus campos, incluida la FK `RESTRICT` a `User` y el vínculo opcional al token que lo reemplaza.
+
+**Lo que aprendí:** el estado de persistencia permite invalidar y rastrear sesiones refresh, mientras que la tabla no necesita guardar el token original.
+
+### Paso 3. Instalación y configuración de SimpleJWT
+
+Instalé `djangorestframework-simplejwt==5.5.1`, registré `rest_framework_simplejwt` y configuré la duración y firma indicadas por la ISS. No agregué `token_blacklist`.
+
+#### Evidencia EVI-15-04 — Instalación de SimpleJWT
+
+![Instalación de djangorestframework-simplejwt 5.5.1; prompt redactado](Trazabilidad/ISS-15-EVI-15-04-redactada.png)
+
+#### Evidencia EVI-15-05 — Aplicación registrada en settings
+
+![rest_framework_simplejwt añadido a INSTALLED_APPS](Trazabilidad/ISS-15-EVI-15-05.png)
+
+#### Evidencia EVI-15-06 — Parámetros SIMPLE_JWT
+
+![Parámetros de expiración y firma SIMPLE_JWT](Trazabilidad/ISS-15-EVI-15-06.png)
+
+**Qué hice:** fijé SimpleJWT en las dependencias e incorporé `SIMPLE_JWT` con expiraciones, algoritmo HS256 y el claim `user_id`.
+
+**Retroalimentación:** las capturas muestran la app y los parámetros; la rotación y blacklist de SimpleJWT permanecen desactivadas, de acuerdo con la guía.
+
+**Lo que aprendí:** SimpleJWT gestiona la emisión y verificación del access token, mientras que el estado revocable del refresh se conserva en el modelo propio.
+
+### Paso 4. Migración del modelo
+
+Generé y apliqué la migración de seguridad para crear la tabla de refresh tokens. En una segunda ejecución, Django informó que no había cambios nuevos en el modelo.
+
+#### Evidencia EVI-15-07 — Migración de `RefreshToken`
+
+![Migración security.0002_refreshtoken aplicada; prompt redactado](Trazabilidad/ISS-15-EVI-15-07-redactada.png)
+
+#### Evidencia EVI-15-08 — No hay migraciones pendientes
+
+![Segunda makemigrations sin cambios y migrate sin migraciones pendientes; prompt redactado](Trazabilidad/ISS-15-EVI-15-08-redactada.png)
+
+**Qué observé:** `security.0002_refreshtoken` se creó y se aplicó con `OK`; en la ejecución siguiente, `makemigrations` informó que no detectó cambios y `migrate` que no había migraciones pendientes.
+
+**Retroalimentación:** el resultado acredita que la migración mostrada se generó y aplicó en la base usada en esa ejecución. No sustituye la prueba de login y del contenido de la respuesta.
+
+**Lo que aprendí:** después de aplicar una migración, repetir `makemigrations` permite verificar que el estado de los modelos y las migraciones está sincronizado.
+
+### Criterios y verificaciones pendientes
+
+- AC-15-01: **pendiente**. La migración está aplicada, pero no se mostró el test que compara el refresh devuelto con `token_hash`.
+- AC-15-02: **pendiente**. No hay evidencia del cálculo SHA-256 comparado con el token retornado por login.
+- AC-15-03: **pendiente**. No se mostró la respuesta de login ni la aserción de ausencia de `password`.
+
+La captura EVI-14-09 muestra 16 pruebas de `client`, `product` y `sale`; no es evidencia de `AuthFlowTests.test_login_with_username_and_email`. Además, ISS-15 exige cerrar ISS-14 y el esquema OpenAPI sigue teniendo errores de validación.
 
 ### Conclusión
 
-La implementación de RefreshToken queda pendiente. No instalé SimpleJWT, no modifiqué los modelos de seguridad y no generé migraciones en este paso; primero debo cerrar el GATE de ISS-14.
+Instalé SimpleJWT, configuré sus parámetros, implementé la generación y el hash del refresh y apliqué la migración de `RefreshToken`. Aprendí a separar el access token sin estado del refresh revocable persistido solo como hash. Dejo ISS-15 parcial hasta verificar los tres criterios con el test indicado y superar el requisito previo de ISS-14.
+
+## ISS-16 — Role, RoleUser, Resource y ResourceRole
+
+**Estado:** guardé la guía ejecutable en [ISS-16.md](Iss/ISS-16.md). No inicio la construcción: su requisito ISS-15 superado todavía no está acreditado.
+
+### Requisito previo
+
+Antes de agregar los modelos RBAC debo completar la prueba de ISS-15 sobre persistencia/hash del refresh y ausencia de `password`, y dejar superado el cierre requerido de ISS-14.
+
+### Conclusión
+
+La matriz RBAC queda pendiente. Todavía no agregué `HttpMethod`, `Role`, `RoleUser`, `Resource` ni `ResourceRole`, ni generé migraciones de ISS-16. Primero debo cerrar los GATE previos.
