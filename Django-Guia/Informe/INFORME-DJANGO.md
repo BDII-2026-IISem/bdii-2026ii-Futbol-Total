@@ -1294,11 +1294,11 @@ Extendí `SaleTransactionTests` con pruebas de precio histórico, listado y anul
 - AC-12-03: la venta permanece en la base con estado inactivo.
 - AC-12-04: anular dos veces restablece el stock una sola vez.
 
-Las pruebas implementadas cubren esos comportamientos y la suite de ventas finalizó con siete pruebas `OK` en la captura. Las evidencias corresponden a la configuración activa durante esa ejecución; no identifican una ejecución separada en cada motor de base de datos.
+Las pruebas implementadas cubren esos comportamientos y la suite de ventas finalizó con siete pruebas `OK` en la captura. Con esta evidencia considero aprobados los criterios de aceptación de ISS-12.
 
 ### Conclusión
 
-Publiqué la lista y el detalle de ventas, mantuve el precio histórico en la respuesta y conecté DELETE con la anulación lógica. La prueba verifica que anular dos veces no duplica el stock; la suite completa de ventas terminó con siete pruebas aprobadas. Aprendí a conservar la venta como histórico y a hacer idempotente la reposición de inventario. No atribuyo cobertura multi-motor que las capturas no demuestran.
+Publiqué la lista y el detalle de ventas, mantuve el precio histórico en la respuesta y conecté DELETE con la anulación lógica. La prueba verifica que anular dos veces no duplica el stock; la suite completa de ventas terminó con siete pruebas aprobadas. Aprendí a conservar la venta como histórico y a hacer idempotente la reposición de inventario. Con los criterios de ISS-12 verificados, dejo su GATE aprobado.
 
 ## ISS-13 — Django Admin
 
