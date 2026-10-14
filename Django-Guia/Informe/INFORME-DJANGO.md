@@ -1187,7 +1187,7 @@ Escribí `SaleTransactionTests` para verificar la venta con dos productos y desc
 
 **Qué hice:** agregué aserciones de subtotal 24.50, total 23.00, impuesto cero, precio histórico 10.00 y stock restante, además del rechazo cuando la cantidad supera las existencias.
 
-**Retroalimentación:** la captura verifica resultados y persistencia en los casos de venta válida y stock insuficiente. La prueba confirma que la línea recibió el valor `10.00`, pero no cambia después el precio del producto a `99.00`; esa parte concreta de AC-11-02 todavía necesita una aserción explícita.
+**Retroalimentación:** la captura verifica resultados y persistencia en los casos de venta válida y stock insuficiente. La prueba adicional de detalle sí cambia el precio del producto a `99.00` y confirma que la línea conserva `10.00`.
 
 **Lo que aprendí:** la prueba de la operación debe comprobar tanto importes y precios congelados como el inventario resultante.
 
@@ -1209,7 +1209,7 @@ Ejecuté `python manage.py test apps.sale`.
 
 ![Ejecución de apps.sale con cuatro pruebas y resultado OK](Trazabilidad/ISS-11-EVI-11-13.png)
 
-**Qué observé:** Django encontró cuatro pruebas, las ejecutó y terminó con `OK`.
+**Qué observé:** en esta ejecución inicial Django encontró cuatro pruebas, las ejecutó y terminó con `OK`. Más adelante amplié la clase con las pruebas de consulta y anulación; la suite actualizada terminó con siete pruebas `OK` en la evidencia de ISS-12.
 
 **Retroalimentación:** la captura confirma el resultado de `SaleTransactionTests` en la configuración de base de datos activa para esa ejecución.
 
@@ -1217,24 +1217,101 @@ Ejecuté `python manage.py test apps.sale`.
 
 ### Criterios y verificaciones pendientes
 
-Las cuatro pruebas mostradas cubren la venta válida, el stock insuficiente, el rollback por fallo al guardar el stock y el rechazo de cliente inactivo. La prueba de venta válida comprueba que la línea guarda `10.00`, pero no demuestra explícitamente que este precio se conserve después de cambiar el precio del producto a `99.00`; dejo AC-11-02 pendiente de esa comprobación. La guía también pide PASS en los tres motores; las capturas solo evidencian una ejecución y no identifican por separado PostgreSQL, MySQL y SQL Server. Mantengo pendiente la confirmación completa del GATE.
+Las capturas de ISS-11 muestran las cuatro pruebas iniciales; las capturas de ISS-12 muestran después los tres casos añadidos, incluido el cambio del precio vivo a `99.00` con verificación de que el precio histórico sigue en `10.00`. La ejecución actualizada terminó con siete pruebas `OK`. Considero cubiertos los cinco criterios funcionales de ISS-11 en esta ejecución. La guía también pide PASS en los tres motores; las capturas solo identifican una ejecución y no demuestran por separado PostgreSQL, MySQL y SQL Server, por lo que mantengo pendiente la confirmación multi-motor del GATE.
 
 ### Conclusión
 
-Implementé el registro de ventas como una operación transaccional con validaciones, captura del precio en la línea, cálculo de totales y descuento de stock. Creé los serializers de entrada, las vistas, la ruta y cuatro pruebas. La captura muestra las cuatro pruebas aprobadas. Aprendí que `transaction.atomic()` evita dejar cabeceras, líneas o stock en un estado parcial ante un fallo. Dejo pendiente verificar el cambio posterior del precio del catálogo y aportar evidencia de todos los motores solicitados para cerrar el GATE.
+Implementé el registro de ventas como una operación transaccional con validaciones, captura del precio en la línea, cálculo de totales y descuento de stock. Creé los serializers de entrada, las vistas, la ruta y pruebas de registro, rollback y consulta histórica. La evidencia actualizada muestra siete pruebas aprobadas. Aprendí que `transaction.atomic()` evita dejar cabeceras, líneas o stock en un estado parcial ante un fallo. Mantengo pendiente la evidencia en todos los motores solicitados para cerrar el GATE.
 
 ## ISS-12 — Consulta y anulación de ventas
 
-**Estado:** guía recibida; pendiente de implementación, pruebas y evidencias.
+**Estado:** implementé la consulta de colección y detalle, y la anulación lógica; la suite muestra siete pruebas aprobadas.
 
 ### Objetivo
 
 Consultar ventas y anularlas sin borrar el registro histórico.
 
-### Preparación
+### Paso 1. Consulta de ventas y vista de solo lectura
 
-Guardé la guía ejecutable en [ISS-12.md](Iss/ISS-12.md). Todavía no incorporo el viewset de lectura/anulación ni las rutas del detalle.
+Extendí `SaleReadViewSet` con las acciones de lista, detalle y baja, sin habilitar alta ni actualización. `SaleCollectionAPIView.get` usa ese queryset y serializer para responder la lista.
+
+#### Evidencia EVI-12-01 — Precio histórico y listado
+
+![Pruebas del precio histórico, la lista de ventas y la anulación idempotente](Trazabilidad/ISS-12-EVI-12-01.png)
+
+**Qué hice:** añadí pruebas para consultar el detalle tras cambiar el precio del producto, listar la venta recién registrada y anularla dos veces.
+
+**Retroalimentación:** las aserciones verifican que la línea conserva `unit_price` de `10.00` tras cambiar el catálogo a `99.00`, y que la lista contiene la venta creada.
+
+**Lo que aprendí:** la lectura de la venta usa el precio guardado en su línea, no el precio actual del producto.
+
+### Paso 2. Ruta de detalle y anulación
+
+Agregué `SaleReadViewSet` a `apps/sale/urls.py` para que el detalle acepte únicamente GET y DELETE.
+
+#### Evidencia EVI-12-02 — Ruta GET/DELETE del detalle
+
+![Ruta de ventas vinculada a retrieve y destroy](Trazabilidad/ISS-12-EVI-12-02.png)
+
+**Qué hice:** vinculé el método GET con `retrieve` y DELETE con `destroy` para la ruta `sales/<int:pk>/`.
+
+**Retroalimentación:** el diccionario de `as_view` no publica PUT, PATCH ni POST en el detalle.
+
+**Lo que aprendí:** puedo limitar explícitamente qué acciones HTTP expone un viewset al enlazarlo a una ruta.
+
+### Paso 3. Anulación lógica de la venta
+
+Implementé `perform_destroy` en `SaleReadViewSet` para llamar a `instance.void()`. El método `get` de `SaleCollectionAPIView` devuelve el listado usando el queryset y el serializer de lectura.
+
+#### Evidencia EVI-12-03 — Viewset y lecturas de venta
+
+![SaleReadViewSet y vista GET de colección](Trazabilidad/ISS-12-EVI-12-03.png)
+
+**Qué hice:** añadí las acciones de lectura y delegué la anulación en el método del modelo.
+
+**Retroalimentación:** la consulta precarga cliente y líneas con producto; la anulación llama `void()` en vez de borrar la venta.
+
+**Lo que aprendí:** separar el viewset de lectura del endpoint de registro evita ofrecer operaciones de escritura no previstas y mantiene la lógica de anulación en el modelo.
+
+### Paso 4. Pruebas de histórico, lista y stock restaurado
+
+Extendí `SaleTransactionTests` con pruebas de precio histórico, listado y anulación repetida.
+
+#### Evidencia EVI-12-04 — Pruebas y ejecución satisfactoria
+
+![Siete pruebas de ventas ejecutadas con resultado OK](Trazabilidad/ISS-12-EVI-12-04.png)
+
+**Qué observé:** ejecuté `python manage.py test apps.sale`; Django encontró y ejecutó siete pruebas y terminó con `OK`.
+
+**Retroalimentación:** la prueba de anulación llama DELETE dos veces y verifica que el stock vuelva al valor original y la venta quede inactiva. La suite incluye además la prueba que modifica el precio del catálogo y conserva el precio histórico en el detalle.
+
+**Lo que aprendí:** una anulación repetida debe ser idempotente respecto del inventario; las pruebas aseguran que el stock no se reponga dos veces.
+
+### Criterios de aceptación
+
+- AC-12-01: el detalle incluye líneas y el precio histórico guardado.
+- AC-12-02: DELETE responde 204.
+- AC-12-03: la venta permanece en la base con estado inactivo.
+- AC-12-04: anular dos veces restablece el stock una sola vez.
+
+Las pruebas implementadas cubren esos comportamientos y la suite de ventas finalizó con siete pruebas `OK` en la captura. Las evidencias corresponden a la configuración activa durante esa ejecución; no identifican una ejecución separada en cada motor de base de datos.
 
 ### Conclusión
 
-Pendiente de realizar los pasos de ISS-12 y documentar las evidencias antes de marcar sus criterios como aprobados.
+Publiqué la lista y el detalle de ventas, mantuve el precio histórico en la respuesta y conecté DELETE con la anulación lógica. La prueba verifica que anular dos veces no duplica el stock; la suite completa de ventas terminó con siete pruebas aprobadas. Aprendí a conservar la venta como histórico y a hacer idempotente la reposición de inventario. No atribuyo cobertura multi-motor que las capturas no demuestran.
+
+## ISS-13 — Django Admin
+
+**Estado:** guía recibida; pendiente de configurar el admin, ejecutar las verificaciones y aportar evidencias.
+
+### Objetivo
+
+Explorar las cinco tablas de negocio desde Django Admin, con listas y formularios apropiados, sin rearmar ventas desde el admin.
+
+### Preparación
+
+Guardaré la guía ejecutable de ISS-13 y documentaré los pasos del superusuario y los registros de modelos cuando avance con esta unidad.
+
+### Conclusión
+
+ISS-13 queda pendiente de ejecución. No marco sus criterios ni su GATE como aprobados antes de contar con las comprobaciones y evidencias.

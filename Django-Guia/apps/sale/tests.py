@@ -103,3 +103,40 @@ class SaleTransactionTests(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Sale.objects.count(), 0)
+
+    def test_detail_keeps_historical_price(self):
+        response = self.client.post(
+            "/api/sales/",
+            self._payload([{"productId": self.water.id, "quantity": 1}]),
+            format="json",
+        )
+        Product.objects.filter(pk=self.water.pk).update(price=Decimal("99.00"))
+        detail = self.client.get(f"/api/sales/{response.data['id']}/")
+        self.assertEqual(detail.status_code, 200)
+        self.assertEqual(detail.data["lines"][0]["unit_price"], "10.00")
+
+    def test_list_returns_the_registered_sale(self):
+        created = self.client.post(
+            "/api/sales/",
+            self._payload([{"productId": self.water.id, "quantity": 1}]),
+            format="json",
+        )
+        listed = self.client.get("/api/sales/")
+        self.assertEqual(listed.status_code, 200)
+        self.assertTrue(any(row["id"] == created.data["id"] for row in listed.data))
+
+    def test_void_restores_stock_once(self):
+        created = self.client.post(
+            "/api/sales/",
+            self._payload([{"productId": self.water.id, "quantity": 2}]),
+            format="json",
+        )
+        sale_id = created.data["id"]
+        first = self.client.delete(f"/api/sales/{sale_id}/")
+        second = self.client.delete(f"/api/sales/{sale_id}/")
+        self.assertEqual(first.status_code, 204)
+        self.assertEqual(second.status_code, 204)
+        self.water.refresh_from_db()
+        self.assertEqual(self.water.stock, 5)
+        sale = Sale.objects.get(pk=sale_id)
+        self.assertEqual(sale.status, RecordStatus.INACTIVE)

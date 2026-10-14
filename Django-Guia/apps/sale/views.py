@@ -1,10 +1,25 @@
-from rest_framework import status
+from rest_framework import mixins, status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.sale.models import Sale
 from apps.sale.serializers import SaleRegisterSerializer, SaleSerializer
+
+
+class SaleReadViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    permission_classes = [AllowAny]
+    serializer_class = SaleSerializer
+    queryset = Sale.objects.select_related("client").prefetch_related("lines__product")
+    lookup_value_converter = "int"
+
+    def perform_destroy(self, instance):
+        instance.void()
 
 
 class SaleRegisterAPIView(APIView):
@@ -20,6 +35,11 @@ class SaleRegisterAPIView(APIView):
 
 class SaleCollectionAPIView(APIView):
     permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        queryset = SaleReadViewSet.queryset
+        serializer = SaleReadViewSet.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         handler = SaleRegisterAPIView()
