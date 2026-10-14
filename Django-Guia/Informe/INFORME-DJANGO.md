@@ -1828,6 +1828,6 @@ Verifiqué el cierre de sesión con el test mostrado: logout responde 204 y el r
 
 ## ISS-20 — Perfil JWT con token
 
-**Estado:** guardé la guía ejecutable en [ISS-20.md](Iss/ISS-20.md). Al revisar el árbol de trabajo observé que la autenticación JWT personalizada, `ProfileSerializer`, `ProfileAPIView`, la ruta de perfil y la configuración de DRF ya están presentes como cambios locales. No los modifiqué. En `apps/security/tests.py` aún no encuentro `test_profile_requires_token_and_rejects_inactive_user`, y las capturas recibidas en este avance corresponden a ISS-19, no muestran pruebas del perfil.
+**Estado:** guardé la guía ejecutable en [ISS-20.md](Iss/ISS-20.md). Al revisar el árbol de trabajo observé que la autenticación JWT personalizada, `ProfileSerializer`, `ProfileAPIView`, la ruta de perfil, la configuración de DRF y `test_profile_requires_token_and_rejects_inactive_user` ya están presentes como cambios locales. No los modifiqué. Las capturas recibidas en este avance corresponden a ISS-19, así que aún no tengo evidencia de ejecución satisfactoria de la prueba del perfil.
 
-ISS-20 requiere ISS-19 superado. Aunque EVI-19-07 respalda sus criterios funcionales, el gate de ISS-19 permanece pendiente por el requisito ISS-18/ISS-17. Mantengo pendientes AC-20-01 a AC-20-04 hasta contar con el test y su resultado satisfactorio. No afirmo que el comportamiento del perfil haya sido verificado.
+ISS-20 requiere ISS-19 superado. Aunque EVI-19-07 respalda sus criterios funcionales, el gate de ISS-19 permanece pendiente por el requisito ISS-18/ISS-17. Mantengo pendientes AC-20-01 a AC-20-04 hasta contar con evidencia de ejecución satisfactoria de la prueba. No afirmo que el comportamiento del perfil haya sido verificado.
