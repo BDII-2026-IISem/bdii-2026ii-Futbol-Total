@@ -1882,6 +1882,48 @@ Implementé y verifiqué el perfil autenticado con JWT según el test mostrado. 
 
 ## ISS-21 — HasResourceAccess
 
-**Estado:** guardé la guía ejecutable en [ISS-21.md](Iss/ISS-21.md). En las capturas recibidas no aparece la clase `HasResourceAccess` ni la ejecución de `RbacTests`; todavía no implemento el permiso ni afirmo resultados de AC-21-01 a AC-21-04.
+**Estado:** las capturas muestran la implementación de `HasResourceAccess`, su uso en `ClientViewSet` y la ejecución satisfactoria conjunta de `RbacTests` y `ClientApiTests` (`Found 7 test(s)`, `Ran 7 tests`, `OK`). Guardé la guía en [ISS-21.md](Iss/ISS-21.md); el código permanece como cambio local.
 
-Al revisar el árbol local, `apps/security/permissions.py` aún no existe. La guía requiere además modelos ISS-16 y ISS-20 superado, cuyos GATE siguen condicionados a los requisitos previos documentados. Dejo pendiente la construcción y verificación de esta unidad.
+#### Evidencia EVI-21-01 — Implementación de HasResourceAccess
+
+![Permiso que comprueba estado, método, patrón de ruta y cadena RBAC activa; prompt redactado](Trazabilidad/ISS-21-EVI-21-01-redactada.png)
+
+#### Evidencia EVI-21-02 — ClientViewSet protegido
+
+![ClientViewSet usa HasResourceAccess; prompt redactado](Trazabilidad/ISS-21-EVI-21-02-redactada.png)
+
+#### Evidencia EVI-21-03 — Preparación de datos RBAC para tests
+
+![ClientApiTests crea usuario, rol, asignación, recursos y concesiones activas; prompt redactado](Trazabilidad/ISS-21-EVI-21-03-redactada.png)
+
+#### Evidencia EVI-21-04 — Permiso en el viewset
+
+![ClientViewSet declara HasResourceAccess; prompt redactado](Trazabilidad/ISS-21-EVI-21-04-redactada.png)
+
+#### Evidencia EVI-21-05 — Pruebas de RBAC satisfactorias
+
+![RbacTests y ClientApiTests encuentran siete pruebas y terminan con OK; prompt redactado](Trazabilidad/ISS-21-EVI-21-05-redactada.png)
+
+**Qué observé:** el permiso rechaza usuarios no autenticados o inactivos, normaliza `HEAD` como `GET`, permite `OPTIONS` autenticado y consulta método/ruta junto con el estado de cada eslabón RBAC. El test construye una cadena activa y recorre rol, asignación, concesión y recurso desactivados para confirmar la denegación. La terminal muestra siete pruebas ejecutadas con `OK`.
+
+**Retroalimentación:** EVI-21-05 respalda los casos de identidad ausente, falta de concesión, concesión activa y cadena desactivada. No es evidencia de la suite completa de cliente, producto y ventas requerida por ISS-22. El `ClientViewSet` mostrado declara `HasResourceAccess`; la composición explícita con `IsAuthenticated` y el cambio del permiso global son parte del ISS-22.
+
+**Lo que aprendí:** el permiso autoriza comparando el patrón de ruta resuelto y el método, no una URL con parámetros sustituidos. La autorización solo existe mientras toda la cadena de usuario, asignación, rol, concesión y recurso permanezca activa.
+
+### Criterios y requisitos
+
+- AC-21-01: EVI-21-05 muestra 403 al usuario autenticado sin concesión.
+- AC-21-02: EVI-21-05 muestra 401 cuando falta identidad.
+- AC-21-03: EVI-21-05 muestra acceso 200 con la concesión activa.
+- AC-21-04: las pruebas mostradas desactivan los eslabones de la cadena y esperan 403.
+- GATE ISS-21: las pruebas funcionales mostradas pasan; mantengo el gate sujeto a ISS-20 superado y a la verificación de los modelos ISS-16.
+
+### Conclusión
+
+Implementé y verifiqué la autorización por método, ruta resuelta y estado activo de toda la relación RBAC. Aprendí a distinguir el 401 de falta de identidad del 403 por falta de concesión. Dejo el GATE condicionado a los requisitos previos documentados.
+
+## ISS-22 — RBAC sobre el negocio
+
+**Estado:** guardé la guía ejecutable en [ISS-22.md](Iss/ISS-22.md). La construcción está parcial en el árbol local: `ClientViewSet` ya usa `HasResourceAccess`, y la prueba de cliente crea una cadena RBAC; pero las vistas de producto y ventas aún declaran `AllowAny`, el permiso global de DRF también sigue en `AllowAny`, y `apps/common/testing.py` todavía no contiene `grant()` ni `grant_crud()`.
+
+No doy AC-22-01 a AC-22-03 por verificados: las capturas compartidas ejecutan siete pruebas dirigidas a RBAC y cliente, no la suite completa de negocio. ISS-22 requiere ISS-21 superado y el GATE de ISS-21 sigue condicionado a ISS-20 e ISS-16. Dejo pendientes la protección consistente de todas las vistas de negocio, los helpers compartidos y la ejecución completa de las suites indicadas.
