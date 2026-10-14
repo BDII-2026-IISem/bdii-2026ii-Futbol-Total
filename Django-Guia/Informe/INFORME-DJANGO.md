@@ -780,32 +780,100 @@ Instalé las dependencias de la API, configuré CORS y REST Framework y escribí
 
 ## ISS-08 — Client con ModelViewSet
 
-**Estado:** implementé el endpoint y las pruebas; la suite pasó con SQLite temporal, pero quedan pendientes la evidencia solicitada y la verificación de los motores del GATE.
+**Estado:** implementé y probé el CRUD de clientes. Las cuatro pruebas pasaron en la ejecución documentada; quedan pendientes evidencias de los otros motores mencionados por el GATE.
 
 ### Objetivo
 
 Publicar el CRUD de clientes con `ModelViewSet`.
 
-### Paso 1. Vista de clientes y pruebas del CRUD
+### Paso 1. Vista para el recurso de clientes
 
-Implementé `ClientViewSet` con acceso `AllowAny`, filtro opcional por `status` y baja lógica. También preparé `ClientApiTests` para alta, consulta, actualización, eliminación lógica, validaciones y persistencia.
+Creé `apps/client/views.py` con `ClientViewSet`, acceso `AllowAny`, filtro opcional por `status` y baja lógica.
 
-### Paso 2. Rutas del recurso
+#### Evidencia EVI-08-01 — `ClientViewSet`
 
-Creé `apps/client/urls.py` con `SimpleRouter(use_regex_path=False)` y registré `clients`. En `config/urls.py` incluí las rutas bajo el prefijo `api/`, para exponer el recurso en `/api/clients/`.
+![ClientViewSet con filtro por estado y eliminación lógica](Trazabilidad/ISS-08-EVI-08-01.png)
 
-### Paso 3. Verificación del CRUD
+**Qué hice:** implementé las operaciones CRUD genéricas con `ModelViewSet` y personalicé la consulta y la baja lógica.
 
-Ejecuté la prueba indicada por la guía, `python manage.py test apps.client`. La ejecución configurada para MySQL no pudo crear la base de pruebas: el servidor devolvió el error `1044` por falta de permiso para crear `test_Pedalibre`. Sin modificar la base de datos del proyecto, ejecuté las mismas cuatro pruebas con una configuración SQLite temporal aislada; las cuatro pasaron.
+**Retroalimentación:** la captura muestra `AllowAny`, el filtro por parámetro `status` y `perform_destroy`, que conserva la fila al marcarla inactiva.
 
-**Retroalimentación:** la suite valida correctamente las operaciones del endpoint en SQLite. La ejecución prescrita con MySQL está bloqueada por permisos, y no he verificado PostgreSQL ni SQL Server.
+**Lo que aprendí:** `ModelViewSet` cubre el CRUD y permite personalizar las partes específicas del recurso sin reimplementar cada método HTTP.
 
-**Lo que aprendí:** `ModelViewSet` con `SimpleRouter` publica las rutas CRUD con poco código propio; `perform_destroy` permite conservar la fila y cambiar su estado. Para cerrar el GATE también debo comprobar los motores pedidos por la guía.
+### Paso 2. Pruebas de la API de clientes
 
-### Evidencias pendientes
+Preparé `ClientApiTests` para verificar el alta y persistencia, las validaciones, la baja lógica, el listado, el detalle y la actualización.
 
-Todavía no incorporo capturas de ISS-08. El GATE menciona evidencia de pruebas en PostgreSQL, MySQL y SQL Server; por eso no lo marco como PASS con una ejecución únicamente en SQLite.
+#### Evidencia EVI-08-02 — Pruebas del CRUD
+
+![Pruebas de API para clientes](Trazabilidad/ISS-08-EVI-08-02.png)
+
+**Qué hice:** escribí las cuatro pruebas indicadas para comprobar los comportamientos principales del endpoint.
+
+**Retroalimentación:** la captura deja visibles las aserciones de alta, respuesta JSON camelCase, validación de correo y persistencia.
+
+**Lo que aprendí:** las pruebas de API comprueban tanto el código HTTP como los datos devueltos y el estado que finalmente queda guardado.
+
+### Paso 3. Primera ejecución de las pruebas
+
+Ejecuté `python manage.py test apps.client`. En este primer intento, el servidor MySQL no permitió crear la base `test_Pedalibre` y devolvió el error `1044`.
+
+#### Evidencia EVI-08-03 — Primer intento bloqueado por permisos de base de datos
+
+![Primer intento de pruebas bloqueado al crear test_Pedalibre](Trazabilidad/ISS-08-EVI-08-03.png)
+
+**Qué observé:** Django encontró cuatro pruebas, pero el servidor rechazó la creación de la base de pruebas por permisos.
+
+**Retroalimentación:** este intento no constituye un resultado PASS; identificó una condición de acceso a la base de pruebas que debía resolverse antes de validar la suite.
+
+**Lo que aprendí:** al ejecutar pruebas con una base SQL, Django necesita preparar su propia base de pruebas, además de poder conectarse a la base normal del proyecto.
+
+### Paso 4. Registro de rutas del recurso
+
+Creé `apps/client/urls.py` con `SimpleRouter(use_regex_path=False)` y registré el recurso `clients`.
+
+#### Evidencia EVI-08-04 — Router de clientes
+
+![SimpleRouter con las rutas del recurso clients](Trazabilidad/ISS-08-EVI-08-04.png)
+
+**Qué hice:** registré `ClientViewSet` en el router para generar las rutas de lista/alta y detalle/actualización/baja.
+
+**Retroalimentación:** la captura muestra el convertidor de ruta de tipo entero y el `basename` `client`.
+
+**Lo que aprendí:** el router de DRF conecta las acciones de `ModelViewSet` con las rutas del recurso sin definir cada URL manualmente.
+
+### Paso 5. Inclusión del router en el proyecto
+
+Incluí `apps.client.urls` bajo el prefijo `api/` en `config/urls.py`, para completar la ruta `/api/clients/`.
+
+#### Evidencia EVI-08-05 — Prefijo `/api/`
+
+![Inclusión de las rutas de clientes en config/urls.py](Trazabilidad/ISS-08-EVI-08-05.png)
+
+**Qué hice:** agregué el `include` del URLconf de clientes a las rutas principales del proyecto.
+
+**Retroalimentación:** la configuración muestra el prefijo de API conectado al router de la app cliente.
+
+**Lo que aprendí:** Django concatena el prefijo del proyecto con el segmento registrado por la app para formar la URL completa del recurso.
+
+### Paso 6. Ejecución exitosa de las pruebas
+
+Volví a ejecutar `python manage.py test apps.client`. La terminal indicó que `test_Pedalibre` ya existía y ofreció eliminarla para continuar; después, la suite terminó con cuatro pruebas ejecutadas y resultado `OK`.
+
+#### Evidencia EVI-08-06 — Cuatro pruebas aprobadas
+
+![Ejecución de ClientApiTests con cuatro pruebas y resultado OK](Trazabilidad/ISS-08-EVI-08-06.png)
+
+**Qué observé:** después de confirmar la eliminación de la base de pruebas anterior, las cuatro pruebas finalizaron correctamente y Django destruyó la base temporal.
+
+**Retroalimentación:** esta captura sí muestra la verificación exitosa de `ClientApiTests` en la configuración de base de datos activa durante esa ejecución.
+
+**Lo que aprendí:** una base de pruebas residual puede impedir una nueva ejecución; resolver el aviso de Django permitió recrearla y completar las pruebas.
+
+### Criterios y verificaciones pendientes
+
+La captura acredita que las cuatro pruebas del CRUD pasaron en la ejecución mostrada. La guía pide evidencia PASS en PostgreSQL, MySQL y SQL Server; las capturas no acreditan los tres motores. Por ello, mantengo pendiente el GATE completo hasta documentar los motores restantes.
 
 ### Conclusión
 
-Dejé implementada la vista, las pruebas y las rutas del endpoint. Las cuatro pruebas pasaron usando SQLite temporal, pero la ejecución en MySQL no pudo crear la base de pruebas por permisos y aún no tengo capturas ni resultados en PostgreSQL y SQL Server. ISS-08 queda parcialmente completada hasta reunir esas evidencias.
+Implementé el `ClientViewSet`, sus pruebas y las rutas `/api/clients/`. El primer intento de pruebas no pudo crear la base temporal por permisos; en la siguiente ejecución, Django detectó una base de pruebas existente, permitió eliminarla y recrearla, y las cuatro pruebas terminaron en `OK`. Aprendí a distinguir los problemas de preparación de la base de pruebas de los fallos de la API. Dejo el GATE parcialmente completado porque todavía falta la evidencia de todos los motores solicitados.
