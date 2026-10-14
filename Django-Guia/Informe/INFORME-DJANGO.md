@@ -1828,6 +1828,60 @@ Verifiqué el cierre de sesión con el test mostrado: logout responde 204 y el r
 
 ## ISS-20 — Perfil JWT con token
 
-**Estado:** guardé la guía ejecutable en [ISS-20.md](Iss/ISS-20.md). Al revisar el árbol de trabajo observé que la autenticación JWT personalizada, `ProfileSerializer`, `ProfileAPIView`, la ruta de perfil, la configuración de DRF y `test_profile_requires_token_and_rejects_inactive_user` ya están presentes como cambios locales. No los modifiqué. Las capturas recibidas en este avance corresponden a ISS-19, así que aún no tengo evidencia de ejecución satisfactoria de la prueba del perfil.
+**Estado:** las capturas de esta entrega muestran la autenticación JWT personalizada, la configuración de DRF, `ProfileAPIView`, `ProfileSerializer`, la ruta y `test_profile_requires_token_and_rejects_inactive_user`. La salida de test compartida muestra `Ran 1 test` y `OK`. El código permanece como cambio local sin commit; no lo modifiqué.
 
-ISS-20 requiere ISS-19 superado. Aunque EVI-19-07 respalda sus criterios funcionales, el gate de ISS-19 permanece pendiente por el requisito ISS-18/ISS-17. Mantengo pendientes AC-20-01 a AC-20-04 hasta contar con evidencia de ejecución satisfactoria de la prueba. No afirmo que el comportamiento del perfil haya sido verificado.
+#### Evidencia EVI-20-01 — Autenticación JWT
+
+![StoreLabJWTAuthentication rechaza usuarios cuyo estado ya no está activo; prompt redactado](Trazabilidad/ISS-20-EVI-20-01-redactada.png)
+
+#### Evidencia EVI-20-02 — Configuración de DRF
+
+![REST_FRAMEWORK usa StoreLabJWTAuthentication; prompt redactado](Trazabilidad/ISS-20-EVI-20-02-redactada.png)
+
+#### Evidencia EVI-20-03 — Vista del perfil
+
+![ProfileAPIView limita el perfil al usuario autenticado; prompt redactado](Trazabilidad/ISS-20-EVI-20-03-redactada.png)
+
+#### Evidencia EVI-20-04 — Serializer del perfil
+
+![ProfileSerializer expone los campos del perfil con username y status de solo lectura; prompt redactado](Trazabilidad/ISS-20-EVI-20-04-redactada.png)
+
+#### Evidencia EVI-20-05 — Ruta del perfil
+
+![auth/profile está registrada con ProfileAPIView; prompt redactado](Trazabilidad/ISS-20-EVI-20-05-redactada.png)
+
+#### Evidencia EVI-20-06 — Campos de solo lectura
+
+![ProfileSerializer declara username y status como solo lectura; prompt redactado](Trazabilidad/ISS-20-EVI-20-06-redactada.png)
+
+#### Evidencia EVI-20-07 — Casos del test
+
+![Test de perfil cubre acceso anónimo, token válido, actualización y usuario inactivo; prompt redactado](Trazabilidad/ISS-20-EVI-20-07-redactada.png)
+
+#### Evidencia EVI-20-08 — Test satisfactorio
+
+![test_profile_requires_token_and_rejects_inactive_user termina con Ran 1 test y OK; prompt redactado](Trazabilidad/ISS-20-EVI-20-08-redactada.png)
+
+**Qué observé:** el test prueba el rechazo anónimo, el acceso con el JWT, la actualización del nombre, que `username` y `status` no sean modificables y que la contraseña no aparezca ni cambie al intentar enviar datos protegidos. Luego desactiva al usuario y comprueba que el mismo token ya no autentica. La terminal muestra `Ran 1 test` y `OK`.
+
+**Retroalimentación:** EVI-20-08 junto con el código mostrado respalda los cuatro criterios funcionales del perfil. En la captura del serializer, `fields` enumera username, email, first_name, last_name y status, pero no id, aunque la guía técnica pide incluir id; dejo esa diferencia anotada para corregirla y verificarla si el criterio del curso exige el campo. No trato estas capturas como evidencia de RBAC: el perfil autentica al llamador y opera sobre su propio perfil.
+
+**Lo que aprendí:** una firma JWT válida no basta si el usuario fue desactivado después de emitir el token; la autenticación vuelve a consultar el estado actual. También aprendí a limitar la actualización a los campos editables sin exponer contraseña, username ni status.
+
+### Criterios y requisito previo
+
+- AC-20-01: EVI-20-08 muestra que una solicitud anónima responde 401.
+- AC-20-02: EVI-20-08 muestra el perfil con token válido y la prueba de que no expone `password`.
+- AC-20-03: EVI-20-08 muestra la prueba de actualización del nombre.
+- AC-20-04: EVI-20-08 muestra que el mismo token recibe 401 cuando el usuario pasa a inactivo.
+- GATE ISS-20: los criterios de comportamiento están verificados; mantengo pendiente el gate hasta completar los requisitos previos de ISS-19, ISS-18, ISS-17 e ISS-16.
+
+### Conclusión
+
+Implementé y verifiqué el perfil autenticado con JWT según el test mostrado. Aprendí que el estado actual del usuario se comprueba en cada petición y que la respuesta debe separar los datos visibles de los campos inmutables o secretos. Dejo el GATE condicionado a los requisitos previos aún pendientes.
+
+## ISS-21 — HasResourceAccess
+
+**Estado:** guardé la guía ejecutable en [ISS-21.md](Iss/ISS-21.md). En las capturas recibidas no aparece la clase `HasResourceAccess` ni la ejecución de `RbacTests`; todavía no implemento el permiso ni afirmo resultados de AC-21-01 a AC-21-04.
+
+Al revisar el árbol local, `apps/security/permissions.py` aún no existe. La guía requiere además modelos ISS-16 y ISS-20 superado, cuyos GATE siguen condicionados a los requisitos previos documentados. Dejo pendiente la construcción y verificación de esta unidad.
