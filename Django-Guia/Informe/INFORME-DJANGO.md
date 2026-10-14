@@ -1989,4 +1989,63 @@ Implementé la protección RBAC en las vistas de negocio y adapté sus pruebas p
 
 ## ISS-23 — CRUD de la matriz
 
-**Estado:** guardé la guía ejecutable en [ISS-23.md](Iss/ISS-23.md). El requisito de entrada indica ISS-22 superado, pero su GATE permanece condicionado por los requisitos previos de ISS-21; todavía no inicio ni declaro verificada la construcción de ISS-23.
+**Estado:** las capturas muestran el serializer seguro de usuarios, el uso de `set_password()` al crear y actualizar, las relaciones de la matriz, la baja lógica, las rutas del router y `SecurityMatrixApiTests`. La terminal de EVI-23-09 muestra dos pruebas ejecutadas y `OK`. Guardé la guía técnica en [ISS-23.md](Iss/ISS-23.md).
+
+#### Evidencia EVI-23-01 — Serializer seguro de usuarios
+
+![UserSerializer declara password como write_only, valida y almacena contraseñas con set_password](Trazabilidad/ISS-23-EVI-23-01.png)
+
+#### Evidencia EVI-23-02 — Serializers de la matriz
+
+![Serializers de Role, RoleUser, Resource y ResourceRole](Trazabilidad/ISS-23-EVI-23-02.png)
+
+#### Evidencia EVI-23-03 — Viewsets y baja lógica
+
+![SoftDeleteModelViewSet cambia el estado a inactive y se usa en los cinco viewsets de matriz](Trazabilidad/ISS-23-EVI-23-03.png)
+
+#### Evidencia EVI-23-04 — Rutas CRUD
+
+![SimpleRouter registra los cinco viewsets y añade sus rutas a urlpatterns](Trazabilidad/ISS-23-EVI-23-04.png)
+
+#### Evidencia EVI-23-05 — CRUD de rol
+
+![SecurityMatrixApiTests prepara concesiones para el acceso de matriz y prueba el CRUD de roles](Trazabilidad/ISS-23-EVI-23-05.png)
+
+#### Evidencia EVI-23-06 — Contraseña protegida
+
+![El test verifica que la contraseña no vuelve en la respuesta y funciona tras create y update](Trazabilidad/ISS-23-EVI-23-06.png)
+
+#### Evidencia EVI-23-07 — Cadena de autorización
+
+![El test confirma denegación antes de la concesión y GET permitido con POST denegado después](Trazabilidad/ISS-23-EVI-23-07.png)
+
+#### Evidencia EVI-23-08 — Selección de base de datos
+
+![Pruebas de selección de configuración para motores de base de datos; evidencia complementaria](Trazabilidad/ISS-23-EVI-23-08.png)
+
+#### Evidencia EVI-23-09 — Pruebas de la matriz
+
+![SecurityMatrixApiTests encuentra dos tests, los ejecuta y termina con OK](Trazabilidad/ISS-23-EVI-23-09.png)
+
+**Qué observé:** el serializer oculta la contraseña de la respuesta, valida la contraseña y usa `set_password()` tanto al crear como al actualizar. Los endpoints de matriz comparten baja lógica y las cinco rutas se registran con `SimpleRouter`. El test mostrado recorre la cadena de `RoleUser`, `Resource` y `ResourceRole`, verificando la denegación antes de completar la concesión, el GET autorizado al final y el POST denegado porque no se concedió.
+
+**Retroalimentación:** las capturas de código y la salida `Ran 2 tests` / `OK` respaldan AC-23-01 a AC-23-05 en la ejecución mostrada. Esto documenta el resultado observado, pero el GATE de ISS-23 depende del requisito de entrada ISS-22, cuyo cierre continúa condicionado por los prerrequisitos pendientes. No afirmo que ISS-23 habilite por sí solo ISS-24.
+
+**Lo que aprendí:** una relación de rol asignada no basta para autorizar; el usuario necesita también el recurso asociado al rol. La concesión es específica al método y patrón de ruta, por lo que una autorización GET no implica permiso POST.
+
+### Criterios y requisitos
+
+- AC-23-01: EVI-23-01 y EVI-23-06 muestran `write_only` y que `password` no aparece en la respuesta.
+- AC-23-02: EVI-23-01 y EVI-23-06 muestran `set_password()` y su validación después de crear y actualizar.
+- AC-23-03: EVI-23-03 y EVI-23-05 muestran la baja lógica y la fila inactiva tras DELETE.
+- AC-23-04: EVI-23-07 muestra 403 cuando existe `RoleUser` pero falta la concesión del recurso.
+- AC-23-05: EVI-23-07 y EVI-23-09 respaldan GET 200 con concesión activa y POST 403 sin concesión POST.
+- GATE ISS-23: criterios funcionales respaldados por capturas; mantengo condicionado el gate al cierre de ISS-22 y sus prerrequisitos.
+
+### Conclusión
+
+Implementé y verifiqué en las capturas el CRUD de la matriz, el manejo seguro de contraseñas y la cadena de autorización por rol, recurso, método y ruta. Aprendí que cada operación requiere su propia concesión explícita. Dejo ISS-23 documentada con pruebas satisfactorias, pero mantengo su GATE condicionado a los requisitos previos.
+
+## ISS-24 — Semilla RBAC y Swagger con Bearer
+
+**Estado:** guardé la guía ejecutable en [ISS-24.md](Iss/ISS-24.md). ISS-24 requiere ISS-23 superado; como el GATE de ISS-23 sigue condicionado al cierre de ISS-22 y sus requisitos previos, aún no declaro iniciado ni aprobado el GATE de esta unidad. Las capturas recibidas en este paso corresponden a ISS-23, no prueban la semilla ni la validación OpenAPI de ISS-24.
