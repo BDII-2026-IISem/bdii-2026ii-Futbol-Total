@@ -1544,7 +1544,7 @@ Instalé y configuré `drf-spectacular`, añadí las rutas del esquema, Swagger 
 
 ## ISS-15 — RefreshToken
 
-**Estado:** implementé el helper de generación/hash, el modelo `RefreshToken`, la configuración de SimpleJWT y su migración. El GATE de ISS-15 sigue pendiente: falta evidencia del test `AuthFlowTests.test_login_with_username_and_email` y el requisito previo de cierre de ISS-14 no está aprobado.
+**Estado:** implementé el helper de generación/hash, el modelo `RefreshToken`, la configuración de SimpleJWT y su migración. La captura EVI-17-08 muestra que `AuthFlowTests.test_login_with_username_and_email` terminó con `OK`, y el test comprueba el hash guardado, los campos de la respuesta y que no se incluya `password`. El GATE de ISS-15 sigue pendiente porque el requisito previo de cierre de ISS-14 no está aprobado.
 
 ### Paso 1. Helper para generar y hashear el refresh
 
@@ -1618,17 +1618,17 @@ Generé y apliqué la migración de seguridad para crear la tabla de refresh tok
 
 **Lo que aprendí:** después de aplicar una migración, repetir `makemigrations` permite verificar que el estado de los modelos y las migraciones está sincronizado.
 
-### Criterios y verificaciones pendientes
+### Criterios y verificaciones
 
-- AC-15-01: **pendiente**. La migración está aplicada, pero no se mostró el test que compara el refresh devuelto con `token_hash`.
-- AC-15-02: **pendiente**. No hay evidencia del cálculo SHA-256 comparado con el token retornado por login.
-- AC-15-03: **pendiente**. No se mostró la respuesta de login ni la aserción de ausencia de `password`.
+- AC-15-01: el test de login compara `token_hash` con el hash del refresh devuelto; la salida satisfactoria se ve en EVI-17-08.
+- AC-15-02: el test verifica que el token retornado corresponde al hash SHA-256 persistido; la salida satisfactoria se ve en EVI-17-08.
+- AC-15-03: el test comprueba la respuesta de login y que no incluya `password`; la salida satisfactoria se ve en EVI-17-08.
 
-La captura EVI-14-09 muestra 16 pruebas de `client`, `product` y `sale`; no es evidencia de `AuthFlowTests.test_login_with_username_and_email`. Además, ISS-15 exige cerrar ISS-14 y el esquema OpenAPI sigue teniendo errores de validación.
+La captura EVI-14-09 muestra 16 pruebas de `client`, `product` y `sale`; no la uso para demostrar `AuthFlowTests`. Para este último test sí cuento con la ejecución observada en EVI-17-08. ISS-15 requiere cerrar ISS-14 y el esquema OpenAPI sigue teniendo errores de validación.
 
 ### Conclusión
 
-Instalé SimpleJWT, configuré sus parámetros, implementé la generación y el hash del refresh y apliqué la migración de `RefreshToken`. Aprendí a separar el access token sin estado del refresh revocable persistido solo como hash. Dejo ISS-15 parcial hasta verificar los tres criterios con el test indicado y superar el requisito previo de ISS-14.
+Instalé SimpleJWT, configuré sus parámetros, implementé la generación y el hash del refresh, apliqué la migración de `RefreshToken` y verifiqué los tres criterios con el test de login mostrado en EVI-17-08. Aprendí a separar el access token sin estado del refresh revocable persistido solo como hash. Mantengo pendiente el GATE de ISS-15 hasta superar el requisito previo de ISS-14.
 
 ## ISS-16 — Role, RoleUser, Resource y ResourceRole
 
@@ -1670,26 +1670,71 @@ Instalé SimpleJWT, configuré sus parámetros, implementé la generación y el 
 - AC-16-02: las restricciones únicas están en el código mostrado; no se aportó una prueba de inserciones duplicadas.
 - AC-16-03: **pendiente**. Falta la evidencia de `seed_rbac` con las 53 filas y la consulta que confirme `api/clients/<int:pk>/`.
 
-ISS-16 requiere ISS-15 superado. Aún falta el test de autenticación requerido por ISS-15 y sigue pendiente el cierre de ISS-14 por los errores de `spectacular --validate`. Por eso no marco aprobado el GATE de ISS-16.
+ISS-16 requiere ISS-15 superado. El test de autenticación requerido por ISS-15 ya cuenta con resultado satisfactorio en EVI-17-08, pero el GATE de ISS-15 sigue condicionado al cierre de ISS-14 por los errores de `spectacular --validate`. Además, ISS-16 aún requiere la evidencia de la semilla y de la ruta resuelta. Por eso no marco aprobado su GATE.
 
 ### Conclusión
 
-Definí y migré las entidades RBAC, y aprendí que las tablas creadas no prueban por sí solas que la semilla haya poblado los recursos con sus patrones correctos. Dejo pendiente la carga y consulta de los 53 recursos, además de cerrar los requisitos previos de ISS-14 e ISS-15.
+Definí y migré las entidades RBAC, y aprendí que las tablas creadas no prueban por sí solas que la semilla haya poblado los recursos con sus patrones correctos. Dejo pendiente la carga y consulta de los 53 recursos, además de superar los GATE de ISS-14 e ISS-15.
 
 ## ISS-17 — Login OPEN
 
-**Estado:** guardé la guía ejecutable en [ISS-17.md](Iss/ISS-17.md). No inicio el login porque su requisito ISS-16 superado no está acreditado; ISS-16 conserva pendiente la evidencia de la semilla y la ruta resuelta, e ISS-15 conserva pendientes sus pruebas de aceptación.
+**Estado:** la evidencia visual documenta la creación de los serializers, las vistas de autenticación, el helper de pruebas y el `include` de seguridad en las rutas del proyecto. La captura de ejecución muestra los dos tests de `AuthFlowTests` completados con `OK`. Aun así, no marco superado el GATE de ISS-17 mientras siga pendiente el requisito ISS-16.
 
-### Requisitos previos
+### Construcción y pruebas observadas
 
-Antes de implementar `LoginAPIView`, debo completar la verificación `seed_rbac` y `resolve(path).route` de ISS-16 y superar los criterios de autenticación de ISS-15. El cierre de ISS-14 también sigue pendiente mientras `spectacular --validate` reporte errores.
+Guardé la guía ejecutable en [ISS-17.md](Iss/ISS-17.md). En las capturas se observa `LoginSerializer`, `LoginAPIView`, los helpers `token_payload` e `issue_refresh`, la inclusión de las rutas de seguridad y la configuración de `AuthFlowTests`. La salida compartida muestra la ejecución conjunta de dos tests y ejecuciones individuales, todas con resultado `OK`.
 
-### Observación sobre la prueba indicada
+#### Evidencia EVI-17-01 — Serializers de autenticación
 
-Al transcribir la guía observé que `test_inactive_user_and_bad_password_are_401` solo envía la solicitud con el usuario inactivo; el bloque compartido no incluye el caso de contraseña incorrecta aunque el nombre del test y AC-17-04 lo requieren. Cuando llegue a ejecutar ISS-17, agregaré esa solicitud y comprobaré que también responda 401 con el mismo mensaje.
+![LoginSerializer, RefreshSerializer, LogoutSerializer y TokenPairSerializer](Trazabilidad/ISS-17-EVI-17-01-redactada.png)
+
+#### Evidencia EVI-17-02 — Helpers y LoginAPIView
+
+![Implementación de token_payload, issue_refresh y LoginAPIView](Trazabilidad/ISS-17-EVI-17-02.png)
+
+#### Evidencia EVI-17-03 — Validación del login
+
+![Validaciones y respuestas de LoginAPIView](Trazabilidad/ISS-17-EVI-17-03.png)
+
+#### Evidencia EVI-17-04 — Configuración y pruebas de autenticación
+
+![Imports y estructura de AuthFlowTests](Trazabilidad/ISS-17-EVI-17-04.png)
+
+#### Evidencia EVI-17-05 — Rutas del proyecto
+
+![Include de security.urls bajo api](Trazabilidad/ISS-17-EVI-17-05.png)
+
+#### Evidencia EVI-17-06 — Serializers completos
+
+![Serializers de login, refresh, logout y token pair](Trazabilidad/ISS-17-EVI-17-06.png)
+
+#### Evidencia EVI-17-07 — Helper de usuario para pruebas
+
+![Función create_active_user y constante PASSWORD](Trazabilidad/ISS-17-EVI-17-07.png)
+
+#### Evidencia EVI-17-08 — Ejecución de tests
+
+![Dos tests de AuthFlowTests y ejecuciones individuales completadas con OK; prompt redactado](Trazabilidad/ISS-17-EVI-17-08-redactada.png)
+
+**Qué observé:** las capturas muestran las piezas principales del flujo OPEN y la salida de tests con `Ran 2 tests` y `OK`. El test `test_inactive_user_and_bad_password_are_401` del código compartido envía solicitudes tanto con contraseña incorrecta como con el usuario inactivo, ambas comprobadas como 401. También se observa que el email se prueba sin distinguir mayúsculas y minúsculas.
+
+**Retroalimentación:** las pruebas aportadas cubren login con username y email, ausencia de `password` en la respuesta, hash del refresh persistido, contraseña incorrecta y usuario inactivo. No interpreto el resultado de tests como evidencia de los criterios RBAC pendientes de ISS-16 ni del cierre de OpenAPI de ISS-14.
+
+**Lo que aprendí:** una vista OPEN debe desactivar la autenticación previa y responder con el mismo error ante credenciales inválidas; los tests de API verifican el flujo HTTP junto con los cambios persistidos del refresh.
+
+### Criterios y requisitos aún pendientes
+
+- AC-17-01 y AC-17-02: la captura de tests muestra el test de login por username/email en ejecución satisfactoria.
+- AC-17-03 y AC-17-04: el test de usuario inactivo y contraseña incorrecta se ejecutó satisfactoriamente según la captura.
+- AC-17-05: el test comprueba que la respuesta no contiene `password`.
+- GATE ISS-17: no lo marco superado porque el requisito ISS-16 superado no está acreditado; sigue pendiente verificar `seed_rbac`, las 53 filas y `resolve(path).route`. ISS-14 también continúa pendiente de cerrar por los errores de `spectacular --validate`.
 
 ### Conclusión
 
-El endpoint de login y sus pruebas quedan pendientes. En esta etapa no creé `serializers.py`, `auth_views.py`, `urls.py` ni `apps.common.testing.py`, y no afirmo resultados para AC-17-01 a AC-17-05.
+Implementé y probé el flujo de login OPEN mostrado en las capturas: username o email, access y refresh, y respuestas 401 para credenciales inválidas. Aprendí a comprobar tanto la forma de la respuesta como la persistencia del hash del refresh mediante tests de API. Mantengo pendiente el GATE de ISS-17 hasta cerrar sus requisitos previos ISS-16 e ISS-14.
 
-Las clases RBAC están presentes en `apps/security/models.py`, pero no cuento con evidencia de su migración, de las 53 filas de recursos ni de las pruebas que exige la guía. Aprendí que tener las clases en el archivo no demuestra que existan las tablas ni que las rutas se hayan guardado mediante `resolve()`. Mantengo ISS-16 parcial hasta cerrar los requisitos previos y aportar esas verificaciones.
+## ISS-18 — Refresh con rotación
+
+**Estado:** guardé la guía ejecutable en [ISS-18.md](Iss/ISS-18.md). No implemento `RefreshAPIView` en este paso: ISS-18 requiere ISS-17 superado y el GATE de ISS-17 permanece pendiente por el requisito ISS-16.
+
+La implementación y su prueba de rotación quedan pendientes. En particular, todavía no afirmo resultados para AC-18-01, AC-18-02 ni AC-18-03. Antes de ejecutar esta unidad, debo completar la evidencia pendiente de `seed_rbac`, las 53 filas y la ruta resuelta de ISS-16.
