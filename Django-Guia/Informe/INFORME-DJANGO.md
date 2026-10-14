@@ -780,16 +780,32 @@ Instalé las dependencias de la API, configuré CORS y REST Framework y escribí
 
 ## ISS-08 — Client con ModelViewSet
 
-**Estado:** pendiente de ejecución y evidencias.
+**Estado:** implementé el endpoint y las pruebas; la suite pasó con SQLite temporal, pero quedan pendientes la evidencia solicitada y la verificación de los motores del GATE.
 
 ### Objetivo
 
 Publicar el CRUD de clientes con `ModelViewSet`.
 
-### Desarrollo
+### Paso 1. Vista de clientes y pruebas del CRUD
 
-Guardé la guía de construcción en [ISS-08.md](Iss/ISS-08.md). Aún no incorporo pasos ejecutados ni evidencias de esta ISS.
+Implementé `ClientViewSet` con acceso `AllowAny`, filtro opcional por `status` y baja lógica. También preparé `ClientApiTests` para alta, consulta, actualización, eliminación lógica, validaciones y persistencia.
+
+### Paso 2. Rutas del recurso
+
+Creé `apps/client/urls.py` con `SimpleRouter(use_regex_path=False)` y registré `clients`. En `config/urls.py` incluí las rutas bajo el prefijo `api/`, para exponer el recurso en `/api/clients/`.
+
+### Paso 3. Verificación del CRUD
+
+Ejecuté la prueba indicada por la guía, `python manage.py test apps.client`. La ejecución configurada para MySQL no pudo crear la base de pruebas: el servidor devolvió el error `1044` por falta de permiso para crear `test_Pedalibre`. Sin modificar la base de datos del proyecto, ejecuté las mismas cuatro pruebas con una configuración SQLite temporal aislada; las cuatro pasaron.
+
+**Retroalimentación:** la suite valida correctamente las operaciones del endpoint en SQLite. La ejecución prescrita con MySQL está bloqueada por permisos, y no he verificado PostgreSQL ni SQL Server.
+
+**Lo que aprendí:** `ModelViewSet` con `SimpleRouter` publica las rutas CRUD con poco código propio; `perform_destroy` permite conservar la fila y cambiar su estado. Para cerrar el GATE también debo comprobar los motores pedidos por la guía.
+
+### Evidencias pendientes
+
+Todavía no incorporo capturas de ISS-08. El GATE menciona evidencia de pruebas en PostgreSQL, MySQL y SQL Server; por eso no lo marco como PASS con una ejecución únicamente en SQLite.
 
 ### Conclusión
 
-Pendiente de realizar los pasos de ISS-08 y documentar las capturas correspondientes.
+Dejé implementada la vista, las pruebas y las rutas del endpoint. Las cuatro pruebas pasaron usando SQLite temporal, pero la ejecución en MySQL no pudo crear la base de pruebas por permisos y aún no tengo capturas ni resultados en PostgreSQL y SQL Server. ISS-08 queda parcialmente completada hasta reunir esas evidencias.
