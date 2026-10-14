@@ -976,16 +976,95 @@ Publiqué los CRUD de tipos y productos, compartí el comportamiento común en `
 
 ## ISS-10 — Disponibles con ListAPIView
 
-**Estado:** guía recibida; pendiente de ejecutar los pasos y documentar evidencias.
+**Estado:** implementé la consulta de productos disponibles y la prueba indicada; la captura muestra un resultado exitoso.
 
 ### Objetivo
 
 Publicar una lectura filtrada de productos disponibles que no forma parte del CRUD del producto.
 
-### Preparación
+### Paso 1. Ruta para la colección disponible
 
-Guardé la guía ejecutable en [ISS-10.md](Iss/ISS-10.md). Todavía no implemento el endpoint ni agrego pruebas para el filtro.
+Agregué una ruta literal `products/available/` antes de las rutas del router en `apps/product/urls.py`.
+
+#### Evidencia EVI-10-01 — Ruta disponible antes del router
+
+![Ruta products available declarada antes del router](Trazabilidad/ISS-10-EVI-10-01.png)
+
+**Qué hice:** incorporé el endpoint de lectura especial a `urlpatterns`, antes de concatenar las rutas generadas por el router.
+
+**Retroalimentación:** la captura muestra el patrón de URL y la importación de `AvailableProductListAPIView`. También muestra errores de terminal `ARCHIVO: command not found` y `UBICAR: command not found` en un intento previo de tratar las instrucciones de edición como comandos. Después se aplicó el cambio en el archivo y quedó registrado el endpoint.
+
+**Lo que aprendí:** las indicaciones para ubicar y reemplazar fragmentos explican cómo editar el archivo; no son comandos que se ejecuten literalmente en la terminal.
+
+### Paso 2. Vista de lectura filtrada
+
+Agregué `AvailableProductListAPIView` a `apps/product/views.py`. Su queryset devuelve solo productos activos con stock mayor que cero y tipo de producto activo.
+
+#### Evidencia EVI-10-02 — `ListAPIView` y filtros de disponibilidad
+
+![AvailableProductListAPIView con filtros de estado, stock y estado del tipo](Trazabilidad/ISS-10-EVI-10-02.png)
+
+**Qué hice:** implementé la lectura especializada con `ListAPIView` y mantuve los viewsets CRUD del catálogo.
+
+**Retroalimentación:** el queryset combina las tres condiciones indicadas y usa `select_related("product_type")`.
+
+**Lo que aprendí:** `ListAPIView` sirve para una lectura de colección que necesita reglas de filtrado, sin ofrecer operaciones de escritura del CRUD.
+
+### Paso 3. Prueba del filtro de disponibles
+
+Agregué `test_product_crud_and_available_filter` a `ProductApiTests`. La prueba crea por la API un producto activo con stock, consulta la lista, cambia el stock a cero mediante el ORM y comprueba que la lista queda vacía.
+
+#### Evidencia EVI-10-03 — Prueba de disponibilidad
+
+![Prueba HTTP que verifica producto disponible y stock en cero](Trazabilidad/ISS-10-EVI-10-03.png)
+
+**Qué hice:** añadí el caso de prueba requerido, comprobando el producto en la respuesta y su desaparición de la lista después de agotar el stock.
+
+**Retroalimentación:** la captura muestra las aserciones de 201, 200, un resultado disponible y una respuesta vacía tras cambiar el stock.
+
+**Lo que aprendí:** un producto puede dejar de estar disponible para esta consulta sin ser eliminado del catálogo.
+
+### Paso 4. Ejecución de la prueba específica
+
+Ejecuté el comando prescrito:
+
+```sh
+python manage.py test apps.product.tests.ProductApiTests.test_product_crud_and_available_filter
+```
+
+#### Evidencia EVI-10-04 — Prueba aprobada
+
+![Ejecución exitosa de la prueba de productos disponibles](Trazabilidad/ISS-10-EVI-10-04.png)
+
+**Qué observé:** la terminal encontró y ejecutó una prueba; terminó con `OK`.
+
+**Retroalimentación:** el resultado verifica el filtro de disponibilidad en la configuración de base de datos activa durante esa ejecución.
+
+**Lo que aprendí:** ejecutar el caso específico me permitió comprobar directamente el comportamiento nuevo sin confundirlo con el resto de la suite.
+
+### Criterios de aceptación
+
+- AC-10-01: la prueba crea un producto activo con stock y comprueba que aparezca en disponibles.
+- AC-10-02: al poner el stock en cero, comprueba que el producto desaparece de la lista.
+
+La evidencia del caso específico terminó con `OK`; considero verificados ambos criterios en la ejecución mostrada.
 
 ### Conclusión
 
-Pendiente de realizar los pasos de ISS-10 y documentar sus evidencias.
+Publiqué `/api/products/available/` con `ListAPIView` y filtré por estado activo del producto, stock positivo y tipo activo. Añadí la prueba para comprobar que el producto aparece y deja de aparecer al agotarse el stock, y la ejecución terminó en `OK`. Aprendí a separar una lectura filtrada del CRUD. ISS-10 queda verificada en el entorno mostrado; la captura no identifica pruebas en varios motores.
+
+## ISS-11 — Registro de venta con APIView
+
+**Estado:** guía recibida; pendiente de ejecución y evidencias.
+
+### Objetivo
+
+Registrar cliente, líneas de producto, precio histórico, totales y descuento de stock como una sola transacción.
+
+### Preparación
+
+Guardé la guía ejecutable en [ISS-11.md](Iss/ISS-11.md). Todavía no he implementado los pasos ni ejecutado `SaleTransactionTests`.
+
+### Conclusión
+
+Pendiente de realizar ISS-11 y documentar cada evidencia antes de marcar sus criterios como aprobados.

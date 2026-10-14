@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 
 from apps.common.status import RecordStatus
@@ -27,3 +28,14 @@ class ProductTypeViewSet(CatalogViewSet):
 class ProductViewSet(CatalogViewSet):
     queryset = Product.objects.select_related("product_type")
     serializer_class = ProductSerializer
+
+class AvailableProductListAPIView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        return Product.objects.select_related("product_type").filter(
+            status=RecordStatus.ACTIVE,
+            stock__gt=0,
+            product_type__status=RecordStatus.ACTIVE,
+        )

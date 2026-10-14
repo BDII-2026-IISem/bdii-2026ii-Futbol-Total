@@ -71,3 +71,23 @@ class ProductApiTests(APITestCase):
         self.assertEqual(self.client.post("/api/products/", payload, format="json").status_code, 201)
         self.assertEqual(self.client.post("/api/products/", payload, format="json").status_code, 400)
         self.assertEqual(Product.objects.get(name="Café").price, Decimal("3.00"))
+
+    def test_product_crud_and_available_filter(self):
+        created = self.client.post(
+            "/api/products/",
+            {
+                "productTypeId": self.product_type.id,
+                "name": "Agua",
+                "price": "2.50",
+                "stock": 4,
+                "status": "active",
+            },
+            format="json",
+        )
+        self.assertEqual(created.status_code, 201)
+        available = self.client.get("/api/products/available/")
+        self.assertEqual(available.status_code, 200)
+        self.assertEqual(len(available.data), 1)
+        Product.objects.filter(pk=created.data["id"]).update(stock=0)
+        empty = self.client.get("/api/products/available/")
+        self.assertEqual(empty.data, [])
