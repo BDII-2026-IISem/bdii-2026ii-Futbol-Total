@@ -2048,4 +2048,87 @@ Implementé y verifiqué en las capturas el CRUD de la matriz, el manejo seguro 
 
 ## ISS-24 — Semilla RBAC y Swagger con Bearer
 
-**Estado:** guardé la guía ejecutable en [ISS-24.md](Iss/ISS-24.md). ISS-24 requiere ISS-23 superado; como el GATE de ISS-23 sigue condicionado al cierre de ISS-22 y sus requisitos previos, aún no declaro iniciado ni aprobado el GATE de esta unidad. Las capturas recibidas en este paso corresponden a ISS-23, no prueban la semilla ni la validación OpenAPI de ISS-24.
+**Estado:** las capturas muestran `seed_rbac`, el rol `admin`, la asociación de 53 recursos y 53 concesiones, la ruta resuelta `api/clients/<int:pk>/`, la carga del esquema Bearer en Swagger y un fragmento del esquema generado con `bearerAuth`. La consola muestra `Recursos RBAC sincronizados.`. Guardé la guía en [ISS-24.md](Iss/ISS-24.md).
+
+#### Evidencia EVI-24-01 — Esquema Bearer en OpenAPI
+
+![StoreLabJWTScheme define bearerAuth con bearerFormat JWT; en la terminal se ve el resultado previo de dos tests](Trazabilidad/ISS-24-EVI-24-01.png)
+
+#### Evidencia EVI-24-02 — Carga de la extensión
+
+![SecurityConfig.ready importa el módulo schema](Trazabilidad/ISS-24-EVI-24-02.png)
+
+#### Evidencias EVI-24-03 y EVI-24-04 — Rutas del comando de semilla
+
+![seed_rbac declara rutas de clientes, productos, ventas y matriz](Trazabilidad/ISS-24-EVI-24-03.png)
+
+![seed_rbac completa la lista de rutas de resources y resource-roles](Trazabilidad/ISS-24-EVI-24-04.png)
+
+#### Evidencia EVI-24-05 — Semilla ejecutada
+
+![El comando seed_rbac finaliza con el mensaje Recursos RBAC sincronizados](Trazabilidad/ISS-24-EVI-24-05.png)
+
+#### Evidencia EVI-24-06 — Imports de prueba de semilla
+
+![La suite de seguridad importa call_command y los modelos necesarios para verificar seed_rbac](Trazabilidad/ISS-24-EVI-24-06.png)
+
+#### Evidencia EVI-24-07 — Conteo y patrón de ruta
+
+![SeedRbacCommandTests afirma 53 recursos, 53 concesiones y la ruta api/clients/<int:pk>/](Trazabilidad/ISS-24-EVI-24-07.png)
+
+#### Evidencia EVI-24-08 — Registro de la extensión
+
+![La configuración de la app security carga el esquema al iniciar](Trazabilidad/ISS-24-EVI-24-08.png)
+
+#### Evidencia EVI-24-09 — Guía y salida de la semilla
+
+![La guía muestra la ejecución de seed_rbac con y sin username y la salida sincronizada](Trazabilidad/ISS-24-EVI-24-09.png)
+
+#### Evidencia EVI-24-10 — Swagger y advertencias del esquema
+
+![Swagger abre y muestra operaciones; la consola también registra problemas para inferir el serializer de SaleCollectionAPIView y colisiones de operationId](Trazabilidad/ISS-24-EVI-24-10.png)
+
+#### Evidencias EVI-24-11 a EVI-24-14 — Operaciones publicadas
+
+![Swagger muestra operaciones de clientes, tipos de producto y productos](Trazabilidad/ISS-24-EVI-24-11.png)
+
+![Swagger muestra products available, resources y resource-roles](Trazabilidad/ISS-24-EVI-24-12.png)
+
+![Swagger muestra role-users, roles y operaciones de ventas](Trazabilidad/ISS-24-EVI-24-13.png)
+
+![Swagger muestra operaciones de usuarios y sus esquemas](Trazabilidad/ISS-24-EVI-24-14.png)
+
+#### Evidencia EVI-24-15 — Login OPEN
+
+![Swagger permite preparar POST auth login sin autorización; el token CSRF del cURL fue redactado](Trazabilidad/ISS-24-EVI-24-15-redactada.png)
+
+#### Evidencia EVI-24-16 — Autorización Bearer
+
+![El diálogo de Swagger identifica bearerAuth como HTTP Bearer y mantiene oculto el valor](Trazabilidad/ISS-24-EVI-24-16.png)
+
+#### Evidencia EVI-24-17 — Fragmento del esquema generado
+
+![La salida del esquema incluye password writeOnly y securitySchemes bearerAuth con formato JWT](Trazabilidad/ISS-24-EVI-24-17.png)
+
+**Qué observé:** el test `SeedRbacCommandTests` comprueba la ejecución del comando, la existencia del rol activo, la concesión de 53 recursos, el patrón `api/clients/<int:pk>/` y la ausencia de rutas de autenticación en la matriz. Las capturas muestran el mensaje de sincronización y que Swagger publica `bearerAuth`; el diálogo de autorización mantiene oculto su valor.
+
+**Retroalimentación:** EVI-24-05, EVI-24-07 y EVI-24-17 respaldan el funcionamiento de la semilla, el patrón de ruta y la inclusión de Bearer en el esquema. Sin embargo, la salida visible de `spectacular --validate` no muestra de forma inequívoca el código de salida 0. Además, EVI-24-10 registra la imposibilidad de inferir el serializer de `SaleCollectionAPIView` y colisiones de `operationId`. Mantengo AC-24-03 y el GATE pendientes hasta resolver/explicar esas advertencias y aportar una validación explícita satisfactoria. El GATE de ISS-24 también depende del cierre de ISS-23 y sus prerrequisitos.
+
+**Lo que aprendí:** generar recursos mediante `resolve().route` conserva los mismos patrones que evalúa el permiso. La definición OpenAPI `http`/`bearer` permite que Swagger agregue el esquema de autorización sin que yo escriba manualmente el prefijo `Bearer`.
+
+### Criterios y requisitos
+
+- AC-24-01: EVI-24-05 y EVI-24-07 muestran el mensaje de sincronización y el test que ejecuta el comando.
+- AC-24-02: EVI-24-07 muestra `api/clients/<int:pk>/` y 53 recursos.
+- AC-24-03: EVI-24-16 y EVI-24-17 muestran el esquema Bearer en Swagger/OpenAPI; el exit code 0 de `spectacular --validate` queda pendiente y EVI-24-10 muestra advertencias que requieren atención.
+- GATE ISS-24: semilla y esquema Bearer observados; mantengo condicionado el cierre por AC-24-03 y por los prerrequisitos de ISS-23.
+
+### Conclusión
+
+Verifiqué en las capturas que la semilla reconstruye la matriz desde las rutas resueltas y que Swagger reconoce el esquema Bearer. Aprendí a comprobar que la matriz y el permiso comparten el mismo patrón de ruta. Dejo pendiente el cierre OpenAPI por las advertencias visibles y la falta de evidencia inequívoca del código de salida de validación.
+
+## ISS-25 — Pruebas 401 y 403
+
+**Estado:** guardé la guía de cierre de la Fase II en [ISS-25.md](Iss/ISS-25.md). Al revisar `apps/security/tests.py`, encontré que `RbacTests` ya cubre anónimo 401, usuario autenticado sin concesión 403, concesión activa 200 y la desactivación individual de rol, asignación, concesión y recurso con respuesta 403. La cadena de datos se crea directamente en el test y no mediante el helper `grant()` indicado por la guía.
+
+Las capturas recibidas en este avance corresponden a ISS-24; no las considero evidencia de la ejecución de `RbacTests` ni de la suite `apps` solicitadas por ISS-25. Mantengo pendientes AC-25-01 a AC-25-04 y el GATE hasta recibir las salidas de prueba.
