@@ -1632,12 +1632,60 @@ Instalé SimpleJWT, configuré sus parámetros, implementé la generación y el 
 
 ## ISS-16 — Role, RoleUser, Resource y ResourceRole
 
-**Estado:** guardé la guía ejecutable en [ISS-16.md](Iss/ISS-16.md). Al revisar `apps/security/models.py` encontré que ya contiene las definiciones de `HttpMethod`, `Role`, `RoleUser`, `Resource` y `ResourceRole`. Como las clases estaban en ese archivo, quedaron incluidas junto con `RefreshToken` en el commit `abc41cd`; la separación de cambios por ISS no fue correcta. No las elimino ni modifico. No hay evidencia aquí de migración, semilla `seed_rbac` o pruebas RBAC.
+**Estado:** las clases `HttpMethod`, `Role`, `RoleUser`, `Resource` y `ResourceRole` están presentes en `apps/security/models.py` y la captura muestra aplicada la migración `security.0003_resource_role_resourcerole_roleuser`. No está documentada la semilla de 53 recursos ni la comprobación de la ruta resuelta.
 
-### Requisito previo
+### Construcción y migración documentadas
 
-ISS-16 requiere ISS-15 superado. Aún falta el test de autenticación requerido por ISS-15 y sigue pendiente el cierre de ISS-14 por los errores de `spectacular --validate`. Por tanto, no considero ISS-16 cerrada ni marco sus criterios como PASS.
+#### Evidencia EVI-16-01 — `HttpMethod`, `Role` y `RoleUser`
+
+![Definición de HttpMethod y modelos Role y RoleUser](Trazabilidad/ISS-16-EVI-16-01-redactada.png)
+
+#### Evidencia EVI-16-02 — `Role` y `RoleUser`
+
+![Definición de Role y RoleUser con estado inactivo y unicidad de role-user](Trazabilidad/ISS-16-EVI-16-02-redactada.png)
+
+#### Evidencia EVI-16-03 — `Resource` y `ResourceRole`
+
+![Definición de Resource, ruta, unicidad por método y ruta, y relación ResourceRole](Trazabilidad/ISS-16-EVI-16-03-redactada.png)
+
+**Qué hice:** definí los cuatro modelos de la matriz, sus estados iniciales inactivos y las restricciones de unicidad mostradas.
+
+**Retroalimentación:** las capturas documentan los modelos y muestran la unicidad de `(role, user)`, `(method, route)` y `(resource, role)`. `Resource.route` almacena un patrón como `api/clients/<int:pk>/`.
+
+**Lo que aprendí:** la autorización depende de relacionar usuario, rol y recurso, y las rutas dinámicas deben almacenarse como patrones para que puedan compararse con las rutas resueltas.
+
+#### Evidencia EVI-16-04 — Migración RBAC aplicada
+
+![Migración security.0003_resource_role_resourcerole_roleuser aplicada correctamente](Trazabilidad/ISS-16-EVI-16-04-redactada.png)
+
+**Qué observé:** Django creó `security.0003_resource_role_resourcerole_roleuser` con los modelos `Resource`, `Role`, `ResourceRole` y `RoleUser`, y la aplicó con resultado `OK`.
+
+**Retroalimentación:** esta captura comprueba la migración en la base de datos usada en esa ejecución. No demuestra que la semilla haya cargado 53 recursos ni que las rutas guardadas correspondan con `resolve(path).route`.
+
+**Lo que aprendí:** las definiciones de modelos y su migración son pasos distintos de la carga de datos iniciales y de la verificación de patrones de ruta.
+
+### Criterios y verificaciones pendientes
+
+- AC-16-01: la migración de las cuatro tablas se ve aplicada en EVI-16-04.
+- AC-16-02: las restricciones únicas están en el código mostrado; no se aportó una prueba de inserciones duplicadas.
+- AC-16-03: **pendiente**. Falta la evidencia de `seed_rbac` con las 53 filas y la consulta que confirme `api/clients/<int:pk>/`.
+
+ISS-16 requiere ISS-15 superado. Aún falta el test de autenticación requerido por ISS-15 y sigue pendiente el cierre de ISS-14 por los errores de `spectacular --validate`. Por eso no marco aprobado el GATE de ISS-16.
 
 ### Conclusión
+
+Definí y migré las entidades RBAC, y aprendí que las tablas creadas no prueban por sí solas que la semilla haya poblado los recursos con sus patrones correctos. Dejo pendiente la carga y consulta de los 53 recursos, además de cerrar los requisitos previos de ISS-14 e ISS-15.
+
+## ISS-17 — Login OPEN
+
+**Estado:** guardé la guía ejecutable en [ISS-17.md](Iss/ISS-17.md). No inicio el login porque su requisito ISS-16 superado no está acreditado; ISS-16 conserva pendiente la evidencia de la semilla y la ruta resuelta, e ISS-15 conserva pendientes sus pruebas de aceptación.
+
+### Requisitos previos
+
+Antes de implementar `LoginAPIView`, debo completar la verificación `seed_rbac` y `resolve(path).route` de ISS-16 y superar los criterios de autenticación de ISS-15. El cierre de ISS-14 también sigue pendiente mientras `spectacular --validate` reporte errores.
+
+### Conclusión
+
+El endpoint de login y sus pruebas quedan pendientes. En esta etapa no creé `serializers.py`, `auth_views.py`, `urls.py` ni `apps.common.testing.py`, y no afirmo resultados para AC-17-01 a AC-17-05.
 
 Las clases RBAC están presentes en `apps/security/models.py`, pero no cuento con evidencia de su migración, de las 53 filas de recursos ni de las pruebas que exige la guía. Aprendí que tener las clases en el archivo no demuestra que existan las tablas ni que las rutas se hayan guardado mediante `resolve()`. Mantengo ISS-16 parcial hasta cerrar los requisitos previos y aportar esas verificaciones.
