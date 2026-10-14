@@ -2110,9 +2110,15 @@ Implementé y verifiqué en las capturas el CRUD de la matriz, el manejo seguro 
 
 ![La salida del esquema incluye password writeOnly y securitySchemes bearerAuth con formato JWT](Trazabilidad/ISS-24-EVI-24-17.png)
 
+#### Evidencias EVI-24-18 y EVI-24-19 — Resultado de `spectacular --validate`
+
+![La validación ejecuta seed_rbac y spectacular --validate, y reporta 1 advertencia y 8 errores](Trazabilidad/ISS-24-EVI-24-18-spectacular-validacion-fallida.png)
+
+![El esquema generado incluye bearerAuth; la salida de validación termina con errores y vuelve al prompt](Trazabilidad/ISS-24-EVI-24-19-esquema-generado-y-fin-de-salida.png)
+
 **Qué observé:** el test `SeedRbacCommandTests` comprueba la ejecución del comando, la existencia del rol activo, la concesión de 53 recursos, el patrón `api/clients/<int:pk>/` y la ausencia de rutas de autenticación en la matriz. Las capturas muestran el mensaje de sincronización y que Swagger publica `bearerAuth`; el diálogo de autorización mantiene oculto su valor.
 
-**Retroalimentación:** EVI-24-05, EVI-24-07 y EVI-24-17 respaldan el funcionamiento de la semilla, el patrón de ruta y la inclusión de Bearer en el esquema. Sin embargo, la salida visible de `spectacular --validate` no muestra de forma inequívoca el código de salida 0. Además, EVI-24-10 registra la imposibilidad de inferir el serializer de `SaleCollectionAPIView` y colisiones de `operationId`. Mantengo AC-24-03 y el GATE pendientes hasta resolver/explicar esas advertencias y aportar una validación explícita satisfactoria. El GATE de ISS-24 también depende del cierre de ISS-23 y sus prerrequisitos.
+**Retroalimentación:** EVI-24-05 y EVI-24-07 respaldan el funcionamiento de la semilla y el patrón de ruta. EVI-24-16 y EVI-24-17 muestran Bearer en Swagger/OpenAPI. Las nuevas capturas EVI-24-18 y EVI-24-19 sí identifican la ejecución de `python manage.py spectacular --validate` y el resultado: **1 advertencia y 8 errores**; por lo tanto, AC-24-03 no pasa y no debo describirlo solo como evidencia pendiente. También se ven la imposibilidad de inferir el serializer de `SaleCollectionAPIView` y las colisiones de `operationId`. El GATE de ISS-24 queda bloqueado hasta corregir esos problemas y obtener una validación satisfactoria; además depende del cierre de ISS-23 y sus prerrequisitos.
 
 **Lo que aprendí:** generar recursos mediante `resolve().route` conserva los mismos patrones que evalúa el permiso. La definición OpenAPI `http`/`bearer` permite que Swagger agregue el esquema de autorización sin que yo escriba manualmente el prefijo `Bearer`.
 
@@ -2120,15 +2126,51 @@ Implementé y verifiqué en las capturas el CRUD de la matriz, el manejo seguro 
 
 - AC-24-01: EVI-24-05 y EVI-24-07 muestran el mensaje de sincronización y el test que ejecuta el comando.
 - AC-24-02: EVI-24-07 muestra `api/clients/<int:pk>/` y 53 recursos.
-- AC-24-03: EVI-24-16 y EVI-24-17 muestran el esquema Bearer en Swagger/OpenAPI; el exit code 0 de `spectacular --validate` queda pendiente y EVI-24-10 muestra advertencias que requieren atención.
-- GATE ISS-24: semilla y esquema Bearer observados; mantengo condicionado el cierre por AC-24-03 y por los prerrequisitos de ISS-23.
+- AC-24-03: EVI-24-16 y EVI-24-17 muestran el esquema Bearer en Swagger/OpenAPI, pero EVI-24-18 y EVI-24-19 muestran `spectacular --validate` con 1 advertencia y 8 errores; criterio **NO PASS**.
+- GATE ISS-24: semilla y esquema Bearer observados; mantengo bloqueado el cierre por la validación OpenAPI fallida y por los prerrequisitos de ISS-23.
 
 ### Conclusión
 
-Verifiqué en las capturas que la semilla reconstruye la matriz desde las rutas resueltas y que Swagger reconoce el esquema Bearer. Aprendí a comprobar que la matriz y el permiso comparten el mismo patrón de ruta. Dejo pendiente el cierre OpenAPI por las advertencias visibles y la falta de evidencia inequívoca del código de salida de validación.
+Verifiqué en las capturas que la semilla reconstruye la matriz desde las rutas resueltas y que Swagger reconoce el esquema Bearer. Aprendí a comprobar que la matriz y el permiso comparten el mismo patrón de ruta. La validación OpenAPI ejecutada reporta 8 errores y 1 advertencia; por eso todavía no cierro ISS-24 y dejo pendiente corregirlos y repetir `spectacular --validate`.
 
 ## ISS-25 — Pruebas 401 y 403
 
-**Estado:** guardé la guía de cierre de la Fase II en [ISS-25.md](Iss/ISS-25.md). Al revisar `apps/security/tests.py`, encontré que `RbacTests` ya cubre anónimo 401, usuario autenticado sin concesión 403, concesión activa 200 y la desactivación individual de rol, asignación, concesión y recurso con respuesta 403. La cadena de datos se crea directamente en el test y no mediante el helper `grant()` indicado por la guía.
+**Estado:** guardé la guía de cierre de la Fase II en [ISS-25.md](Iss/ISS-25.md). Ejecuté `python manage.py test apps`: las 35 pruebas terminaron con `OK`. También ejecuté `python manage.py test apps.security.tests.RbacTests`: las 5 pruebas terminaron con `OK`. En `apps/security/tests.py` confirmé los casos de identidad ausente (401), identidad válida sin concesión (403), concesión activa (200) y enlaces inactivos de la cadena RBAC (403).
 
-Las capturas recibidas en este avance corresponden a ISS-24; no las considero evidencia de la ejecución de `RbacTests` ni de la suite `apps` solicitadas por ISS-25. Mantengo pendientes AC-25-01 a AC-25-04 y el GATE hasta recibir las salidas de prueba.
+### Evidencias
+
+![Ejecución de la suite de aplicaciones: 35 pruebas y resultado OK](Trazabilidad/ISS-25-EVI-25-01.png)
+
+**Qué observé:** la suite completa terminó sin fallos. Concluí que las pruebas de autenticación y autorización existentes se ejecutaron junto con el resto de las pruebas de las aplicaciones.
+
+![Ejecución enfocada de RbacTests: 5 pruebas y resultado OK](Trazabilidad/ISS-25-EVI-25-02.png)
+
+**Qué observé:** la clase enfocada en RBAC terminó con todas sus pruebas aprobadas. Aprendí a comprobar de manera automatizada la diferencia entre 401 por falta de identidad y 403 por falta de permiso.
+
+![Captura complementaria del resultado de pruebas y documentación OpenAPI](Trazabilidad/ISS-25-EVI-25-03.png)
+
+**Qué observé:** esta captura forma parte del conjunto de evidencias recibido para el cierre de la fase. La contrasté con las salidas de las pruebas para no confundir el resultado de tests con el estado de la generación OpenAPI.
+
+![Captura complementaria del resultado de pruebas y documentación OpenAPI](Trazabilidad/ISS-25-EVI-25-04.png)
+
+**Qué observé:** el material complementa las salidas de terminal revisadas. Aprendí a registrar por separado las evidencias de ejecución y las de contrato de API.
+
+![Captura complementaria del resultado de pruebas y documentación OpenAPI](Trazabilidad/ISS-25-EVI-25-05.png)
+
+**Qué observé:** conservé esta captura como parte del registro visual del paso. La evidencia de esta imagen no cambia el resultado de la suite: las pruebas reportaron `OK`.
+
+![Captura complementaria del resultado de pruebas y documentación OpenAPI](Trazabilidad/ISS-25-EVI-25-06.png)
+
+**Qué observé:** esta última captura completa el conjunto recibido. Separé su registro de la conclusión de OpenAPI, cuya validación sigue reportada en ISS-24 con 1 advertencia y 8 errores.
+
+### Criterios y retroalimentación
+
+- AC-25-01: **PASS** — suite `apps`, 35 pruebas, `OK`.
+- AC-25-02 y AC-25-03: **PASS** — los tests de RBAC contienen y ejecutan las respuestas esperadas 401 y 403.
+- AC-25-04: **PASS** — la petición anónima se comprueba como 401, no como 403.
+
+**Retroalimentación:** las capturas confirman que las pruebas de ISS-25 terminaron correctamente. La validación `spectacular --validate` corresponde al criterio AC-24-03 de ISS-24, no a estos tests; su salida mostró 1 advertencia y 8 errores, por lo que no doy por superada esa validación ni el GATE global de la Fase II.
+
+### Conclusión
+
+Aprendí que 401 identifica una petición sin identidad vigente y 403 una identidad autenticada que carece de autorización. Las pruebas automatizadas mantienen explícita esa diferencia y verifican que cualquier enlace inactivo de la cadena RBAC niegue el acceso. La suite de ISS-25 queda aprobada; la validación OpenAPI permanece pendiente de corrección y nueva ejecución satisfactoria.
