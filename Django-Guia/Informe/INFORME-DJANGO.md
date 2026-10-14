@@ -1302,7 +1302,7 @@ Publiqué la lista y el detalle de ventas, mantuve el precio histórico en la re
 
 ## ISS-13 — Django Admin
 
-**Estado:** configuré el superusuario y el admin de los cinco modelos de negocio. `python manage.py check` terminó sin errores; queda pendiente la comprobación visual de acceso y navegación por cada modelo en `/admin/`.
+**Estado:** configuré el superusuario y el admin de los cinco modelos de negocio. `python manage.py check` terminó sin errores y confirmé el acceso al panel `/admin/`. Queda pendiente abrir cada modelo para completar el recorrido visual.
 
 ### Objetivo
 
@@ -1408,24 +1408,138 @@ python manage.py check
 
 ### Criterios y comprobaciones pendientes
 
-Las capturas y los archivos de admin documentan el registro y configuración de los cinco modelos; `python manage.py check` pasó. Queda pendiente entrar a `/admin/` con el superusuario y abrir cada modelo para completar la comprobación visual pedida por la guía. Hasta realizar ese recorrido, mantengo el GATE de ISS-13 parcial.
+Las capturas y los archivos de admin documentan el registro y configuración de los cinco modelos; `python manage.py check` pasó. La nueva captura confirma el acceso al panel y muestra los cinco modelos. Queda pendiente abrir cada modelo para completar la comprobación visual pedida por la guía; por eso mantengo el GATE de ISS-13 parcial.
+
+### Comprobación de acceso al admin
+
+#### Evidencia EVI-13-08 — Acceso al panel de administración
+
+![Panel de Django Admin con los cinco modelos de negocio visibles y el usuario redactado](Trazabilidad/ISS-13-EVI-13-08-redactada.png)
+
+**Qué observé:** accedí al panel y aparecen clientes, tipos de producto, productos, ventas y detalles de venta. El panel muestra opciones de alta para clientes y catálogo, pero no para ventas ni detalles.
+
+**Retroalimentación:** esta captura confirma el acceso al admin y la presencia de los cinco modelos; no sustituye abrir cada lista y ficha para revisar su comportamiento.
+
+**Lo que aprendí:** la página principal del admin permite reconocer qué modelos tienen opción de alta, mientras que la comprobación de filtros, búsquedas y formularios requiere entrar en cada modelo.
+
+### Verificación pendiente
+
+Me falta abrir cada modelo y revisar sus listas y fichas en `/admin/`. Por ello, la evidencia confirma el acceso al panel, pero mantengo parcial el GATE de ISS-13.
 
 ### Conclusión
 
-Creé el superusuario y configuré los modelos de clientes, tipos, productos, ventas y líneas de venta en Django Admin. Separé los datos editables del catálogo de las ventas, que deben permanecer de solo lectura y conservar el flujo transaccional. `python manage.py check` terminó sin errores. Me falta ingresar al admin y recorrer los modelos para cerrar la verificación completa.
+Creé el superusuario y configuré los modelos de clientes, tipos, productos, ventas y líneas de venta en Django Admin. Separé los datos editables del catálogo de las ventas, que deben permanecer de solo lectura y conservar el flujo transaccional. `python manage.py check` terminó sin errores y confirmé el acceso al panel. Me falta abrir cada modelo para cerrar la verificación completa.
 
 ## ISS-14 — OpenAPI
 
-**Estado:** guía recibida; pendiente de instalar/configurar `drf-spectacular`, generar el esquema y documentar evidencias.
+**Estado:** instalé y configuré `drf-spectacular`, agregué las rutas de esquema, Swagger y ReDoc, y abrí Swagger sin iniciar sesión. La validación del esquema terminó con 8 errores únicos y 1 advertencia; ISS-14 y el cierre de Fase I siguen pendientes.
 
 ### Objetivo
 
 Publicar un contrato OpenAPI generado desde las vistas, con nombres camelCase alineados al JSON.
 
-### Preparación
+### Paso 1. Instalación de `drf-spectacular`
 
-Guardé la guía ejecutable en [ISS-14.md](Iss/ISS-14.md). Todavía no ejecuto la instalación ni modifico settings o rutas para OpenAPI.
+Instalé `drf-spectacular==0.30.0` y actualicé `requirements.txt` con `pip freeze`.
+
+#### Evidencia EVI-14-01 — Instalación de la dependencia
+
+![Instalación de drf-spectacular 0.30.0 y actualización de requirements.txt; prompt redactado](Trazabilidad/ISS-14-EVI-14-01-redactada.png)
+
+**Qué hice:** instalé la versión fijada por la ISS y regeneré la lista de dependencias.
+
+**Retroalimentación:** la terminal muestra la instalación satisfactoria de `drf-spectacular==0.30.0`.
+
+**Lo que aprendí:** fijar la versión de una dependencia deja reproducible la herramienta usada para generar el contrato.
+
+### Paso 2. Registro en settings y configuración de OpenAPI
+
+Agregué `drf_spectacular` a `INSTALLED_APPS`, configuré `DEFAULT_SCHEMA_CLASS` y añadí `SPECTACULAR_SETTINGS` con el hook de camelCase y permisos abiertos para servir la documentación.
+
+#### Evidencia EVI-14-02 — Registro de la aplicación
+
+![drf_spectacular agregado a INSTALLED_APPS](Trazabilidad/ISS-14-EVI-14-02.png)
+
+#### Evidencia EVI-14-03 — Configuración del esquema y camelCase
+
+![DEFAULT_SCHEMA_CLASS y SPECTACULAR_SETTINGS](Trazabilidad/ISS-14-EVI-14-03.png)
+
+**Qué hice:** registré el generador de esquema y configuré títulos, versión, permisos y hook de serializadores camelCase.
+
+**Retroalimentación:** la configuración mostrada incluye `AllowAny` para servir el esquema y el hook `camelize_serializer_fields`.
+
+**Lo que aprendí:** el esquema puede generarse desde las vistas y adaptar los nombres de propiedades para corresponder con el JSON camelCase.
+
+### Paso 3. Rutas para esquema, Swagger y ReDoc
+
+Agregué al URLconf raíz las rutas `/api/schema/`, `/api/schema/swagger-ui/` y `/api/schema/redoc/` antes de las rutas incluidas de las apps.
+
+#### Evidencia EVI-14-04 — Rutas OpenAPI en `config/urls.py`
+
+![Importaciones y rutas para el esquema, Swagger UI y ReDoc](Trazabilidad/ISS-14-EVI-14-04.png)
+
+**Qué hice:** declaré las tres rutas en el URLconf principal.
+
+**Retroalimentación:** la captura muestra las vistas de `drf_spectacular` enlazadas al esquema y ubicadas antes de los `include` de las apps.
+
+**Lo que aprendí:** el contrato completo pertenece al URLconf raíz del proyecto, no a una app de negocio individual.
+
+### Paso 4. Revisión del admin y arranque del servidor
+
+Accedí a `/admin/` y ejecuté el servidor para revisar la documentación desde el navegador.
+
+#### Evidencia EVI-14-05 — Acceso al admin y resultado de validación
+
+![Panel admin, servidor en ejecución y salida de spectacular validate; usuario redactado](Trazabilidad/ISS-14-EVI-14-05-redactada.png)
+
+**Qué observé:** el panel administrativo carga. En la terminal, `python manage.py spectacular --file /tmp/storelab-schema.yml --validate` reporta 1 advertencia y `Errors: 8 (8 unique)`. Después, `runserver` inicia y `manage.py check` informa que no hay problemas del sistema.
+
+**Retroalimentación:** que el servidor arranque y `check` pase no hace que la validación OpenAPI pase; los ocho errores siguen sin resolver.
+
+**Lo que aprendí:** cada verificación cubre una condición diferente: `check` comprueba configuración de Django, mientras que `spectacular --validate` comprueba que las vistas se puedan representar correctamente en el esquema.
+
+### Paso 5. Apertura de Swagger UI y revisión de endpoints
+
+Abr? Swagger UI sin autorizar la autenticaci?n y recorr? los grupos de operaciones.
+
+#### Evidencia EVI-14-06 ? Swagger UI sin autenticaci?n
+
+![Swagger UI abierta en el navegador sin autorizar un token](Trazabilidad/ISS-14-EVI-14-06.png)
+
+#### Evidencia EVI-14-07 — Operaciones de clientes y tipos
+
+![Operaciones de clientes y tipos de producto documentadas en Swagger](Trazabilidad/ISS-14-EVI-14-07.png)
+
+#### Evidencia EVI-14-08 — Operaciones de productos y ventas
+
+![Operaciones de productos y ventas documentadas en Swagger](Trazabilidad/ISS-14-EVI-14-08.png)
+
+**Qué observé:** Swagger muestra operaciones de clientes, tipos, productos y ventas, incluida la consulta de productos disponibles y la baja de ventas.
+
+**Retroalimentación:** las capturas confirman que la interfaz Swagger carga sin haber autorizado un token. No demuestran por sí solas que `--validate` esté limpio ni que los cuerpos representados usen los nombres camelCase esperados.
+
+**Lo que aprendí:** poder abrir la interfaz de documentación no garantiza que el esquema esté libre de errores; también debo validar el esquema generado y revisar sus propiedades.
+
+### Criterios y verificaciones pendientes
+
+- AC-14-01: **pendiente**. La salida mostrada indica ocho errores únicos y una advertencia en `spectacular --validate`.
+- AC-14-02: **parcialmente comprobado**. Swagger UI abrió sin Bearer; falta evidenciar la consulta directa del esquema y la apertura de ReDoc.
+- AC-14-03: **pendiente**. Se configuró el hook camelCase, pero falta comprobar el cuerpo generado en el esquema.
+
+No marco aprobado el GATE de ISS-14 ni el cierre de la Fase I mientras la validación devuelva errores y falten las comprobaciones indicadas.
 
 ### Conclusión
 
-ISS-14 queda pendiente de ejecución. No marco sus criterios ni el cierre de Fase I antes de contar con la validación del esquema y las evidencias solicitadas.
+Instalé y configuré `drf-spectacular`, añadí las rutas del esquema, Swagger y ReDoc, y abrí Swagger sin Bearer. Aprendí que la interfaz puede estar disponible aunque el generador todavía reporte problemas: la validación mostró ocho errores y una advertencia. Dejo ISS-14 parcial y no doy por superado el cierre de Fase I hasta resolverlos y completar las verificaciones pendientes.
+
+## ISS-15 — RefreshToken
+
+**Estado:** recibí la guía ejecutable y la guardé en [ISS-15.md](Iss/ISS-15.md). No implemento esta unidad hasta superar el requisito previo de ISS-14: su validación OpenAPI aún reporta errores.
+
+### Requisito previo
+
+ISS-15 requiere el cierre de negocio de ISS-14 superado en el motor utilizado. Antes de iniciar la construcción de RefreshToken, debo resolver los errores de `spectacular --validate`, comprobar los tres criterios de ISS-14 y documentar el GATE correspondiente.
+
+### Conclusión
+
+La implementación de RefreshToken queda pendiente. No instalé SimpleJWT, no modifiqué los modelos de seguridad y no generé migraciones en este paso; primero debo cerrar el GATE de ISS-14.
