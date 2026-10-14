@@ -1684,6 +1684,10 @@ Definí y migré las entidades RBAC, y aprendí que las tablas creadas no prueba
 
 Antes de implementar `LoginAPIView`, debo completar la verificación `seed_rbac` y `resolve(path).route` de ISS-16 y superar los criterios de autenticación de ISS-15. El cierre de ISS-14 también sigue pendiente mientras `spectacular --validate` reporte errores.
 
+### Observación sobre la prueba indicada
+
+Al transcribir la guía observé que `test_inactive_user_and_bad_password_are_401` solo envía la solicitud con el usuario inactivo; el bloque compartido no incluye el caso de contraseña incorrecta aunque el nombre del test y AC-17-04 lo requieren. Cuando llegue a ejecutar ISS-17, agregaré esa solicitud y comprobaré que también responda 401 con el mismo mensaje.
+
 ### Conclusión
 
 El endpoint de login y sus pruebas quedan pendientes. En esta etapa no creé `serializers.py`, `auth_views.py`, `urls.py` ni `apps.common.testing.py`, y no afirmo resultados para AC-17-01 a AC-17-05.
