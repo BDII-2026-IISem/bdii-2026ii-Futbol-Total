@@ -1780,6 +1780,54 @@ Verifiqué con la captura del test que el refresh rota, que reutilizar el anteri
 
 ## ISS-19 — Logout
 
-**Estado:** guardé la guía ejecutable en [ISS-19.md](Iss/ISS-19.md). No agregué `LogoutAPIView`, su ruta ni el test: en las capturas recibidas aún no aparece la implementación de logout.
+**Estado:** las capturas muestran `LogoutAPIView`, la ruta `auth/logout/`, el test `test_logout_invalidates_refresh` y su ejecución satisfactoria (`Ran 1 test`, `OK`). El código funcional permanece como cambio local sin commit.
 
-ISS-19 requiere ISS-18 superado. Aunque la evidencia de ISS-18 muestra sus criterios funcionales aprobados, el GATE permanece pendiente por el requisito ISS-17. Por ello, dejo pendientes AC-19-01 y AC-19-02, así como la implementación y la ejecución de `test_logout_invalidates_refresh`.
+#### Evidencia EVI-19-01 — Import y rutas de logout
+
+![Registro de LogoutAPIView en las rutas de seguridad; prompt redactado](Trazabilidad/ISS-19-EVI-19-01-redactada.png)
+
+#### Evidencia EVI-19-02 — Pruebas previas y rotación
+
+![Pruebas de login y rotación de refresh en AuthFlowTests; prompt redactado](Trazabilidad/ISS-19-EVI-19-02-redactada.png)
+
+#### Evidencia EVI-19-03 — Imports y helpers de autenticación
+
+![Imports, token_payload e issue_refresh en auth_views; prompt redactado](Trazabilidad/ISS-19-EVI-19-03-redactada.png)
+
+#### Evidencia EVI-19-04 — LogoutAPIView y revocación
+
+![Implementación de LogoutAPIView y respuesta 204; prompt redactado](Trazabilidad/ISS-19-EVI-19-04-redactada.png)
+
+#### Evidencia EVI-19-05 — Test de invalidación
+
+![test_logout_invalidates_refresh comprueba logout 204 y refresh posterior 401; prompt redactado](Trazabilidad/ISS-19-EVI-19-05-redactada.png)
+
+#### Evidencia EVI-19-06 — Ruta de logout
+
+![auth/logout registrado junto a login y refresh; prompt redactado](Trazabilidad/ISS-19-EVI-19-06-redactada.png)
+
+#### Evidencia EVI-19-07 — Ejecución satisfactoria
+
+![Ejecución de test_logout_invalidates_refresh con Ran 1 test y OK; prompt redactado](Trazabilidad/ISS-19-EVI-19-07-redactada.png)
+
+**Qué observé:** el test inicia sesión, envía el refresh a logout, comprueba `204 No Content` y vuelve a enviar ese valor al endpoint refresh, que responde 401. La terminal muestra `Ran 1 test` y `OK`.
+
+**Retroalimentación:** EVI-19-07 respalda los dos criterios HTTP del logout. El cierre del gate de ISS-19 sigue condicionado al requisito ISS-18 superado, cuyo gate previo de ISS-17 aún no está acreditado.
+
+**Lo que aprendí:** el logout invalida la credencial refresh persistida; no requiere guardar ni borrar access tokens.
+
+### Criterios y requisito previo
+
+- AC-19-01: EVI-19-07 muestra el test satisfactorio que comprueba respuesta 204.
+- AC-19-02: EVI-19-07 muestra el test satisfactorio que comprueba que el refresh revocado no puede renovarse y responde 401.
+- GATE ISS-19: los dos criterios funcionales están verificados; mantengo pendiente el gate mientras ISS-18 no supere su requisito ISS-17.
+
+### Conclusión
+
+Verifiqué el cierre de sesión con el test mostrado: logout responde 204 y el refresh invalidado ya no se puede renovar. Aprendí a revocar de forma persistente la credencial de sesión sin una tabla de access tokens. Dejo el gate sujeto al cierre de los requisitos previos.
+
+## ISS-20 — Perfil JWT con token
+
+**Estado:** guardé la guía ejecutable en [ISS-20.md](Iss/ISS-20.md). No implementé todavía la autenticación JWT personalizada, el serializer/vista del perfil ni su prueba; no hay capturas de esa construcción en este avance.
+
+ISS-20 requiere ISS-19 superado. Aunque EVI-19-07 respalda sus criterios funcionales, el gate de ISS-19 permanece pendiente por el requisito ISS-18/ISS-17. Mantengo pendientes AC-20-01 a AC-20-04 y la prueba `test_profile_requires_token_and_rejects_inactive_user`.
