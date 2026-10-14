@@ -1924,6 +1924,69 @@ Implementé y verifiqué la autorización por método, ruta resuelta y estado ac
 
 ## ISS-22 — RBAC sobre el negocio
 
-**Estado:** guardé la guía ejecutable en [ISS-22.md](Iss/ISS-22.md). La construcción está parcial en el árbol local: `ClientViewSet` ya usa `HasResourceAccess`, y la prueba de cliente crea una cadena RBAC; pero las vistas de producto y ventas aún declaran `AllowAny`, el permiso global de DRF también sigue en `AllowAny`, y `apps/common/testing.py` todavía no contiene `grant()` ni `grant_crud()`.
+**Estado:** las capturas muestran el cierre de las vistas de cliente, producto y venta con `IsAuthenticated` y `HasResourceAccess`, el permiso global `IsAuthenticated`, los helpers `grant()` y `grant_crud()` y la adaptación de los tests de negocio. La salida visible corresponde a `python manage.py test apps.client apps.product apps.sale`: `Ran 16 tests` y `OK`. Guardé la guía en [ISS-22.md](Iss/ISS-22.md).
 
-No doy AC-22-01 a AC-22-03 por verificados: las capturas compartidas ejecutan siete pruebas dirigidas a RBAC y cliente, no la suite completa de negocio. ISS-22 requiere ISS-21 superado y el GATE de ISS-21 sigue condicionado a ISS-20 e ISS-16. Dejo pendientes la protección consistente de todas las vistas de negocio, los helpers compartidos y la ejecución completa de las suites indicadas.
+#### Evidencia EVI-22-01 — Permiso global de DRF
+
+![El permiso global de DRF queda en IsAuthenticated](Trazabilidad/ISS-22-EVI-22-01.png)
+
+#### Evidencia EVI-22-02 — ClientViewSet protegido
+
+![ClientViewSet combina IsAuthenticated y HasResourceAccess](Trazabilidad/ISS-22-EVI-22-02.png)
+
+#### Evidencia EVI-22-03 — Helpers compartidos de pruebas
+
+![create_active_user, grant y grant_crud; la contraseña de prueba fue redactada](Trazabilidad/ISS-22-EVI-22-03-redactada.png)
+
+#### Evidencia EVI-22-04 — Vistas de producto protegidas
+
+![CatalogViewSet y AvailableProductListAPIView usan ambos permisos](Trazabilidad/ISS-22-EVI-22-04.png)
+
+#### Evidencia EVI-22-05 — Rutas de API
+
+![El enrutamiento del proyecto conserva esquema público e incluye las apps de API](Trazabilidad/ISS-22-EVI-22-05.png)
+
+#### Evidencia EVI-22-06 — Vistas de venta protegidas
+
+![SaleReadViewSet, SaleRegisterAPIView y SaleCollectionAPIView usan ambos permisos](Trazabilidad/ISS-22-EVI-22-06.png)
+
+#### Evidencia EVI-22-07 — Tests de cliente
+
+![ClientApiTests crea usuario, concede CRUD y autentica el cliente de pruebas](Trazabilidad/ISS-22-EVI-22-07.png)
+
+#### Evidencia EVI-22-08 — Tests de producto
+
+![ProductApiTests prepara el usuario y concede las rutas de producto](Trazabilidad/ISS-22-EVI-22-08.png)
+
+#### Evidencia EVI-22-09 — Tests de venta
+
+![SaleTransactionTests concede las operaciones publicadas y autentica al usuario](Trazabilidad/ISS-22-EVI-22-09.png)
+
+#### Evidencia EVI-22-10 — Permisos de DRF y documentación
+
+![IsAuthenticated es el default de DRF y Swagger conserva permiso AllowAny](Trazabilidad/ISS-22-EVI-22-10.png)
+
+#### Evidencia EVI-22-11 — Suite de negocio satisfactoria
+
+![La suite de cliente, producto y venta ejecuta 16 pruebas y termina con OK](Trazabilidad/ISS-22-EVI-22-11.png)
+
+**Qué observé:** en las capturas los viewsets y endpoints de negocio ya requieren identidad y autorización RBAC. Los helpers construyen la concesión a partir de la ruta resuelta, y los tests autentican al usuario antes de llamar a la API. La suite compartida terminó con 16 pruebas satisfactorias. La configuración mantiene las rutas de esquema y Swagger explícitamente públicas, sin revertir el default global autenticado.
+
+**Retroalimentación:** EVI-22-11 respalda AC-22-01 para el conjunto de pruebas que muestra la terminal. EVI-21-05 ya mostraba el caso de identidad ausente y falta de concesión con sus respuestas esperadas. En el código de perfil, `ProfileAPIView` sigue declarando únicamente `IsAuthenticated`; no doy por demostrado un test específico que pruebe que perfil no consulta la matriz. El GATE de ISS-22 sigue condicionado a los prerrequisitos previos, incluido el GATE de ISS-21.
+
+**Lo que aprendí:** un permiso global autenticado establece el comportamiento seguro por defecto, mientras que cada endpoint de negocio agrega la autorización por recurso. Las pruebas deben construir una concesión explícita para cada método y patrón de ruta que usan.
+
+### Criterios y requisitos
+
+- AC-22-01: EVI-22-11 muestra 16 tests de cliente, producto y venta con `OK`.
+- AC-22-02: EVI-21-05 muestra denegación por ausencia de identidad o concesión; las vistas de negocio quedan cerradas por defecto.
+- AC-22-03: `ProfileAPIView` conserva `IsAuthenticated` sin añadir `HasResourceAccess`; queda pendiente una evidencia de prueba específica de que no consulta la matriz.
+- GATE ISS-22: mantengo el gate sujeto a los requisitos previos de ISS-21, que a su vez dependen de ISS-20 e ISS-16.
+
+### Conclusión
+
+Implementé la protección RBAC en las vistas de negocio y adapté sus pruebas para autenticar usuarios con concesiones explícitas. Aprendí que el permiso global autenticado y la autorización específica por método y ruta se complementan. Dejo el GATE condicionado a los prerrequisitos pendientes y a la evidencia específica del perfil.
+
+## ISS-23 — CRUD de la matriz
+
+**Estado:** guardé la guía ejecutable en [ISS-23.md](Iss/ISS-23.md). El requisito de entrada indica ISS-22 superado, pero su GATE permanece condicionado por los requisitos previos de ISS-21; todavía no inicio ni declaro verificada la construcción de ISS-23.
