@@ -1,3 +1,29 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
 
-# Create your views here.
+from apps.common.status import RecordStatus
+from apps.product.models import Product, ProductType
+from apps.product.serializers import ProductSerializer, ProductTypeSerializer
+
+class CatalogViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
+    lookup_value_converter = "int"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        status_value = self.request.query_params.get("status")
+        if status_value:
+            queryset = queryset.filter(status=status_value)
+        return queryset
+
+    def perform_destroy(self, instance):
+        instance.status = RecordStatus.INACTIVE
+        instance.save(update_fields=["status", "updated_at"])
+
+class ProductTypeViewSet(CatalogViewSet):
+    queryset = ProductType.objects.all()
+    serializer_class = ProductTypeSerializer
+
+class ProductViewSet(CatalogViewSet):
+    queryset = Product.objects.select_related("product_type")
+    serializer_class = ProductSerializer

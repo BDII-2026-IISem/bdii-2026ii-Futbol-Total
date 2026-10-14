@@ -877,3 +877,115 @@ La captura acredita que las cuatro pruebas del CRUD pasaron en la ejecución mos
 ### Conclusión
 
 Implementé el `ClientViewSet`, sus pruebas y las rutas `/api/clients/`. El primer intento de pruebas no pudo crear la base temporal por permisos; en la siguiente ejecución, Django detectó una base de pruebas existente, permitió eliminarla y recrearla, y las cuatro pruebas terminaron en `OK`. Aprendí a distinguir los problemas de preparación de la base de pruebas de los fallos de la API. Dejo el GATE parcialmente completado porque todavía falta la evidencia de todos los motores solicitados.
+
+## ISS-09 — Catálogo con ModelViewSet
+
+**Estado:** implementé el CRUD de tipos y productos, y la captura de pruebas muestra los cuatro casos aprobados. El GATE queda parcial porque no hay evidencia de los tres motores.
+
+### Objetivo
+
+Publicar tipos y productos con el mismo criterio de CRUD homogéneo.
+
+### Paso 1. Vista compartida para el catálogo
+
+Creé `CatalogViewSet` para compartir el permiso abierto, el filtro opcional por `status` y la baja lógica. Añadí `ProductTypeViewSet` y `ProductViewSet`; este último carga `product_type` relacionado con `select_related`.
+
+#### Evidencia EVI-09-01 — Vistas del catálogo
+
+![CatalogViewSet y viewsets de tipo y producto](Trazabilidad/ISS-09-EVI-09-01.png)
+
+**Qué hice:** implementé los viewsets para tipos y productos reutilizando el comportamiento común del catálogo.
+
+**Retroalimentación:** la captura muestra el permiso `AllowAny`, el convertidor entero, el filtro por estado y la baja lógica. También se ve el uso de `select_related("product_type")` en productos.
+
+**Lo que aprendí:** una clase base puede reunir el comportamiento que comparten recursos CRUD sin dejar de usar `ModelViewSet`.
+
+### Paso 2. Rutas de tipos y productos
+
+Creé `apps/product/urls.py` y registré `product-types` y `products` con un `SimpleRouter`.
+
+#### Evidencia EVI-09-02 — Router del catálogo
+
+![SimpleRouter para tipos de producto y productos](Trazabilidad/ISS-09-EVI-09-02.png)
+
+**Qué hice:** registré cada viewset con su `basename` para generar las rutas de lista, detalle y acciones CRUD.
+
+**Retroalimentación:** la captura muestra ambos registros en el router; todavía no incluye una ruta para productos disponibles, que corresponde al ISS-10.
+
+**Lo que aprendí:** puedo incluir varios recursos en el URLconf de una app usando el mismo router.
+
+### Paso 3. Inclusión de rutas en el proyecto
+
+Incluí `apps.product.urls` bajo `api/` en `config/urls.py`.
+
+#### Evidencia EVI-09-03 — URLconf del proyecto
+
+![Inclusión de las rutas del catálogo bajo api](Trazabilidad/ISS-09-EVI-09-03.png)
+
+**Qué hice:** añadí el URLconf del catálogo junto al de clientes en las rutas principales.
+
+**Retroalimentación:** la captura muestra que ambas apps reciben el prefijo `api/`.
+
+**Lo que aprendí:** el prefijo compartido permite organizar rutas por recurso en sus apps y reunirlas desde el URLconf principal.
+
+### Paso 4. Pruebas de tipos y productos
+
+Reescribí `apps/product/tests.py` con cuatro pruebas para el CRUD de tipos, la actualización y baja lógica de productos, los valores por defecto, la restricción de borrado del tipo relacionado y el rechazo de nombres duplicados.
+
+#### Evidencia EVI-09-04 — Pruebas de tipos y catálogo
+
+![Pruebas ProductApiTests para CRUD y validaciones](Trazabilidad/ISS-09-EVI-09-04.png)
+
+**Qué hice:** añadí pruebas HTTP con `APITestCase`; el tipo `Bebida` de apoyo se crea directamente en el ORM, como indica la guía.
+
+**Retroalimentación:** la captura muestra las pruebas de CRUD de tipos y productos y las aserciones para los valores predeterminados y la restricción de borrado.
+
+**Lo que aprendí:** puedo combinar solicitudes al endpoint con aserciones del ORM para verificar la persistencia y las reglas del modelo.
+
+#### Evidencia EVI-09-05 — Validación de nombres duplicados
+
+![Prueba de nombre duplicado y precio persistido](Trazabilidad/ISS-09-EVI-09-05.png)
+
+**Qué hice:** verifiqué que la primera alta del nombre `Café` responda 201, la repetida responda 400 y el precio original permanezca guardado.
+
+**Retroalimentación:** las aserciones distinguen el rechazo de duplicados de la persistencia correcta del primer producto.
+
+**Lo que aprendí:** las restricciones de unicidad del catálogo se deben comprobar a través de la API, además de validar los datos que quedan almacenados.
+
+### Paso 5. Ejecución de la suite de productos
+
+Ejecuté `python manage.py test apps.product`.
+
+#### Evidencia EVI-09-06 — Cuatro pruebas aprobadas
+
+![Ejecución de apps.product: cuatro pruebas con resultado OK](Trazabilidad/ISS-09-EVI-09-06.png)
+
+**Qué observé:** Django encontró cuatro pruebas, ejecutó todas y terminó con `OK`.
+
+**Retroalimentación:** la captura verifica la suite de productos en la configuración de base de datos activa en esa ejecución. No identifica evidencia de ejecución en los tres motores.
+
+**Lo que aprendí:** una ejecución satisfactoria de la suite comprueba los casos implementados en ese entorno; para afirmar compatibilidad multi-motor hacen falta resultados separados por motor.
+
+### Criterios y verificaciones pendientes
+
+La suite de cuatro pruebas pasó en la ejecución mostrada. Las capturas no demuestran la ejecución en PostgreSQL, MySQL y SQL Server, así que no afirmo haber cerrado el GATE multi-motor.
+
+### Conclusión
+
+Publiqué los CRUD de tipos y productos, compartí el comportamiento común en `CatalogViewSet`, conecté sus rutas y escribí cuatro pruebas. La evidencia muestra que las cuatro pasaron. Aprendí a reutilizar el comportamiento de baja lógica y a verificar restricciones y defaults mediante la API. Dejo el GATE parcialmente completado hasta contar con evidencia de los tres motores pedidos.
+
+## ISS-10 — Disponibles con ListAPIView
+
+**Estado:** guía recibida; pendiente de ejecutar los pasos y documentar evidencias.
+
+### Objetivo
+
+Publicar una lectura filtrada de productos disponibles que no forma parte del CRUD del producto.
+
+### Preparación
+
+Guardé la guía ejecutable en [ISS-10.md](Iss/ISS-10.md). Todavía no implemento el endpoint ni agrego pruebas para el filtro.
+
+### Conclusión
+
+Pendiente de realizar los pasos de ISS-10 y documentar sus evidencias.
