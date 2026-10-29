@@ -1,0 +1,29 @@
+<main class="mx-auto max-w-xl p-6">
+  <p-card header="Demostración local">
+    <p class="mb-4">Estos datos son de ejemplo; no provienen de la API.</p>
+
+    <label class="mb-2 block" for="demo-name">Nombre</label>
+    <input
+      id="demo-name"
+      class="mb-4 w-full rounded border p-2"
+      [value]="item().name"
+      (input)="updateName($event)"
+    />
+
+    <p class="mb-2">Vista previa: {{ item().name }}</p>
+    <p class="mb-2">Precio de muestra: {{ item().price }}</p>
+    <p class="mb-4">Impuesto de muestra: {{ tax() }}</p>
+
+    <p-tag
+      class="mb-4 block"
+      [value]="item().active ? 'Activo' : 'Inactivo'"
+      [severity]="item().active ? 'success' : 'secondary'"
+    />
+
+    <div class="flex flex-wrap gap-2">
+      <p-button label="Aumentar precio" (onClick)="increasePrice()" />
+      <p-button label="Cambiar estado" severity="secondary" (onClick)="toggleActive()" />
+      <p-button label="Reiniciar" severity="contrast" (onClick)="reset()" />
+    </div>
+  </p-card>
+</main>
