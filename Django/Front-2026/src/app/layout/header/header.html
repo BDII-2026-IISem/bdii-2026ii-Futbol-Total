@@ -1,3 +1,18 @@
-<header class="flex h-16 items-center border-b border-slate-200 bg-white px-6">
-  <span class="truncate text-lg font-semibold">{{ title }}</span>
+<header
+  class="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200 bg-white px-4 sm:px-6"
+>
+  <button
+    pButton
+    type="button"
+    text
+    rounded
+    aria-label="Mostrar u ocultar el menú"
+    (click)="menuRequested.emit()"
+  >
+    <i pButtonIcon class="pi pi-bars"></i>
+  </button>
+
+  <p class="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">
+    {{ appName() }}
+  </p>
 </header>

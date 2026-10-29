@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, input, output } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   host: { class: 'block' },
   selector: 'app-header',
-  styleUrl: './header.css',
+  imports: [ButtonModule],
   templateUrl: './header.html',
+  styleUrl: './header.css',
 })
 export class Header {
-  readonly title = 'PedalLibre';
+  readonly appName = input('PedalLibre');
+  readonly menuRequested = output<void>();
 }
