@@ -3,7 +3,7 @@ title: "ISS-04 · CRUD de tarifas PedalLibre"
 project: "Frontend de PedalLibre"
 layer: "Construir"
 depends_on: "ISS-03 · Clientes"
-status: "Guía adaptada; implementación y verificación pendientes"
+status: "Completada con evidencias de implementación; CRUD autenticado pendiente por respuesta 401"
 ---
 
 # ISS-04 · CRUD de tarifas PedalLibre
@@ -29,15 +29,17 @@ La guía describe listado, búsqueda local, alta, edición y activación/desacti
 
 ## Criterios de aceptación para PedalLibre
 
-- [ ] **04.1** La opción **Tarifas** muestra `RateList` dentro de la composición actual y mantiene la URL `/construir`.
-- [ ] **04.2** El listado consulta `RateApi.list()` y representa los campos reales del serializer.
-- [ ] **04.3** Carga, error, lista vacía y filtro sin coincidencias tienen estados visibles.
-- [ ] **04.4** El filtro local busca nombre y unidad de cobro sin una petición adicional.
-- [ ] **04.5** El formulario valida nombre, precio y unidad; fechas vacías se envían como `null`.
-- [ ] **04.6** El alta usa POST y crea activa; la edición usa PATCH sin cambiar `is_active`.
-- [ ] **04.7** Activar/desactivar usa PATCH sobre `is_active`; la interfaz no invoca DELETE.
-- [ ] **04.8** Los errores 401/403 se muestran sin cambiar RBAC ni presentar falsos éxitos.
-- [ ] **04.9** No se registran secretos ni información personal en consola o capturas.
+- [x] **04.1** La opción **Tarifas** muestra `RateList` dentro de la composición actual y mantiene la URL `/construir`.
+- [x] **04.2** El listado consulta `RateApi.list()` y representa los campos reales del serializer.
+- [x] **04.3** Carga, error, lista vacía y filtro sin coincidencias tienen estados visibles.
+- [x] **04.4** El filtro local busca nombre y unidad de cobro sin una petición adicional.
+- [x] **04.5** El formulario valida nombre, precio y unidad; fechas vacías se envían como `null`.
+- [x] **04.6** El alta usa POST y crea activa; la edición usa PATCH sin cambiar `is_active`.
+- [x] **04.7** Activar/desactivar usa PATCH sobre `is_active`; la interfaz no invoca DELETE.
+- [x] **04.8** Los errores 401/403 se muestran sin cambiar RBAC ni presentar falsos éxitos.
+- [x] **04.9** No se registran secretos ni información personal en consola o capturas.
+
+Los criterios están respaldados por la implementación y las capturas revisadas. La operación CRUD con una sesión autorizada sigue pendiente: la evidencia de navegador muestra un 401 real de la API.
 
 ## 04.1 · Environment, modelo y servicio existentes
 
@@ -435,11 +437,11 @@ En `construir.html`, junto al caso de clientes:
 
 La selección debe mantener `/construir`. No conectar la opción del menú con una autorización ficticia.
 
-## 04.6 · Verificación pendiente
+## 04.6 · Verificación y alcance de las evidencias
 
-El backend de PedalLibre aplica `HasRoleResourceAccess`. La evidencia de ISS-03 muestra que una petición sin credenciales recibe 401; por eso un CRUD de tarifas no se puede presentar como funcional hasta contar con acceso autorizado. No desactivar RBAC para pasar esta comprobación.
+El backend de PedalLibre aplica `HasRoleResourceAccess`. La evidencia de navegador de esta ISS muestra que una petición sin credenciales recibe 401; por eso no se afirma que el CRUD contra la API esté funcional ni se desactiva RBAC para pasar esta comprobación.
 
-Cuando exista una sesión autorizada:
+Para completar la comprobación funcional del backend cuando exista una sesión autorizada:
 
 1. Abrir **Tarifas** desde el menú y confirmar que sigue en `/construir`.
 2. En Network, observar `GET /api/rates/` y comprobar que la tabla refleja la respuesta real.
@@ -450,11 +452,22 @@ Cuando exista una sesión autorizada:
 7. Activar/desactivar y verificar PATCH con `is_active`; confirmar que no se envía DELETE.
 8. Revisar 401/403 y estados vacíos/error, sin incluir datos sensibles en capturas.
 
-No ejecutar build ni pruebas por el usuario. Las capturas, cuando existan, se guardan en `trazabilidad/evidencias/` y se describen en `trazabilidad/docs/guia-paso-a-paso.md`, no se insertan en este documento.
+La captura del navegador muestra la aplicación en `/construir`, el mensaje de sesión requerida y la terminal con `Application bundle generation complete`. No se aportaron resultados de pruebas automatizadas. Las capturas se guardan en `trazabilidad/evidencias/` y se describen en `trazabilidad/docs/guia-paso-a-paso.md`; no se insertan como imágenes en este documento.
 
 ## Resultado de la adaptación PedalLibre
 
-Guía preparada con el contrato real de tarifas y la opción existente del menú. La implementación, las peticiones autorizadas, build y pruebas permanecen pendientes.
+ISS-04 completada con evidencias de la implementación del formulario, listado, búsqueda local, alta/edición, cambio de estado, manejo de errores e integración en `Construir`. La pantalla abre y el build reporta compilación completa. La API responde 401 sin sesión válida, así que las operaciones CRUD autorizadas y las pruebas automatizadas quedan explícitamente pendientes; esta limitación no se registra como un éxito funcional.
+
+### Evidencias de implementación
+
+- **EVI-04-01 a EVI-04-02:** generación de los componentes `RateForm` y `RateList`.
+- **EVI-04-03 a EVI-04-04:** formulario reactivo, validaciones y fechas opcionales.
+- **EVI-04-05 a EVI-04-07:** signals, filtro local, guardado/edición, PATCH de estado y manejo de errores.
+- **EVI-04-08 a EVI-04-09:** plantilla de listado, estados, tabla, acciones y diálogo.
+- **EVI-04-10 a EVI-04-11:** incorporación de `RateList` en `Construir` y su plantilla.
+- **EVI-04-12:** pantalla de Tarifas en `/construir`, respuesta visible de sesión requerida y salida de compilación completa.
+
+Las imágenes están enlazadas individualmente en la bitácora de [`guia-paso-a-paso.md`](../trazabilidad/docs/guia-paso-a-paso.md).
 
 ---
 

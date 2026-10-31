@@ -35,7 +35,7 @@ Las imágenes se guardan en [`../evidencias/`](../evidencias/), con nombres desc
 | ISS-01B | Menú PrimeNG y primera interacción | Completada; escritorio, Drawer móvil a 390 px y build con chunk diferido documentados |
 | ISS-02 | Núcleo: environment, modelos y servicios PedalLibre | Completada con evidencia visual; sin build ni pruebas |
 | ISS-03 | Clientes: listado, formulario y estado activo | Completada con evidencias; API devuelve 401, CRUD autenticado no verificado |
-| ISS-04 | CRUD de tarifas PedalLibre (adaptación del original de tipos de producto) | Guía preparada; implementación pendiente |
+| ISS-04 | CRUD de tarifas PedalLibre (adaptación del original de tipos de producto) | Completada con evidencias de implementación; API responde 401, CRUD autorizado y pruebas automáticas pendientes |
 | ISS-05 | Por registrar desde la guía del docente | Pendiente |
 | ISS-06 | Por registrar desde la guía del docente | Pendiente |
 | ISS-07 | Por registrar desde la guía del docente | Pendiente |
@@ -516,7 +516,7 @@ La revisión confirma que la pantalla llega al backend y muestra explícitamente
 
 ### ISS-04 · CRUD de tarifas PedalLibre
 
-**Estado:** Guía adaptada y preparada; implementación pendiente.
+**Estado:** Completada con evidencias de implementación; la API responde 401 sin sesión válida, por lo que las operaciones CRUD autorizadas y las pruebas automáticas no se verificaron.
 
 El original ISS-04 de tipos de producto no tiene una entidad equivalente en PedalLibre. El siguiente recurso de catálogo disponible es **Tarifas**, documentado en [ISS-04 · CRUD de tarifas](../../iss/ISS-04-crud-tarifas.md). La guía usa el serializer real y conserva al final el material original de tipos de producto, separado de la adaptación.
 
@@ -544,17 +544,71 @@ Aprendí que la adaptación debe partir del contrato real del backend, no de tra
 
 #### Pasos que realicé
 
+Implementé el formulario y el listado de tarifas, el filtro local, las acciones de crear/editar/activar-desactivar y la integración de `RateList` en la opción Tarifas de `Construir`. La captura del navegador muestra la aplicación compilada y abierta en `/construir`; al consultar la API aparece el mensaje de sesión requerida.
+
 #### Evidencias
+
+![Generación del componente RateForm](../evidencias/ISS-04-01-generacion-rate-form.png)
+
+**Explicación:** Se generó el componente standalone del formulario de tarifas.
+
+![Generación del componente RateList](../evidencias/ISS-04-02-generacion-rate-list.png)
+
+**Explicación:** Se generó el componente standalone del listado de tarifas.
+
+![Formulario reactivo de tarifas](../evidencias/ISS-04-03-formulario-reactivo.png)
+
+**Explicación:** El formulario define sus campos y validadores, reinicia los valores al cambiar `resetKey` y emite el payload con las fechas vacías como `null`.
+
+![Plantilla del formulario de tarifas](../evidencias/ISS-04-04-plantilla-formulario.png)
+
+**Explicación:** La plantilla incluye campos requeridos, mensajes de validación, fechas opcionales y acciones de cancelar/guardar.
+
+![Signals, filtro y operaciones de RateList](../evidencias/ISS-04-05-lista-filtro-guardar.png)
+
+**Explicación:** El listado mantiene estado local, consulta `RateApi.list()` y filtra nombre y unidad de cobro.
+
+![Edición y cambio de estado de tarifas](../evidencias/ISS-04-06-edicion-y-estado.png)
+
+**Explicación:** El alta envía `is_active: true`, la edición usa PATCH con el payload del formulario y activar/desactivar actualiza `is_active`.
+
+![Manejo de errores de la API](../evidencias/ISS-04-07-errores-api.png)
+
+**Explicación:** Se traducen errores de conexión, 401 y 403 en mensajes visibles; no se simula una respuesta exitosa.
+
+![Plantilla de listado de tarifas](../evidencias/ISS-04-08-plantilla-listado.png)
+
+**Explicación:** La vista implementa mensajes de carga/error/éxito, buscador y estados de tabla vacía y sin coincidencias.
+
+![Tabla, acciones y diálogo de tarifas](../evidencias/ISS-04-09-tabla-acciones-dialogo.png)
+
+**Explicación:** Se muestran los campos del recurso, acciones para editar y cambiar estado, y el formulario dentro de un diálogo.
+
+![Integración de RateList en Construir](../evidencias/ISS-04-10-integracion-componente.png)
+
+**Explicación:** `Construir` importa `RateList` y mantiene la opción local Tarifas en su menú.
+
+![Plantilla de Construir con Tarifas](../evidencias/ISS-04-11-integracion-template.png)
+
+**Explicación:** La selección Tarifas presenta `app-rate-list` sin crear otra ruta ni reemplazar Header, Aside o Footer.
+
+![Tarifas en navegador y compilación Angular](../evidencias/ISS-04-12-navegador-401-build.png)
+
+**Explicación:** La app está en `/construir`, conserva el layout y muestra el error de sesión requerido por la API; la terminal reporta compilación completa. Esta captura no prueba operaciones CRUD autorizadas ni las pruebas automáticas.
 
 #### Retroalimentación
 
+La revisión de las capturas respalda la implementación de la interfaz y la compilación mostrada en terminal. La llamada de tarifas no puede validar la respuesta de negocio sin credenciales: el backend devuelve 401. Deben conservarse RBAC y la limitación en el registro; quedan pendientes las operaciones CRUD con una sesión autorizada y las pruebas automáticas.
+
 #### Qué aprendí
+
+Aprendí que el recurso de tarifas debe seguir el contrato real de PedalLibre —incluido `is_active` mediante PATCH y sin DELETE— y que las capturas de código más una pantalla compilada no equivalen a probar el CRUD con la API. Un 401 confirma el manejo del error, pero hace necesario repetir la validación con una sesión autorizada.
 
 #### Cierre
 
-- **Criterios verificados:** pendiente.
-- **Pendientes o correcciones:** pendiente.
-- **Estado final:** Pendiente.
+- **Criterios respaldados por la implementación y capturas:** integración en `Construir`, formulario, listado, búsqueda local, operaciones de alta/edición/cambio de estado y presentación de errores.
+- **Pendientes o correcciones:** repetir el recorrido CRUD con sesión autorizada y ejecutar pruebas automatizadas.
+- **Estado final:** Completada con evidencias de implementación; verificación de API autenticada pendiente por 401.
 
 ---
 
