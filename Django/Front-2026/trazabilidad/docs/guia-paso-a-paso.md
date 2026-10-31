@@ -33,9 +33,9 @@ Las imágenes se guardan en [`../evidencias/`](../evidencias/), con nombres desc
 | ISS-00 | Requisitos previos | Completada; las pruebas de integración quedan para las ISS que consuman la API |
 | ISS-01 | Bootstrap Angular 22 con CLI | Completada; demo PedalLibre, build y seis pruebas verificados |
 | ISS-01B | Menú PrimeNG y primera interacción | Completada; escritorio, Drawer móvil a 390 px y build con chunk diferido documentados |
-| ISS-02 | Núcleo, modelos y layout | Pendiente |
-| ISS-03 | Por registrar desde la guía del docente | Pendiente |
-| ISS-04 | Por registrar desde la guía del docente | Pendiente |
+| ISS-02 | Núcleo: environment, modelos y servicios PedalLibre | Completada con evidencia visual; sin build ni pruebas |
+| ISS-03 | Clientes: listado, formulario y estado activo | Completada con evidencias; API devuelve 401, CRUD autenticado no verificado |
+| ISS-04 | CRUD de tarifas PedalLibre (adaptación del original de tipos de producto) | Guía preparada; implementación pendiente |
 | ISS-05 | Por registrar desde la guía del docente | Pendiente |
 | ISS-06 | Por registrar desde la guía del docente | Pendiente |
 | ISS-07 | Por registrar desde la guía del docente | Pendiente |
@@ -330,31 +330,195 @@ Implementé el menú local, las entradas y salidas de los componentes, el Drawer
 
 ---
 
-### ISS-02 · Núcleo, modelos y layout
+### ISS-02 · Núcleo: environment, modelos y servicios PedalLibre
 
-**Estado:** Pendiente.
+**Estado:** Completada con evidencia visual. No ejecuté build ni pruebas automatizadas.
 
-La adaptación para PedalLibre y el contenido original de referencia están en [ISS-02 · Núcleo, modelos y layout](../../iss/ISS-02-nucleo-modelos-layout.md).
+La adaptación PedalLibre está documentada en [ISS-02 · Núcleo, modelos y servicios](../../iss/ISS-02-nucleo-modelos-layout.md). Esta ISS configura los environments, refleja los serializers de cliente, bicicleta y tarifa, prepara los servicios HTTP y registra `provideHttpClient()`. Los apartados sin consumidor actual se identifican como didácticos y no se implementan como funcionalidades.
 
 #### Pasos que realicé
 
+- Generé los environments de Angular y configuré `apiUrl` para el backend local de PedalLibre.
+- Definí los modelos TypeScript de cliente, bicicleta y tarifa respetando los campos serializados por Django.
+- Preparé servicios para clientes, bicicletas disponibles y tarifas usando `HttpClient`.
+- Registré `provideHttpClient()` en la configuración de la aplicación.
+- Dejé las partes sobre notificaciones, formato de errores, filtros, Shell adicional y componentes sin consumidor como material didáctico, no como requisitos de esta implementación.
+
 #### Evidencias
 
+![Aviso de licencia PrimeUI inválida](../evidencias/ISS-02-01-primeui-licencia-invalida.png)
+
+**Revisión:** la interfaz presenta `Invalid PrimeUI License`; esta captura no acredita una licencia válida.
+
+![Generación de environments Angular](../evidencias/ISS-02-02-entorno-y-generacion-angular.png)
+
+**Revisión:** la terminal muestra la generación de los archivos de entorno con Angular CLI.
+
+![Environment de producción](../evidencias/ISS-02-03-environment-production.png)
+
+**Revisión:** `environment.ts` muestra la URL API de PedalLibre y `production: true`.
+
+![Environment de desarrollo](../evidencias/ISS-02-04-environment-development.png)
+
+**Revisión:** `environment.development.ts` muestra la misma URL y `production: false`.
+
+![Modelo de cliente](../evidencias/ISS-02-05-modelo-cliente.png)
+
+**Revisión:** muestra `Client` y `ClientPayload` con los campos serializados en `snake_case`.
+
+![Modelo de bicicleta](../evidencias/ISS-02-06-modelo-bicicleta.png)
+
+**Revisión:** muestra el tipo de respuesta de bicicleta.
+
+![Modelo de tarifa](../evidencias/ISS-02-07-modelo-tarifa.png)
+
+**Revisión:** muestra `price` como string y las fechas opcionales de la tarifa.
+
+![Servicio de clientes](../evidencias/ISS-02-08-servicio-clientes.png)
+
+**Revisión:** muestra las operaciones GET, POST, PUT y PATCH de `ClientApi`.
+
+![Servicio de bicicletas disponibles](../evidencias/ISS-02-09-servicio-bicicletas.png)
+
+**Revisión:** muestra la llamada de `BicycleApi` a `/bicycles/available/`.
+
+![Servicio de tarifas](../evidencias/ISS-02-10-servicio-tarifas.png)
+
+**Revisión:** muestra las operaciones GET, POST, PUT y PATCH de `RateApi`.
+
+![Registro de provideHttpClient](../evidencias/ISS-02-11-provide-httpclient.png)
+
+**Revisión:** `app.config.ts` registra `provideHttpClient()` junto al router y a la configuración PrimeNG existente.
+
 #### Retroalimentación
+
+Las capturas respaldan los environments, modelos, servicios y la configuración de `HttpClient`. La licencia PrimeUI aparece inválida en la primera captura; su resolución es un pendiente separado. No hay evidencia visual de build o pruebas y no los ejecuté, según la instrucción recibida.
+
+#### Qué aprendí
+
+Aprendí a reflejar directamente en TypeScript el contrato JSON real de Django, a centralizar las rutas HTTP en servicios y a habilitar `HttpClient` desde los providers de Angular. También confirmé que una captura de código evidencia su configuración, pero no sustituye una validación de build o pruebas.
+
+#### Cierre
+
+- **Criterios verificados:** environments, modelos, servicios de clientes/bicicletas/tarifas y registro de `HttpClient`, respaldados por capturas.
+- **Pendientes o correcciones:** la captura informa licencia PrimeUI inválida; build y pruebas no ejecutados. Estos puntos quedan registrados y no se presentan como validaciones realizadas.
+- **Estado final:** Completada con evidencia visual, sin build ni pruebas.
+
+---
+
+### ISS-03 · Clientes: listado, formulario y estado activo
+
+**Estado:** Completada con evidencias documentales; revisé la pantalla en el navegador. El listado presenta el 401 que responde la API; el CRUD autenticado, build y pruebas siguen pendientes y no se presentan como aprobados.
+
+La guía adaptada al contrato de PedalLibre está en [ISS-03 · Clientes](../../iss/ISS-03-crud-clientes.md). Define listado/filtro local, creación/edición y cambio de `is_active` mediante PATCH. Las capturas recibidas muestran avances de implementación en modelos, servicio, filtro, formulario, listado y composición de `Construir`, además del resultado de la consulta real en el navegador.
+
+#### Pasos que realicé
+
+- Preparé `Client` y `ClientPayload` con los campos serializados por PedalLibre.
+- Implementé en `ClientApi` las operaciones de consulta, creación, reemplazo, actualización y cambio de `is_active`.
+- Preparé el filtro local reutilizable sin modificar las filas originales.
+- Generé los componentes de lista y formulario; luego completé el formulario reactivo y la plantilla.
+- Implementé la lista con signals para carga, edición, guardado, filtro y errores, y conecté la pantalla de clientes desde `Construir`.
+- Abrí `/construir`, seleccioné **Clientes** y observé el mensaje **La API requiere una sesión válida**.
+- Consulté `/api/clients/` y la respuesta fue **401 Unauthorized**, con `Authentication credentials were not provided`.
+- No se pudieron verificar el listado de datos, el filtro sin nuevas peticiones ni las operaciones POST/PATCH: el backend exige autenticación. No intenté evadir esa protección.
+- No ejecuté build ni pruebas automatizadas.
+
+#### Evidencias
+
+Las primeras quince capturas muestran código y generación de componentes. No muestran resultados de build o pruebas.
+
+![Modelo y payload de cliente](../evidencias/ISS-03-01-modelo-cliente.png)
+
+**Explicación:** Se ve `Client` con los campos de PedalLibre en `snake_case` y `ClientPayload` con los campos editables.
+
+![Servicio de clientes](../evidencias/ISS-03-02-servicio-clientes.png)
+
+**Explicación:** Se ve `ClientApi` construyendo sus rutas desde `environment.apiUrl`, con barra final, y sus métodos de consulta y escritura.
+
+![Filtro local](../evidencias/ISS-03-03-filtro-local.png)
+
+**Explicación:** Se muestra `filterRows` como función local que devuelve una copia si no hay búsqueda y compara los campos elegidos sin llamar a la API.
+
+![Generación de los componentes de clientes](../evidencias/ISS-03-04-generacion-componentes.png)
+
+**Explicación:** La terminal muestra la generación de `client-list` y `client-form` con Angular CLI.
+
+![Esqueleto inicial de ClientForm](../evidencias/ISS-03-05-esqueleto-client-form.png)
+
+**Explicación:** Esta captura corresponde al componente recién generado, antes de completar su lógica y formulario.
+
+![Esqueleto inicial de ClientList](../evidencias/ISS-03-06-esqueleto-client-list.png)
+
+**Explicación:** Esta captura corresponde al componente recién generado, antes de completar la lista.
+
+![Formulario reactivo de cliente](../evidencias/ISS-03-07-formulario-reactivo.png)
+
+**Explicación:** Se muestra `ClientForm` con inputs y outputs, validadores y carga del registro seleccionado mediante `effect()`.
+
+![Plantilla del formulario de cliente](../evidencias/ISS-03-08-plantilla-formulario.png)
+
+**Explicación:** Se ve la plantilla con los campos de documento, nombres, apellidos, teléfono y correo, junto con mensajes de validación.
+
+![Signals y filtro de la lista de clientes](../evidencias/ISS-03-09-listado-signals.png)
+
+**Explicación:** Se observan los signals del listado y el cálculo de las filas visibles filtradas por los campos del cliente.
+
+![Guardado y edición del cliente](../evidencias/ISS-03-10-guardado-edicion.png)
+
+**Explicación:** Se muestran los métodos para abrir el formulario y seleccionar POST o PATCH según el registro en edición.
+
+![Cambio de estado y manejo de errores](../evidencias/ISS-03-11-estado-y-errores.png)
+
+**Explicación:** Se ve el cambio de `is_active` mediante el servicio y la traducción visible de errores HTTP.
+
+![Plantilla del listado de clientes](../evidencias/ISS-03-12-listado-template.png)
+
+**Explicación:** La plantilla muestra estados de carga, error, lista vacía y sin coincidencias, además de la tabla de clientes.
+
+![Acciones de fila y diálogo](../evidencias/ISS-03-13-acciones-dialogo.png)
+
+**Explicación:** Se muestran las acciones de edición y activación/desactivación, y el formulario dentro del diálogo.
+
+![Integración del listado en Construir](../evidencias/ISS-03-14-construir-componente.png)
+
+**Explicación:** `Construir` importa `ClientList` y conserva el menú local existente.
+
+![Plantilla de Construir con la pantalla de clientes](../evidencias/ISS-03-15-construir-plantilla.png)
+
+**Explicación:** La plantilla presenta `app-client-list` cuando la selección actual es Clientes, sin crear una ruta nueva.
+
+Las siguientes capturas sí son de la comprobación en navegador:
+
+![Pantalla Clientes presenta el error de sesión de la API](../evidencias/ISS-03-16-clientes-error-sesion.png)
+
+**Explicación:** La app está abierta en `/construir` con la opción Clientes seleccionada. El frontend muestra el error de sesión devuelto por la API; la captura también deja visible el aviso de licencia PrimeUI inválida, que queda como pendiente independiente.
+
+![Endpoint de clientes responde 401 Unauthorized](../evidencias/ISS-03-17-api-clientes-401.png)
+
+**Explicación:** Django REST Framework responde 401 a `GET /api/clients/` porque no se enviaron credenciales. Por ello, esta prueba confirma el manejo visible del error, pero no verifica la carga del listado ni las operaciones del CRUD.
+
+No guardé una captura del administrador que mostraba datos personales de un cliente. Las evidencias de implementación sin datos personales están numeradas ISS-03-01 a ISS-03-15.
+
+#### Retroalimentación
+
+La revisión confirma que la pantalla llega al backend y muestra explícitamente el 401; no se debe cambiar permisos ni tratarlo como un éxito del listado. Para cerrar la ISS faltan pruebas con una sesión autorizada, verificar filtro/alta/edición/estado activo y los estados restantes, además de build y pruebas automatizadas.
 
 #### Qué aprendí
 
 #### Cierre
 
-- **Criterios verificados:** pendiente.
-- **Pendientes o correcciones:** pendiente.
-- **Estado final:** Pendiente.
+- **Criterios respaldados por capturas:** código de modelos, servicios, filtro, formulario, lista e integración; la pantalla muestra el 401 real de la API.
+- **Pendientes o correcciones:** repetir el recorrido con autenticación válida; verificar listado, filtro, POST, PATCH y estados; ejecutar build/pruebas cuando se solicite.
+- **Estado final:** Completada con las evidencias disponibles; la verificación CRUD autenticada queda pendiente.
 
 ---
 
-### ISS-03 · Por registrar desde la guía del docente
+### ISS-04 · CRUD de tarifas PedalLibre
 
-**Estado:** Pendiente.
+**Estado:** Guía adaptada y preparada; implementación pendiente.
+
+El original ISS-04 de tipos de producto no tiene una entidad equivalente en PedalLibre. El siguiente recurso de catálogo disponible es **Tarifas**, documentado en [ISS-04 · CRUD de tarifas](../../iss/ISS-04-crud-tarifas.md). La guía usa el serializer real y conserva al final el material original de tipos de producto, separado de la adaptación.
 
 #### Pasos que realicé
 
@@ -364,25 +528,7 @@ La adaptación para PedalLibre y el contenido original de referencia están en [
 
 #### Qué aprendí
 
-#### Cierre
-
-- **Criterios verificados:** pendiente.
-- **Pendientes o correcciones:** pendiente.
-- **Estado final:** Pendiente.
-
----
-
-### ISS-04 · Por registrar desde la guía del docente
-
-**Estado:** Pendiente.
-
-#### Pasos que realicé
-
-#### Evidencias
-
-#### Retroalimentación
-
-#### Qué aprendí
+Aprendí que la adaptación debe partir del contrato real del backend, no de trasladar mecánicamente el CRUD original: PedalLibre no tiene tipos de producto y el recurso disponible es tarifas. Aunque se reutiliza el patrón de listado, búsqueda y formulario, el estado se cambia con PATCH sobre `is_active` y no existe baja por DELETE. También aprendí a separar el avance documental de la implementación: como la API aplica RBAC, no se puede afirmar que el CRUD está verificado sin acceso autorizado.
 
 #### Cierre
 
