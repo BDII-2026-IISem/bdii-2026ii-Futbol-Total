@@ -36,8 +36,8 @@ Las imágenes se guardan en [`../evidencias/`](../evidencias/), con nombres desc
 | ISS-02 | Núcleo: environment, modelos y servicios PedalLibre | Completada con evidencia visual; sin build ni pruebas |
 | ISS-03 | Clientes: listado, formulario y estado activo | Completada con evidencias; API devuelve 401, CRUD autenticado no verificado |
 | ISS-04 | CRUD de tarifas PedalLibre (adaptación del original de tipos de producto) | Completada con evidencias de implementación; API responde 401, CRUD autorizado y pruebas automáticas pendientes |
-| ISS-05 | Por registrar desde la guía del docente | Pendiente |
-| ISS-06 | Por registrar desde la guía del docente | Pendiente |
+| ISS-05 | CRUD de bicicletas PedalLibre (adaptación del original de productos) | Completada con evidencias; build y suite existente aprobados; alcance de pruebas documentado |
+| ISS-06 | Alquileres y registro PedalLibre (adaptación del original de ventas) | Guía adaptada; implementación pendiente |
 | ISS-07 | Por registrar desde la guía del docente | Pendiente |
 | ISS-08 | Por registrar desde la guía del docente | Pendiente |
 | ISS-09 | Por registrar desde la guía del docente | Pendiente |
@@ -522,28 +522,6 @@ El original ISS-04 de tipos de producto no tiene una entidad equivalente en Peda
 
 #### Pasos que realicé
 
-#### Evidencias
-
-#### Retroalimentación
-
-#### Qué aprendí
-
-Aprendí que la adaptación debe partir del contrato real del backend, no de trasladar mecánicamente el CRUD original: PedalLibre no tiene tipos de producto y el recurso disponible es tarifas. Aunque se reutiliza el patrón de listado, búsqueda y formulario, el estado se cambia con PATCH sobre `is_active` y no existe baja por DELETE. También aprendí a separar el avance documental de la implementación: como la API aplica RBAC, no se puede afirmar que el CRUD está verificado sin acceso autorizado.
-
-#### Cierre
-
-- **Criterios verificados:** pendiente.
-- **Pendientes o correcciones:** pendiente.
-- **Estado final:** Pendiente.
-
----
-
-### ISS-05 · Por registrar desde la guía del docente
-
-**Estado:** Pendiente.
-
-#### Pasos que realicé
-
 Implementé el formulario y el listado de tarifas, el filtro local, las acciones de crear/editar/activar-desactivar y la integración de `RateList` en la opción Tarifas de `Construir`. La captura del navegador muestra la aplicación compilada y abierta en `/construir`; al consultar la API aparece el mensaje de sesión requerida.
 
 #### Evidencias
@@ -602,33 +580,140 @@ La revisión de las capturas respalda la implementación de la interfaz y la com
 
 #### Qué aprendí
 
-Aprendí que el recurso de tarifas debe seguir el contrato real de PedalLibre —incluido `is_active` mediante PATCH y sin DELETE— y que las capturas de código más una pantalla compilada no equivalen a probar el CRUD con la API. Un 401 confirma el manejo del error, pero hace necesario repetir la validación con una sesión autorizada.
+Aprendí que la adaptación debe partir del contrato real del backend, no de trasladar mecánicamente el CRUD original: PedalLibre no tiene tipos de producto y el recurso disponible es tarifas. Aunque se reutiliza el patrón de listado, búsqueda y formulario, el estado se cambia con PATCH sobre `is_active` y no existe baja por DELETE. También aprendí a separar el avance documental de la implementación: como la API aplica RBAC, no se puede afirmar que el CRUD está verificado sin acceso autorizado.
 
 #### Cierre
 
-- **Criterios respaldados por la implementación y capturas:** integración en `Construir`, formulario, listado, búsqueda local, operaciones de alta/edición/cambio de estado y presentación de errores.
-- **Pendientes o correcciones:** repetir el recorrido CRUD con sesión autorizada y ejecutar pruebas automatizadas.
-- **Estado final:** Completada con evidencias de implementación; verificación de API autenticada pendiente por 401.
+- **Criterios respaldados por la implementación y capturas:** integración en `Construir`, formulario, listado, búsqueda local, acciones de alta/edición/estado y presentación de errores.
+- **Pendientes o correcciones:** verificar el CRUD con sesión autorizada y ejecutar pruebas automatizadas.
+- **Estado final:** Completada con evidencias de implementación; la API respondió 401 sin sesión válida.
 
 ---
 
-### ISS-06 · Por registrar desde la guía del docente
+### ISS-05 · CRUD de bicicletas PedalLibre
 
-**Estado:** Pendiente.
+**Estado:** Completada con evidencias. Build y suite existente aprobados; alcance de pruebas documentado.
+
+PedalLibre no tiene productos, tipos de producto ni existencias numéricas. La adaptación de ISS-05 administra el catálogo real de **bicicletas**, diferenciando el catálogo `/api/bicycles/` de la consulta operativa `/api/bicycles/available/`. La guía está en [ISS-05 · CRUD de bicicletas](../../iss/ISS-05-crud-bicicletas.md); el original de productos queda separado al final. Las pruebas documentadas usan peticiones HTTP simuladas y no requieren login.
+
+#### Pasos que realicé
+
+- Definí el modelo camelCase y el servicio HTTP para el catálogo, detalle, creación, actualización y disponibilidad.
+- Generé los componentes y preparé el formulario y el listado con validaciones, filtros, acciones y manejo visible de errores.
+- Integré el listado de bicicletas en `Construir`, conservando las pantallas previas.
+- Ejecuté `npm test -- --watch=false`; la salida muestra 2 archivos existentes y 6 pruebas aprobadas (`app.spec.ts` y `demo-local.spec.ts`). No aparecen specs de Bicycle, por lo que las pruebas unitarias específicas del feature siguen pendientes.
+- Ejecuté `npm run build`; Angular completó la generación del bundle correctamente.
+- Comprobé que los dos CSS del feature están vacíos.
+- Cerré la ISS con la evidencia disponible. Las seis pruebas registradas pertenecen a `app.spec.ts` y `demo-local.spec.ts`; no se afirma cobertura unitaria específica de Bicycle.
+
+#### Evidencias
+
+**EVI-05-01 · Modelo de bicicleta**
+
+![ISS-05-01 Modelo camelCase de bicicleta](../evidencias/ISS-05-01-modelo-bicicleta.png)
+
+**EVI-05-02 · Servicio de bicicletas**
+
+![ISS-05-02 Servicio API de bicicletas](../evidencias/ISS-05-02-servicio-bicicletas.png)
+
+**EVI-05-03 · Generación de componentes**
+
+![ISS-05-03 Generación de componentes](../evidencias/ISS-05-03-generacion-componentes.png)
+
+**EVI-05-04 · Formulario reactivo**
+
+![ISS-05-04 Formulario reactivo de bicicleta](../evidencias/ISS-05-04-formulario-reactivo.png)
+
+**EVI-05-05 · Plantilla del formulario**
+
+![ISS-05-05 Plantilla del formulario](../evidencias/ISS-05-05-formulario-template.png)
+
+**EVI-05-06 · Carga y filtro del listado**
+
+![ISS-05-06 Carga y filtro del listado](../evidencias/ISS-05-06-listado-carga-y-filtro.png)
+
+**EVI-05-07 · Guardado y edición**
+
+![ISS-05-07 Guardado, edición y filtro](../evidencias/ISS-05-07-listado-guardado-edicion.png)
+
+**EVI-05-08 · Estado y errores**
+
+![ISS-05-08 Estado y manejo de errores](../evidencias/ISS-05-08-estado-y-errores.png)
+
+**EVI-05-09 · Plantilla del listado**
+
+![ISS-05-09 Plantilla de listado](../evidencias/ISS-05-09-listado-template.png)
+
+**EVI-05-10 · Acciones y diálogo**
+
+![ISS-05-10 Acciones del listado](../evidencias/ISS-05-10-listado-acciones.png)
+
+**EVI-05-11 · Componente `Construir`**
+
+![ISS-05-11 Integración del componente Construir](../evidencias/ISS-05-11-integracion-construir.ts.png)
+
+**EVI-05-12 · Plantilla de `Construir`**
+
+![ISS-05-12 Integración HTML de bicicletas en Construir](../evidencias/ISS-05-12-integracion-construir-html.png)
+
+**EVI-05-13 · Suite de pruebas existente**
+
+![ISS-05-13 Seis pruebas unitarias existentes aprobadas](../evidencias/ISS-05-13-pruebas-unitarias-generales.png)
+
+La salida corresponde a `app.spec.ts` y `demo-local.spec.ts` (6 pruebas). No muestra pruebas `bicycle-*`; no se presenta como verificación unitaria específica de ISS-05.
+
+**EVI-05-14 · Build**
+
+![ISS-05-14 Build Angular exitoso](../evidencias/ISS-05-14-build-exitoso.png)
+
+**EVI-05-15 · CSS sin reglas**
+
+![ISS-05-15 Comprobación de CSS vacío](../evidencias/ISS-05-15-css-vacio.png)
+
+**EVI-05-16 · Pruebas específicas pendientes**
+
+![ISS-05-16 Ejecución sin specs de bicicleta](../evidencias/ISS-05-16-pruebas-feature-pendientes.png)
+
+La terminal muestra que `npm test -- --watch=false` ejecutó 2 archivos y 6 pruebas; el `find` previo no encontró `*.spec.ts` para bicicletas. Esta captura no cierra la cobertura específica de ISS-05.
+
+#### Retroalimentación
+
+No se requiere login para las pruebas unitarias: las respuestas de la API se simulan. Las capturas acreditan seis pruebas generales existentes, el build y el chequeo de CSS. Se cierra la ISS según lo solicitado, dejando explícito que no se ejecutaron specs específicos de Bicycle y que ninguna captura acredita operaciones reales autorizadas contra la API.
+
+#### Qué aprendí
+
+Aprendí que en PedalLibre una bicicleta no equivale a un producto con existencias: su disponibilidad depende también del anclaje, la estación y el mantenimiento. El CRUD debe limitarse a sus datos de catálogo y distinguir el indicador administrativo `isActive` del estado operativo y de la consulta específica de bicicletas disponibles.
+
+#### Cierre
+
+- **Criterios respaldados por evidencia:** estructura del modelo y servicio, formulario, listado, acciones e integración, build exitoso, CSS vacío y suite general aprobada, según EVI-05-01 a EVI-05-16.
+- **Alcance anotado:** las seis pruebas ejecutadas son generales, no específicas de Bicycle; no se verificó la API real porque no hay login.
+- **Estado final:** ISS-05 completada con las evidencias disponibles y sus límites de verificación documentados.
+
+---
+
+### ISS-06 · Alquileres y registro PedalLibre
+
+**Estado:** Guía adaptada; implementación y verificación pendientes.
+
+El backend de PedalLibre no tiene ventas ni productos; ISS-06 se adaptó al recurso real de alquileres. La guía define lectura, registro, bicicletas disponibles y restricciones RBAC en [ISS-06 · Alquileres y registro](../../iss/ISS-06-alquileres-y-registro.md). Aún no hay evidencias de implementación.
 
 #### Pasos que realicé
 
 #### Evidencias
 
+
 #### Retroalimentación
 
+
 #### Qué aprendí
+
 
 #### Cierre
 
 - **Criterios verificados:** pendiente.
-- **Pendientes o correcciones:** pendiente.
-- **Estado final:** Pendiente.
+- **Pendientes o correcciones:** implementar y verificar el flujo de alquiler con sesión autorizada.
+- **Estado final:** Guía adaptada; implementación pendiente.
 
 ---
 
@@ -646,9 +731,9 @@ Aprendí que el recurso de tarifas debe seguir el contrato real de PedalLibre �
 
 #### Cierre
 
-- **Criterios verificados:** pendiente.
-- **Pendientes o correcciones:** pendiente.
-- **Estado final:** Pendiente.
+- **Criterios respaldados por la implementación y capturas:** integración en `Construir`, formulario, listado, búsqueda local, operaciones de alta/edición/cambio de estado y presentación de errores.
+- **Pendientes o correcciones:** repetir el recorrido CRUD con sesión autorizada y ejecutar pruebas automatizadas.
+- **Estado final:** Completada con evidencias de implementación; verificación de API autenticada pendiente por 401.
 
 ---
 
