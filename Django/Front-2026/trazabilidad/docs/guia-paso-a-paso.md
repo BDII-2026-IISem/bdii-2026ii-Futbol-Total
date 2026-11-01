@@ -37,7 +37,7 @@ Las imágenes se guardan en [`../evidencias/`](../evidencias/), con nombres desc
 | ISS-03 | Clientes: listado, formulario y estado activo | Completada con evidencias; API devuelve 401, CRUD autenticado no verificado |
 | ISS-04 | CRUD de tarifas PedalLibre (adaptación del original de tipos de producto) | Completada con evidencias de implementación; API responde 401, CRUD autorizado y pruebas automáticas pendientes |
 | ISS-05 | CRUD de bicicletas PedalLibre (adaptación del original de productos) | Completada con evidencias; build y suite existente aprobados; alcance de pruebas documentado |
-| ISS-06 | Alquileres y registro PedalLibre (adaptación del original de ventas) | Guía adaptada; implementación pendiente |
+| ISS-06 | Alquileres y registro PedalLibre (adaptación del original de ventas) | Cerrada con evidencia; bundle de pruebas y 6 pruebas generales aprobados, sin pruebas específicas de alquileres ni build de producción |
 | ISS-07 | Por registrar desde la guía del docente | Pendiente |
 | ISS-08 | Por registrar desde la guía del docente | Pendiente |
 | ISS-09 | Por registrar desde la guía del docente | Pendiente |
@@ -694,26 +694,82 @@ Aprendí que en PedalLibre una bicicleta no equivale a un producto con existenci
 
 ### ISS-06 · Alquileres y registro PedalLibre
 
-**Estado:** Guía adaptada; implementación y verificación pendientes.
+**Estado:** Cerrada con alcance documentado. El bundle de pruebas compiló y pasaron seis pruebas generales; no existen pruebas específicas de alquileres verificadas.
 
-El backend de PedalLibre no tiene ventas ni productos; ISS-06 se adaptó al recurso real de alquileres. La guía define lectura, registro, bicicletas disponibles y restricciones RBAC en [ISS-06 · Alquileres y registro](../../iss/ISS-06-alquileres-y-registro.md). Aún no hay evidencias de implementación.
+El backend de PedalLibre no tiene ventas ni productos; ISS-06 se adaptó al recurso real de alquileres. La guía define lectura, registro, bicicletas disponibles y restricciones RBAC en [ISS-06 · Alquileres y registro](../../iss/ISS-06-alquileres-y-registro.md). Las capturas recibidas documentan modelo, servicio, formulario, lógica del listado y navegación en `Construir`.
 
 #### Pasos que realicé
 
+- Registré la captura del modelo `Rental` camelCase como EVI-06-01.
+- Identifiqué el motivo del error: `cat > archivo` no crea directorios padre. La guía ahora indica ejecutar `mkdir -p` desde `Front-2026` antes de crear el servicio y pegar cada heredoc completo hasta su línea `EOF`.
+- Las capturas posteriores muestran `rental-api.ts`, el formulario y `RentalList` creados, además de su integración en `Construir`.
+- Corregí la plantilla faltante `rental-list.html` y conecté `<app-rental-list />` en la rama Alquileres de `Construir`.
+- Ejecuté `npm test -- --watch=false`: el bundle de pruebas compiló y pasaron 2 archivos con 6 pruebas generales (`app.spec.ts` y `demo-local.spec.ts`). No son pruebas específicas de alquileres.
+- No se verificó `npm run build`, pruebas con mocks para el feature ni operaciones contra la API real.
+
 #### Evidencias
 
+**EVI-06-01 · Modelo de alquiler**
+
+![ISS-06-01 Modelo Rental](../evidencias/ISS-06-01-modelo-rental.png)
+
+La primera captura muestra el modelo abierto en el editor. El error inicial de terminal para `rental-api.ts` fue `No such file or directory`; las capturas EVI-06-02 a EVI-06-10 son posteriores y muestran el servicio y el resto de la implementación parcial.
+
+**EVI-06-02 · Servicio API de alquileres**
+
+![ISS-06-02 RentalApi](../evidencias/ISS-06-02-rental-api.png)
+
+**EVI-06-03 · Signals e inputs del formulario**
+
+![ISS-06-03 Formulario de alquiler](../evidencias/ISS-06-03-formulario-signal-inputs.png)
+
+**EVI-06-04 · Validación y payload**
+
+![ISS-06-04 Validación del formulario](../evidencias/ISS-06-04-formulario-validacion.png)
+
+**EVI-06-05 · Plantilla del formulario**
+
+![ISS-06-05 HTML del formulario](../evidencias/ISS-06-05-formulario-template.png)
+
+**EVI-06-06 · Carga inicial del listado**
+
+![ISS-06-06 Carga del listado](../evidencias/ISS-06-06-listado-carga.png)
+
+**EVI-06-07 · Catálogos del alquiler**
+
+![ISS-06-07 Carga de catálogos](../evidencias/ISS-06-07-listado-catalogos.png)
+
+**EVI-06-08 · Resolución de nombres y registro**
+
+![ISS-06-08 Acciones del listado](../evidencias/ISS-06-08-listado-resolucion-nombres-y-alta.png)
+
+**EVI-06-09 · Manejo de errores**
+
+![ISS-06-09 Errores HTTP](../evidencias/ISS-06-09-listado-errores.png)
+
+**EVI-06-10 · Integración en `Construir`**
+
+![ISS-06-10 Construir con alquileres](../evidencias/ISS-06-10-integracion-construir.png)
+
+**EVI-06-11 · Ejecución de pruebas generales**
+
+![ISS-06-11 Bundle compilado y seis pruebas generales aprobadas](../evidencias/ISS-06-11-pruebas-generales.png)
+
+La terminal muestra `Application bundle generation complete`, dos archivos de pruebas aprobados y seis pruebas en total. Los archivos son `app.spec.ts` y `demo-local.spec.ts`; no cubren `RentalApi`, `RentalForm` ni `RentalList`.
 
 #### Retroalimentación
 
+El error inicial de ruta se corrigió preparando la estructura del feature; las capturas posteriores muestran el servicio creado. Hay que ejecutar cada bloque heredoc completo para evitar errores de pegado.
 
 #### Qué aprendí
 
+Aprendí que una compilación del bundle de pruebas y una suite verde no demuestran por sí solas que cada feature esté cubierto: debo revisar qué archivos y casos ejecutó Vitest. También confirmé que el template del componente debe existir y estar conectado en la plantilla padre para que Angular pueda compilar e integrar `RentalList`.
 
 #### Cierre
 
-- **Criterios verificados:** pendiente.
-- **Pendientes o correcciones:** implementar y verificar el flujo de alquiler con sesión autorizada.
-- **Estado final:** Guía adaptada; implementación pendiente.
+- **Criterios respaldados por capturas:** modelo, servicio, formulario, listado e integración en `Construir` (EVI-06-01 a EVI-06-10); bundle de pruebas y suite general aprobados (EVI-06-11).
+- **Alcance pendiente:** no se ejecutaron specs específicos de `RentalApi`, `RentalForm` o `RentalList`, ni `npm run build`, ni pruebas contra la API real. No pedir login.
+- **Estado final:** ISS-06 cerrada con las limitaciones de verificación documentadas; la suite general aprobada no se presenta como cobertura del feature.
 
 ---
 

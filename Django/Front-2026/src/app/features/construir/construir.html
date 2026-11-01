@@ -1,28 +1,28 @@
 <div class="flex min-h-screen flex-col bg-slate-100 font-sans text-slate-900">
   <app-header appName="PedalLibre" (menuRequested)="onMenuToggle()" />
-
   <div class="flex min-h-0 flex-1">
     @if (!sidebarCollapsed()) {
       <aside class="hidden w-72 shrink-0 bg-white lg:block">
-        <app-aside
-          [items]="items"
-          (navigated)="mobileOpen.set(false)"
-        />
+        <app-aside [items]="items" (navigated)="mobileOpen.set(false)" />
       </aside>
     }
-
     <main id="contenido" class="min-w-0 flex-1 p-6">
-      <h1 class="text-2xl font-semibold">{{ title() }}</h1>
-      <p class="mt-2">Construye tu próxima experiencia con PedalLibre.</p>
+      @if (title() === 'Clientes') {
+        <app-client-list />
+      } @else if (title() === 'Bicicletas') {
+        <app-bicycle-list />
+      } @else if (title() === 'Tarifas') {
+        <app-rate-list />
+      } @else if (title() === 'Alquileres') {
+        <app-rental-list />
+      } @else {
+        <h1 class="text-2xl font-semibold">{{ title() }}</h1>
+        <p class="mt-2">Construye tu próxima experiencia con PedalLibre.</p>
+      }
     </main>
   </div>
-
   <app-footer />
-
   <p-drawer [(visible)]="mobileOpen" position="left">
-    <app-aside
-      [items]="items"
-      (navigated)="mobileOpen.set(false)"
-    />
+    <app-aside [items]="items" (navigated)="mobileOpen.set(false)" />
   </p-drawer>
 </div>

@@ -1,0 +1,83 @@
+<section class="grid gap-5">
+  <header class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold">Tarifas</h1>
+      <p class="text-sm text-slate-600">Administra precios y vigencias.</p>
+    </div>
+    <button class="rounded bg-blue-700 px-4 py-2 font-medium text-white" type="button" (click)="openCreate()">Nueva tarifa</button>
+  </header>
+
+  @if (errorMessage()) {
+    <p role="alert" class="rounded border border-red-300 bg-red-50 p-3 text-red-800">
+      {{ errorMessage() }}
+    </p>
+  }
+  @if (successMessage()) {
+    <p role="status" class="rounded border border-green-300 bg-green-50 p-3 text-green-800">
+      {{ successMessage() }}
+    </p>
+  }
+
+  <label class="grid max-w-xl gap-1">
+    Buscar por nombre o unidad de cobro
+    <input class="rounded border border-slate-300 bg-white p-2" type="search" (input)="onQueryChange($event)" />
+  </label>
+
+  @if (loading()) {
+    <p role="status">Cargando tarifas…</p>
+  } @else if (rows().length === 0 && !errorMessage()) {
+    <p class="rounded border bg-white p-6">Aún no hay tarifas registradas.</p>
+  } @else if (visibleRows().length === 0 && rows().length > 0) {
+    <p class="rounded border bg-white p-6">No hay tarifas que coincidan con la búsqueda.</p>
+  } @else if (visibleRows().length > 0) {
+    <div class="overflow-x-auto rounded border bg-white">
+      <table class="w-full min-w-[800px] text-left text-sm">
+        <thead class="bg-slate-100 text-slate-700">
+          <tr>
+            <th class="p-3">Nombre</th>
+            <th class="p-3">Precio</th>
+            <th class="p-3">Unidad</th>
+            <th class="p-3">Vigencia</th>
+            <th class="p-3">Estado</th>
+            <th class="p-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rate of visibleRows(); track rate.id) {
+            <tr class="border-t border-slate-200">
+              <td class="p-3">{{ rate.name }}</td>
+              <td class="p-3">{{ rate.price }}</td>
+              <td class="p-3">{{ rate.billing_unit }}</td>
+              <td class="p-3">{{ rate.valid_from || '—' }} — {{ rate.valid_until || '—' }}</td>
+              <td class="p-3">{{ rate.is_active ? 'Activa' : 'Inactiva' }}</td>
+              <td class="flex gap-2 p-3">
+                <button class="rounded border border-slate-300 px-3 py-1" type="button" (click)="openEdit(rate)">Editar</button>
+                <button class="rounded border border-slate-300 px-3 py-1 disabled:opacity-50" type="button" [disabled]="saving()" (click)="setActive(rate)">
+                  {{ rate.is_active ? 'Desactivar' : 'Activar' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (dialogVisible()) {
+    <div class="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-slate-950/50 p-4">
+      <section class="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-xl"
+        role="dialog" aria-modal="true" aria-labelledby="rate-dialog-title">
+        <h2 id="rate-dialog-title" class="mb-4 text-xl font-semibold">
+          {{ editing() ? 'Editar tarifa' : 'Nueva tarifa' }}
+        </h2>
+        <app-rate-form
+          [rate]="editing()"
+          [saving]="saving()"
+          [resetKey]="resetKey()"
+          (saved)="save($event)"
+          (cancelled)="dialogVisible.set(false)"
+        />
+      </section>
+    </div>
+  }
+</section>

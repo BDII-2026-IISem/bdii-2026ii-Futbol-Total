@@ -1,0 +1,85 @@
+<section class="grid gap-5">
+  <header class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold">Bicicletas</h1>
+      <p class="mt-1 text-sm text-slate-600">Administra el catálogo y consulta disponibilidad operativa.</p>
+    </div>
+    <button class="rounded bg-blue-700 px-4 py-2 font-medium text-white" type="button"
+      [disabled]="onlyAvailable()" (click)="openCreate()">Nueva bicicleta</button>
+  </header>
+
+  @if (errorMessage()) {
+    <p role="alert" class="rounded border border-red-300 bg-red-50 p-3 text-red-800">{{ errorMessage() }}</p>
+  }
+  @if (successMessage()) {
+    <p role="status" class="rounded border border-green-300 bg-green-50 p-3 text-green-800">{{ successMessage() }}</p>
+  }
+
+  <div class="flex flex-wrap items-center gap-3">
+    <label class="flex items-center gap-2">
+      <input type="checkbox" [checked]="onlyAvailable()" (change)="setAvailableMode($any($event.target).checked)" />
+      Solo disponibles
+    </label>
+    <label class="grid max-w-xl flex-1 gap-1">
+      Buscar por serial, nombre, tipo o estado
+      <input class="rounded border border-slate-300 bg-white p-2" type="search" (input)="onQueryChange($event)" />
+    </label>
+  </div>
+
+  @if (loading()) {
+    <p role="status">Cargando bicicletas…</p>
+  } @else if (errorMessage()) {
+    <p class="rounded border border-slate-200 bg-white p-6 text-slate-600">No se pudo cargar el catálogo.</p>
+  } @else if (rows().length === 0) {
+    <p class="rounded border border-slate-200 bg-white p-6 text-slate-600">
+      {{ onlyAvailable() ? 'No hay bicicletas disponibles.' : 'Aún no hay bicicletas registradas.' }}
+    </p>
+  } @else if (visibleRows().length === 0) {
+    <p class="rounded border border-slate-200 bg-white p-6 text-slate-600">No hay coincidencias.</p>
+  } @else {
+    <div class="overflow-x-auto rounded border border-slate-200 bg-white">
+      <table class="w-full min-w-[760px] text-left text-sm">
+        <thead class="bg-slate-100 text-slate-700">
+          <tr>
+            <th class="p-3">Serial</th><th class="p-3">Nombre</th><th class="p-3">Tipo</th>
+            <th class="p-3">Estado operativo</th><th class="p-3">Activa</th><th class="p-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (bicycle of visibleRows(); track bicycle.id) {
+            <tr class="border-t border-slate-200">
+              <td class="p-3">{{ bicycle.serialNumber }}</td>
+              <td class="p-3">{{ bicycle.name || '—' }}</td>
+              <td class="p-3">{{ bicycle.bicycleType }}</td>
+              <td class="p-3">{{ bicycle.status }}</td>
+              <td class="p-3">{{ bicycle.isActive ? 'Sí' : 'No' }}</td>
+              <td class="flex gap-2 p-3">
+                @if (!onlyAvailable()) {
+                  <button class="rounded border border-slate-300 px-3 py-1" type="button"
+                    (click)="openEdit(bicycle)">Editar</button>
+                  <button class="rounded border border-slate-300 px-3 py-1 disabled:opacity-50" type="button"
+                    [disabled]="saving()" (click)="toggleActive(bicycle)">
+                    {{ bicycle.isActive ? 'Desactivar' : 'Activar' }}
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (dialogVisible()) {
+    <div class="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-slate-950/50 p-4" (click)="closeForm()">
+      <section class="my-auto w-full max-w-2xl rounded-lg bg-white p-5 shadow-xl" role="dialog"
+        aria-modal="true" aria-labelledby="bicycle-dialog-title" (click)="$event.stopPropagation()">
+        <h2 id="bicycle-dialog-title" class="mb-4 text-xl font-semibold">
+          {{ editing() ? 'Editar bicicleta' : 'Nueva bicicleta' }}
+        </h2>
+        <app-bicycle-form [bicycle]="editing()" [saving]="saving()" [resetKey]="resetKey()"
+          (saved)="save($event)" (cancelled)="closeForm()" />
+      </section>
+    </div>
+  }
+</section>

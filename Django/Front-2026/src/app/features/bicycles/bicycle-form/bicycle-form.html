@@ -1,0 +1,34 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-4">
+  <label class="grid gap-1">
+    Serial *
+    <input class="rounded border border-slate-300 p-2" formControlName="serialNumber" maxlength="80" required />
+    @if (form.controls.serialNumber.touched && form.controls.serialNumber.invalid) {
+      <span class="text-sm text-red-700">El serial es obligatorio (máximo 80 caracteres).</span>
+    }
+  </label>
+
+  <label class="grid gap-1">
+    Nombre
+    <input class="rounded border border-slate-300 p-2" formControlName="name" maxlength="120" />
+  </label>
+
+  <label class="grid gap-1">
+    Descripción
+    <textarea class="rounded border border-slate-300 p-2" formControlName="description"></textarea>
+  </label>
+
+  <label class="grid gap-1">
+    Tipo de bicicleta *
+    <input class="rounded border border-slate-300 p-2" formControlName="bicycleType" maxlength="50" required />
+    @if (form.controls.bicycleType.touched && form.controls.bicycleType.invalid) {
+      <span class="text-sm text-red-700">El tipo es obligatorio (máximo 50 caracteres).</span>
+    }
+  </label>
+
+  <div class="flex justify-end gap-2 border-t border-slate-200 pt-4">
+    <button class="rounded border border-slate-300 px-4 py-2" type="button" (click)="cancelled.emit()">Cancelar</button>
+    <button class="rounded bg-blue-700 px-4 py-2 text-white disabled:opacity-50" type="submit" [disabled]="saving()">
+      {{ saving() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </div>
+</form>
